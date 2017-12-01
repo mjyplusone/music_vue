@@ -2,7 +2,7 @@
     <div class="m-header">
         <div class="speak"></div>
         <div class="search"></div>
-        <div class="music"></div>
+        <div class="music-on"></div>
     </div>
 </template>
 
@@ -33,7 +33,7 @@
             margin-top: 7px
             border-radius: 15px
             background: #ffffff
-        .music
+        .music-on
             display: inline-block
             vertical-align: top
             width: 24px

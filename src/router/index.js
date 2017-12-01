@@ -1,15 +1,41 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import Vue from 'vue';
+import Router from 'vue-router';
+import findmusic from 'components/findmusic/findmusic.vue';
+import mymusic from 'components/mymusic/mymusic.vue';
+import friends from 'components/friends/friends.vue';
+import account from 'components/account/account.vue';
+import music from 'components/music/music.vue';
+import singer from 'components/singer/singer.vue';
+import rank from 'components/rank/rank.vue';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
+  linkActiveClass: 'active',
   routes: [
+    // 设置默认路由
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      redirect: '/findmusic/music'
+    },
+    {
+      path: '/findmusic',
+      component: findmusic,
+      redirect: '/findmusic/music',
+      children: [
+        {path: 'music', component: music},
+        {path: 'singer', component: singer},
+        {path: 'rank', component: rank}
+      ]
+    },
+    {
+      path: '/mymusic', component: mymusic
+    },
+    {
+      path: '/friends', component: friends
+    },
+    {
+      path: '/account', component: account
     }
   ]
-})
+});

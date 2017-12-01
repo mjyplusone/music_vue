@@ -10,7 +10,7 @@
 <style lang="stylus" rel="stylesheet/stylus">
     .music
         position: absolute
-        top: 40px
+        top: 84px
         bottom: 0
         width: 100%
         overflow: hidden

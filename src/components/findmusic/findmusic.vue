@@ -1,5 +1,6 @@
 <template>
     <div class="findmusic">
+        <m-header :tabType="tabType"></m-header>
         <div class="musictab">
             <router-link to="/findmusic/music" tag="div" class="subtab-item"><span>音乐</span></router-link>
             <router-link to="/findmusic/singer" tag="div" class="subtab-item"><span>歌手</span></router-link>
@@ -10,15 +11,26 @@
 </template>
 
 <script type="text/ecmascript-6">
+    import MHeader from 'components/m-header/m-header.vue';
+
+    export default {
+        data () {
+            return {
+                tabType: 'findmusic'
+            };
+        },
+        components: {
+            MHeader
+        }
+    };
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
     .findmusic
         position: absolute
-        top: 44px
+        top: 0
         bottom: 0
         width: 100%
-        // background: blue
         .musictab
             display: flex
             width: 100%

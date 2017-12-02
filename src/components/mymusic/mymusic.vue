@@ -1,6 +1,6 @@
 <template>
     <div class="mymusic">
-        <m-header :tabType="tabType"></m-header>
+        <m-header :tabType="tabType" :title="title"></m-header>
     </div>
 </template>
 
@@ -10,7 +10,8 @@
     export default {
         data () {
             return {
-                tabType: 'mymusic'
+                tabType: 'mymusic',
+                title: '我的音乐'
             };
         },
         components: {

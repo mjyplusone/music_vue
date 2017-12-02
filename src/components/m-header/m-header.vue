@@ -1,7 +1,9 @@
 <template>
     <div class="m-header">
-        <div class="speak"></div>
+        <div class="speak" v-show="tabType==='findmusic'"></div>
+        <div class="mymusic-more" v-show="tabType==='mymusic'">更多</div>
         <div class="search" v-show="tabType==='findmusic'"></div>
+        <div class="subtitle" v-show="tabType==='mymusic' || tabType==='account' || tabType==='friends'">{{ title }}</div>
         <div class="music-on"></div>
     </div>
 </template>
@@ -12,6 +14,10 @@
             tabType: {
                 type: String,
                 default: 'findmusic'
+            },
+            title: {
+                type: String,
+                default: ''
             }
         }
     };
@@ -23,7 +29,8 @@
         width: 100%
         height: 44px
         background: #d43c33
-        font-size: 0
+        font-size: 16px
+        color: #ffffff
         .speak
             position: absolute
             left: 12px
@@ -32,6 +39,11 @@
             height: 24px
             background: url("../../common/image/speak.png")
             background-size: 24px 24px
+        .mymusic-more
+            position: absolute
+            left: 12px
+            top: 50%
+            transform: translateY(-50%)
         .search
             position: absolute
             left: 50%
@@ -41,6 +53,11 @@
             height: 30px
             border-radius: 15px
             background: #ffffff
+        .subtitle
+            position: absolute
+            left: 50%
+            top: 50%
+            transform: translate(-50%, -50%)
         .music-on
             position: absolute
             right: 10px

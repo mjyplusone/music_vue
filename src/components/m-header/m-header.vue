@@ -53,6 +53,8 @@
             height: 30px
             border-radius: 15px
             background: #ffffff
+            @media only screen and (max-width: 320px)
+                width: 220px
         .subtitle
             position: absolute
             left: 50%

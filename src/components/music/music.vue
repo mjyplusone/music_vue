@@ -1,5 +1,5 @@
 <template>
-    <div class="music">
+    <div class="music" ref="music">
         <div class="music-content">
             <div v-if="recommends.length" class="slider-wrapper">
                 <slider>
@@ -49,25 +49,48 @@
                     <span>推荐歌单</span>
                     <i class="icon-right"></i>
                 </div>
-                <div class="content"></div>
+                <div class="content">
+                    <ul>
+                        <li v-for="(item, index) in musicList" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}">
+                            <div class="item-img">
+                                <img :width="MusicItemWidth" :height="MusicItemWidth" :src="item.picUrl" alt="">
+                            </div>
+                            <div class="item-text">
+                                <span>{{ item.name }}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
-    import {getRecommend} from 'api/recommend';
+    import {getRecommend, getRecommendMusicList} from 'api/recommend';
     import {ERR_OK} from 'api/config';
     import slider from 'base/slider/slider.vue';
 
     export default {
         data () {
             return {
-                recommends: []
+                recommends: [],
+                musicList: [],
+                // 每个music-item的宽度
+                MusicItemWidth: ''
             };
         },
         created () {
             this._getRecommend();
+            this._getRecommendMusicList();
+        },
+        mounted () {
+            // 计算每个music-item的宽度
+            this._getMusicItemWidth();
+            // resize的时候重新计算
+            window.addEventListener('resize', () => {
+                this._getMusicItemWidth();
+            });
         },
         methods: {
             _getRecommend () {
@@ -77,6 +100,27 @@
                         console.log(this.recommends);
                     }
                 });
+            },
+            _getRecommendMusicList () {
+                getRecommendMusicList().then((res) => {
+                    this.musicList = res.result;
+                    console.log(res);
+                    console.log(this.musicList);
+                });
+            },
+            _getMusicItemWidth () {
+                let MusicWidth = this.$refs.music.clientWidth;
+                let marginWidth = 2;
+                this.MusicItemWidth = (MusicWidth - marginWidth * 2) / 3 + 'px';
+                console.log(this.MusicItemWidth);
+            },
+            // music-item间的间距,这里还有问题！！！
+            MusicItemMargin (index) {
+                if ((index + 1) % 3 === 0) {
+                    return '0px';
+                } else {
+                    return '2px';
+                }
             }
         },
         components: {
@@ -139,7 +183,22 @@
                         display: inline-block
                         vertical-align: top
                         color: #707070
-                // .content
-                //     height: 20px
-                //     background: red
+                .content
+                    font-size: 0
+                    .music-item
+                        display: inline-block
+                        vertical-align: top
+                        .item-text
+                            height: 27px
+                            margin: 8px 0 22px 0
+                            padding: 0 7px
+                            font-size: 12px
+                            line-height: 1.2
+                            // 多行文本溢出省略号
+                            overflow: hidden
+                            display: -webkit-box
+                            -webkit-line-clamp: 2
+                            -webkit-box-orient: vertical
+                            text-overflow: ellipsis
+                            // background: red
 </style>

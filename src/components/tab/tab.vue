@@ -44,7 +44,7 @@
         width: 100%
         height: 49px
         display: flex
-        background: rgba(57, 57, 57, 0.7)
+        background: rgba(57, 57, 57, 0.99)
         .tab-item
             flex: 1
             text-align: center

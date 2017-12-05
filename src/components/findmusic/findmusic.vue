@@ -6,7 +6,9 @@
             <router-link to="/findmusic/singer" tag="div" class="subtab-item"><span>歌手</span></router-link>
             <router-link to="/findmusic/rank" tag="div" class="subtab-item"><span>排行榜</span></router-link>
         </div>
-        <router-view></router-view>
+        <keep-alive>
+            <router-view></router-view>
+        </keep-alive>
     </div>
 </template>
 
@@ -40,7 +42,7 @@
             .subtab-item
                 flex: 1
                 text-align: center
-                font-size: 12px
+                font-size: 13px
                 span 
                     display: inline-block
                     width: 41px

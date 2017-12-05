@@ -4,6 +4,22 @@ icon-bg-image($url)
   background-size: auto 24px
   background-position: center
 
+border-1px($color) 
+  position: relative
+  &:after
+      display: block
+      position: absolute
+      left: 0
+      bottom: 0
+      width: 100%
+      border-top: 1px solid $color
+      content: ''
+
+border-none()
+    &:after
+        display: none
+
+
 // 不换行
 no-wrap()
   text-overflow: ellipsis

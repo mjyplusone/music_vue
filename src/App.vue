@@ -1,7 +1,9 @@
 <template>
   <div>
     <!-- <m-header></m-header> -->
-    <router-view></router-view>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
     <tab></tab>
   </div>
 </template>

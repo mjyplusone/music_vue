@@ -1,68 +1,89 @@
 <template>
     <div class="music" ref="music">
-        <div class="music-content">
-            <div v-if="recommends.length" class="slider-wrapper">
-                <slider>
-                    <div v-for="item in recommends">
-                        <a :href="item.linkUrl">
-                            <img :src="item.picUrl" alt="">
-                        </a>
+        <scroll class="music-content" :data="recommendList" ref="scroll">
+            <div>
+                <div v-if="recommends.length" class="slider-wrapper">
+                    <slider ref="slider">
+                        <div v-for="item in recommends">
+                            <a :href="item.linkUrl">
+                                <img @load="loadImage" :src="item.picUrl" alt="">
+                            </a>
+                        </div>
+                    </slider>
+                </div>
+                <div class="icon-navigator border-1px"> 
+                    <div class="navigator-item">
+                        <div class="navigator-img">
+                            <i class="icon-text icon-fm"></i>
+                        </div>
+                        <div class="navigator-text">
+                            <span>私人FM</span>
+                        </div> 
                     </div>
-                </slider>
+                    <div class="navigator-item">
+                        <div class="navigator-img">
+                            <i class="icon-text icon-date"></i>
+                        </div>
+                        <div class="navigator-text">
+                            <span>每日推荐</span>
+                        </div> 
+                    </div>
+                    <div class="navigator-item">
+                        <div class="navigator-img">
+                            <i class="icon-text icon-diantai"></i>
+                        </div>
+                        <div class="navigator-text">
+                            <span>歌单</span>
+                        </div> 
+                    </div>
+                    <div class="navigator-item">
+                        <div class="navigator-img">
+                            <i class="icon-text icon-rank-list"></i>
+                        </div>
+                        <div class="navigator-text">
+                            <span>排行榜</span>
+                        </div> 
+                    </div> 
+                </div>
+                <div class="music-list" ref="list">
+                    <div class="title">
+                        <span>推荐歌单</span>
+                        <i class="icon-right"></i>
+                    </div>
+                    <div class="content">
+                        <ul>
+                            <li v-for="(item, index) in recommendList" v-if="index < 6" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}">
+                                <div class="item-img">
+                                    <img :width="MusicItemWidth" :height="MusicItemWidth" :src="item.picUrl" alt="">
+                                </div>
+                                <div class="item-text">
+                                    <span>{{ item.name }}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="music-list">
+                    <div class="title">
+                        <span>最新音乐</span>
+                        <i class="icon-right"></i>
+                    </div>
+                    <div class="content">
+                        <ul>
+                            <li v-for="(item, index) in recommendList" v-if="index < 6" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}">
+                                <div class="item-img">
+                                    <img :width="MusicItemWidth" :height="MusicItemWidth" :src="item.picUrl" alt="">
+                                </div>
+                                <div class="item-text">
+                                    <span>{{ item.name }}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="bottom border-1px">发现更多有趣内容&nbsp;&nbsp;></div>
             </div>
-            <div class="icon-navigator border-1px">
-                <div class="navigator-item">
-                    <div class="navigator-img">
-                        <i class="icon-text icon-fm"></i>
-                    </div>
-                    <div class="navigator-text">
-                        <span>私人FM</span>
-                    </div> 
-                </div>
-                <div class="navigator-item">
-                    <div class="navigator-img">
-                        <i class="icon-text icon-date"></i>
-                    </div>
-                    <div class="navigator-text">
-                        <span>每日推荐</span>
-                    </div> 
-                </div>
-                <div class="navigator-item">
-                    <div class="navigator-img">
-                        <i class="icon-text icon-diantai"></i>
-                    </div>
-                    <div class="navigator-text">
-                        <span>歌单</span>
-                    </div> 
-                </div>
-                <div class="navigator-item">
-                    <div class="navigator-img">
-                        <i class="icon-text icon-rank-list"></i>
-                    </div>
-                    <div class="navigator-text">
-                        <span>排行榜</span>
-                    </div> 
-                </div> 
-            </div>
-            <div class="music-list">
-                <div class="title">
-                    <span>推荐歌单</span>
-                    <i class="icon-right"></i>
-                </div>
-                <div class="content">
-                    <ul>
-                        <li v-for="(item, index) in musicList" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}">
-                            <div class="item-img">
-                                <img :width="MusicItemWidth" :height="MusicItemWidth" :src="item.picUrl" alt="">
-                            </div>
-                            <div class="item-text">
-                                <span>{{ item.name }}</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        </scroll>
     </div>
 </template>
 
@@ -70,12 +91,13 @@
     import {getRecommend, getRecommendMusicList} from 'api/recommend';
     import {ERR_OK} from 'api/config';
     import slider from 'base/slider/slider.vue';
+    import scroll from 'base/scroll/scroll.vue';
 
     export default {
         data () {
             return {
                 recommends: [],
-                musicList: [],
+                recommendList: [],
                 // 每个music-item的宽度
                 MusicItemWidth: ''
             };
@@ -103,9 +125,9 @@
             },
             _getRecommendMusicList () {
                 getRecommendMusicList().then((res) => {
-                    this.musicList = res.result;
+                    this.recommendList = res.result;
                     console.log(res);
-                    console.log(this.musicList);
+                    console.log(this.recommendList);
                 });
             },
             _getMusicItemWidth () {
@@ -114,17 +136,27 @@
                 this.MusicItemWidth = (MusicWidth - marginWidth * 2) / 3 + 'px';
                 console.log(this.MusicItemWidth);
             },
-            // music-item间的间距,这里还有问题！！！
+            // music-item间的间距
             MusicItemMargin (index) {
                 if ((index + 1) % 3 === 0) {
                     return '0px';
                 } else {
                     return '2px';
                 }
+            },
+            loadImage () {
+                if (!this.checkLoaded) {
+                    this.checkLoaded = true;
+                    // 这里refresh之前slider的高度总是计算不对，导致refresh重新渲染后scroll不正确
+                    // 所以重新计算一下slider宽度，然后计算得到正确的高度
+                    this.$refs.slider._setSliderWidth(true);
+                    this.$refs.scroll.refresh();
+                }
             }
         },
         components: {
-            slider
+            slider,
+            scroll
         }
     };
 </script>
@@ -137,10 +169,11 @@
         top: 84px
         bottom: 0
         width: 100%
-        overflow: hidden
         // background: blue
         .music-content
             width: 100%
+            height: 100%
+            overflow: hidden    // 作为scroll的wrapper层
             .slider-wrapper
                 position: relative   // 之后dots相对slider-wrapper绝对定位
                 width: 100%
@@ -149,7 +182,7 @@
                 width: 100%
                 height: 104px
                 display: flex
-                border-1px(rgba(7, 17, 27, 0.1))
+                border-1px(rgba(7, 17, 27, 0.1), after, bottom)
                 .navigator-item
                     flex: 1
                     text-align: center
@@ -200,5 +233,18 @@
                             -webkit-line-clamp: 2
                             -webkit-box-orient: vertical
                             text-overflow: ellipsis
+                            // 长英文自动转行
+                            word-wrap: break-word
                             // background: red
+            .bottom
+                width: 100%
+                height: 120px
+                box-sizing: border-box
+                padding-top: 30px
+                text-align: center
+                font-size: 12px
+                color: #a7a7a7
+                border-1px(rgba(7, 17, 27, 0.1), before, top)
+                
+
 </style>

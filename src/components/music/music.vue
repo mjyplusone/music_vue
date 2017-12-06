@@ -63,7 +63,7 @@
                         </ul>
                     </div>
                 </div>
-                <loading></loading>
+                <loading v-show="!recommendList.length"></loading>
                 <div class="music-list">
                     <div class="title">
                         <span>最新音乐</span>
@@ -82,7 +82,7 @@
                         </ul>
                     </div>
                 </div>
-                <loading></loading>
+                <loading v-show="!recommendList.length"></loading>
                 <div class="bottom border-1px">发现更多有趣内容&nbsp;&nbsp;></div>
             </div>
         </scroll>

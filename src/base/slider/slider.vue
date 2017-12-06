@@ -56,6 +56,7 @@
             });
         },
         destroyed () {
+            console.log('clearTimeOut');
             clearTimeout(this.timer);
         },
         methods: {

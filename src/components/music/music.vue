@@ -6,7 +6,7 @@
                     <slider ref="slider">
                         <div v-for="item in recommends">
                             <a :href="item.linkUrl">
-                                <img @load="loadImage" :src="item.picUrl" alt="">
+                                <img class="needsclick" @load="loadImage" :src="item.picUrl" alt="">
                             </a>
                         </div>
                     </slider>
@@ -54,7 +54,7 @@
                         <ul>
                             <li v-for="(item, index) in recommendList" v-if="index < 6" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}">
                                 <div class="item-img">
-                                    <img :width="MusicItemWidth" :height="MusicItemWidth" :src="item.picUrl" alt="">
+                                    <img :width="MusicItemWidth" :height="MusicItemWidth" v-lazy="item.picUrl" alt="">
                                 </div>
                                 <div class="item-text">
                                     <span>{{ item.name }}</span>
@@ -63,6 +63,7 @@
                         </ul>
                     </div>
                 </div>
+                <loading></loading>
                 <div class="music-list">
                     <div class="title">
                         <span>最新音乐</span>
@@ -70,9 +71,9 @@
                     </div>
                     <div class="content">
                         <ul>
-                            <li v-for="(item, index) in recommendList" v-if="index < 6" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}">
+                            <li v-for="(item, index) in recommendList" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}">
                                 <div class="item-img">
-                                    <img :width="MusicItemWidth" :height="MusicItemWidth" :src="item.picUrl" alt="">
+                                    <img :width="MusicItemWidth" :height="MusicItemWidth" v-lazy="item.picUrl" alt="">
                                 </div>
                                 <div class="item-text">
                                     <span>{{ item.name }}</span>
@@ -81,6 +82,7 @@
                         </ul>
                     </div>
                 </div>
+                <loading></loading>
                 <div class="bottom border-1px">发现更多有趣内容&nbsp;&nbsp;></div>
             </div>
         </scroll>
@@ -92,6 +94,7 @@
     import {ERR_OK} from 'api/config';
     import slider from 'base/slider/slider.vue';
     import scroll from 'base/scroll/scroll.vue';
+    import loading from 'base/loading/loading.vue';
 
     export default {
         data () {
@@ -104,7 +107,10 @@
         },
         created () {
             this._getRecommend();
-            this._getRecommendMusicList();
+            // 手动延时，测试loading组件效果
+            setTimeout(() => {
+                this._getRecommendMusicList();
+            }, 1000);
         },
         mounted () {
             // 计算每个music-item的宽度
@@ -156,7 +162,8 @@
         },
         components: {
             slider,
-            scroll
+            scroll,
+            loading
         }
     };
 </script>
@@ -245,6 +252,4 @@
                 font-size: 12px
                 color: #a7a7a7
                 border-1px(rgba(7, 17, 27, 0.1), before, top)
-                
-
 </style>

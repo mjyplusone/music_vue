@@ -90,7 +90,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {getRecommend, getRecommendMusicList} from 'api/recommend';
+    import {getRecommend, getRecommendMusicList} from 'api/music.js';
     import {ERR_OK} from 'api/config';
     import slider from 'base/slider/slider.vue';
     import scroll from 'base/scroll/scroll.vue';

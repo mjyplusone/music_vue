@@ -34,11 +34,13 @@
         bottom: 0
         width: 100%
         .musictab
+            position: absolute
+            z-index: 30
             display: flex
             width: 100%
             height: 40px
             line-height: 40px
-            background: rgba(248, 248, 249, 0.9)
+            background: rgba(248, 248, 249, 1)
             .subtab-item
                 flex: 1
                 text-align: center

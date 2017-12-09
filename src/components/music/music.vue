@@ -108,9 +108,9 @@
         created () {
             this._getRecommend();
             // 手动延时，测试loading组件效果
-            setTimeout(() => {
-                this._getRecommendMusicList();
-            }, 1000);
+            // setTimeout(() => {
+            this._getRecommendMusicList();
+            // }, 1000);
         },
         mounted () {
             // 计算每个music-item的宽度
@@ -140,7 +140,7 @@
                 let MusicWidth = this.$refs.music.clientWidth;
                 let marginWidth = 2;
                 this.MusicItemWidth = (MusicWidth - marginWidth * 2) / 3 + 'px';
-                console.log(this.MusicItemWidth);
+                console.log('MusicItemWidth' + this.MusicItemWidth);
             },
             // music-item间的间距
             MusicItemMargin (index) {

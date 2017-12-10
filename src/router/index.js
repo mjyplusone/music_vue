@@ -7,6 +7,7 @@ import account from 'components/account/account.vue';
 import music from 'components/music/music.vue';
 import singer from 'components/singer/singer.vue';
 import rank from 'components/rank/rank.vue';
+import singerDetail from 'components/singer-detail/singer-detail.vue';
 
 Vue.use(Router);
 
@@ -24,7 +25,16 @@ export default new Router({
       redirect: '/findmusic/music',
       children: [
         {path: 'music', component: music},
-        {path: 'singer', component: singer},
+        {
+          path: 'singer',
+          component: singer,
+          children: [
+            {
+              path: ':id',
+              component: singerDetail
+            }
+          ]
+        },
         {path: 'rank', component: rank}
       ]
     },

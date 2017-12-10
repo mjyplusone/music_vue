@@ -1,6 +1,13 @@
 <template>
     <div class="rank">
-        rank
+        <p>rank</p>
+        <p>rank</p>
+        <p>rank</p>
+        <p>rank</p>
+        <p>rank</p>
+        <p>rank</p>
+        <p>rank</p>
+        <p>rank</p>
     </div>
 </template>
 

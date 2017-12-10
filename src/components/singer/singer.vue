@@ -6,7 +6,7 @@
                     <li v-for="category in normalizeSingerList" class="singer-category" ref="category">
                         <h2 class="category-title">{{ category.title }}</h2>
                         <ul>
-                            <li v-for="singer in category.items" class="singer-content">
+                            <li @click="selectSinger(singer)" v-for="singer in category.items" class="singer-content">
                                 <div class="avatar">
                                     <img width="54" height="54" v-lazy="singer.picUrl" alt="">
                                 </div>
@@ -28,7 +28,8 @@
         </div>
         <div class="loading-wrapper">
             <loading v-show="!normalizeSingerList.length"></loading>
-        </div>  
+        </div>
+        <router-view></router-view>
     </div>
 </template>
 
@@ -37,6 +38,7 @@
     import {ConvertPinyin} from 'common/js/pinyin.js';
     import scroll from 'base/scroll/scroll.vue';
     import loading from 'base/loading/loading.vue';
+    import {mapMutations} from 'vuex';
 
     const HOT_NAME = '热门';
     const ANCHOR_HEIGHT = 18;   // 右侧每个锚点的高度
@@ -186,7 +188,21 @@
                     height += list[i].clientHeight;
                     this.listHeight.push(height);
                 }
-            }
+            },
+            selectSinger (singer) {
+                this.$router.push({
+                    path: `/findmusic/singer/${singer.id}`
+                });
+                // commit mutation singer
+                this.setSinger(singer);
+            },
+            // // 不用语法糖的实际写法
+            // setSinger (singer) {
+            //     this.$store.commit('SET_SINGER', singer);
+            // },
+            ...mapMutations({
+                setSinger: 'SET_SINGER'
+            })
         },
         watch: {
             // watch normalizeSingerList的变化,延迟20ms,因为数据变化到dom变化有延时,dom渲染好才可以计算每个类别的list的高度
@@ -199,7 +215,6 @@
                 // fixtitle向上偏移量
                 let fixedTopOffset = 0;
                 if (newdiff > 0 && newdiff < FIXED_TITLE_HEIGHT) {
-                    fixedTopOffset = newdiff - FIXED_TITLE_HEIGHT;
                 }
                 // 只有变化时才修改，减少dom修改的频率
                 if (this.fixedTopOffset === fixedTopOffset) {

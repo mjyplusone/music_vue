@@ -11,3 +11,15 @@ export function getSinger () {
             console.log(error);
         });
 }
+
+export function getSingerDetail (singerid) {
+    const url = 'http://dgfd.lihulab.net/artists?id=' + singerid;
+
+    return axios.get(url)
+        .then((response) => {
+            return Promise.resolve(response.data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}

@@ -8,16 +8,55 @@
 
 <script type="text/ecmascript-6">
     import {mapGetters} from 'vuex';
+    import {getSingerDetail} from 'api/singer.js';
+    import {createSong} from 'common/js/song.js';
+    import musiclist from 'components/musiclist/musiclist.vue';
+
+    const SUCCESS_CODE = 200;
 
     export default {
+        data () {
+            return {
+                hotSongs: []
+            };
+        },
         created () {
             console.log(this.singer);
+            this._getSingerDetail();
         },
         computed: {
             ...mapGetters([
                 // 对应getters.js中singer
                 'singer'
             ])
+        },
+        methods: {
+            _getSingerDetail () {
+                if (!this.singer.id) {
+                    this.$router.push({
+                        path: '/findmusic/singer'
+                    });
+                }
+                getSingerDetail(this.singer.id).then((res) => {
+                    if (res.code === SUCCESS_CODE) {
+                        this.hotSongs = this._normalizeSongs(res.hotSongs);
+                        console.log(this.hotSongs);
+                    }
+                });
+            },
+            _normalizeSongs (hotsongs) {
+                let ret = [];
+                hotsongs.forEach((song) => {
+                    // songid必须要有
+                    if (song.id) {
+                        ret.push(createSong(song));
+                    }
+                });
+                return ret;
+            }
+        },
+        components: {
+            musiclist
         }
     };
 </script>

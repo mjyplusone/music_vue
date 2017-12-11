@@ -1,7 +1,7 @@
 <template>
     <transition name="slide">
         <div class="singer-detail">
-
+            <musicmenu :songs="hotSongs" :title="title" :bgimg="bgimg"></musicmenu>
         </div>
     </transition>
 </template>
@@ -10,7 +10,7 @@
     import {mapGetters} from 'vuex';
     import {getSingerDetail} from 'api/singer.js';
     import {createSong} from 'common/js/song.js';
-    import musiclist from 'components/musiclist/musiclist.vue';
+    import musicmenu from 'components/musicmenu/musicmenu.vue';
 
     const SUCCESS_CODE = 200;
 
@@ -25,6 +25,16 @@
             this._getSingerDetail();
         },
         computed: {
+            title () {
+                if (this.singer.alias.length !== 0) {
+                    return this.singer.name + '(' + this.singer.alias[0] + ')';
+                } else {
+                    return this.singer.name;
+                }
+            },
+            bgimg () {
+                return this.singer.picUrl;
+            },
             ...mapGetters([
                 // 对应getters.js中singer
                 'singer'
@@ -56,7 +66,7 @@
             }
         },
         components: {
-            musiclist
+            musicmenu
         }
     };
 </script>
@@ -69,7 +79,7 @@
         left: 0
         right: 0
         z-index: 100
-        background: lightblue
+        background: #ffffff
     .slide-enter-active, .slide-leave-acitve
         transition: all 0.3s
     .slide-enter, .slide-leave-to

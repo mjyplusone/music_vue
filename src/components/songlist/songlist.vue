@@ -15,7 +15,7 @@
                 <span class="num">{{ index + 1 }}</span>
                 <span class="songinfo border-1px">
                     <div class="left">
-                        <div class="name">{{ song.name }}</div>
+                        <div class="name"><span>{{ song.name }}</span></div>
                         <div class="album">{{ song.album }}</div>
                     </div>
                     <div class="playdetail"><i class="icon-playdetail"></i></div>
@@ -115,11 +115,22 @@
                 border-1px(rgba(7, 17, 27, 0.1), after, bottom)
                 .left
                     position: absolute
+                    left: 0
+                    right: 85px
+                    // background: red
                     .name
-                        margin-top: 11px
+                        margin-top: 9px
+                        line-height: 1.1
+                        white-space: nowrap
+                        text-overflow: ellipsis
+                        overflow: hidden
                         font-size: 14px
                     .album
-                        margin-top: 7px
+                        margin-top: 6px
+                        line-height: 1.2
+                        white-space: nowrap
+                        text-overflow: ellipsis
+                        overflow: hidden
                         font-size: 10px
                         color: #949496
                 .list-circle

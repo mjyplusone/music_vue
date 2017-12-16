@@ -32,7 +32,7 @@
         <!-- <div class="bg-layer" ref="bglayer"></div> -->
         <scroll @scrollPos="scrollPos" :data="songs" :probeType="probeType" :listenScroll="listenScroll" class="songlist-wrapper" ref="songlist">
             <div>
-                <songlist :songs="songs" :toolbarType="1"></songlist>
+                <songlist :songs="songs" :toolbarType="1" @selectsong="selectSong"></songlist>
                 <div class="bottom"></div>
             </div>
         </scroll>
@@ -46,6 +46,7 @@
     import songlist from 'components/songlist/songlist.vue';
     import scroll from 'base/scroll/scroll.vue';
     import loading from 'base/loading/loading.vue';
+    import {mapActions} from 'vuex';
 
     const TITLE_HEIGHT = 44;
     const LIST_TAB_HEIGHT = 40;
@@ -96,7 +97,16 @@
             },
             back () {
                 this.$router.back();
-            }
+            },
+            selectSong (song, index) {
+                this.selectPlay({
+                    song: this.songs,
+                    index: index
+                });
+            },
+            ...mapActions([
+                'selectPlay'
+            ])
         },
         watch: {
             scrollY (newY) {

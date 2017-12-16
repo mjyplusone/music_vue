@@ -28,6 +28,5 @@ function allSinger (ar) {
     ar.forEach((singer) => {
         allsinger.push(singer.name);
     });
-    allsinger.join('/');
-    return allsinger;
+    return allsinger.join('/');
 }

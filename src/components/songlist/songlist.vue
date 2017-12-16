@@ -11,7 +11,7 @@
                     <span class="text">多选</span>
                 </div>
             </li>
-            <li class="song-item" v-for="(song, index) in songs">
+            <li class="song-item" v-for="(song, index) in songs" @click="selectSong(song, index)">
                 <span class="num">{{ index + 1 }}</span>
                 <span class="songinfo border-1px">
                     <div class="left">
@@ -41,6 +41,9 @@
                 default: []
             }
         },
+        mounted () {
+            // window.addEventListener('touchmove', fn, { passive: false });
+        },
         computed: {
             toolbarLeftIcon () {
                 if (this.toolbarType === MUSIC_MENU_TYPE) {
@@ -55,6 +58,11 @@
                 } else if (this.toolbarType === SINGER_HOTSONG_LIST_TYPE) {
                     return '收藏热门50';
                 }
+            }
+        },
+        methods: {
+            selectSong (song, index) {
+                this.$emit('selectsong', song, index);
             }
         }
     };

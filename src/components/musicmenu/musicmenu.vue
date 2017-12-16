@@ -1,5 +1,8 @@
 <template>
     <div class="musicmenu">
+        <div class="topbg" ref="topbg"> 
+            <div class="topmask" ref="topmask"></div>
+        </div>
         <div class="top">
             <div class="back" @click="back">
                 <i class="icon-left"></i>
@@ -7,11 +10,13 @@
             <h1 class="title">{{ title }}</h1>
             <div class="music-on"></div>
         </div>
-        <!-- bgimg filter后,遮不住scroll,加上一个z-index为5的遮罩层,不影响bgimg,遮住scroll -->
+        <!-- bgimg filter后,遮不住scroll,加上一个z-index为5的遮罩层,不影响bgimg,同时遮住scroll -->
         <div class="bgmask"></div>
         <div class="bgimg" :style="bgStyle" ref="bgimg">
             <div class="mask" ref="mask"></div>
-            <div class="collect"><span class="add">+</span>&nbsp;&nbsp;收&nbsp;&nbsp;藏</div>
+        </div>
+        <div class="banner" ref="banner">
+            <div class="collect" ref="collect"><span class="add">+</span>&nbsp;&nbsp;收&nbsp;&nbsp;藏</div>
         </div>
         <div class="list-tab border-1px" ref="tab">
             <div class="tab-item active">
@@ -72,6 +77,13 @@
         mounted () {
             this.imgHeight = this.$refs.bgimg.clientHeight;
             this.$refs.songlist.$el.style.top = this.imgHeight + LIST_TAB_HEIGHT + 'px';
+            this.$refs.banner.style.height = this.imgHeight + 'px';
+
+            window.addEventListener('resize', () => {
+                this.imgHeight = this.$refs.bgimg.clientHeight;
+                this.$refs.songlist.$el.style.top = this.imgHeight + LIST_TAB_HEIGHT + 'px';
+                this.$refs.banner.style.height = this.imgHeight + 'px';
+            });
         },
         computed: {
             bgStyle () {
@@ -94,30 +106,32 @@
                 this.$refs.bgimg.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`;
                 this.$refs.tab.style['transform'] = `translate3d(0, ${translateY}px, 0)`;
                 this.$refs.tab.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`;
-                let blurSize = (translateY / this.minTranslateY) * 6;
+                let blurSize = (translateY / this.minTranslateY) * 3;
                 this.$refs.bgimg.style['filter'] = `blur(${blurSize}px)`;
-                let bgOpacity = (translateY / this.minTranslateY) * 0.5;
+                let bgOpacity = (translateY / this.minTranslateY) * 0.7;
                 this.$refs.mask.style['background'] = `rgba(0, 0, 0, ${bgOpacity})`;
+                // 根据bgimg设置top的背景,top背景的filter和透明度要和bgimg保持一致
+                // 只有向上滑动的时候会显示top层背景,用于遮住banner层
+                if (translateY < 0) {
+                    this.$refs.topbg.style['background-image'] = `url(${this.bgimg})`;
+                    this.$refs.topbg.style['background-position-y'] = translateY + 'px';
+                    this.$refs.topbg.style['filter'] = `blur(${blurSize}px)`;
+                    this.$refs.topmask.style['background'] = `rgba(0, 0, 0, ${bgOpacity})`;
+                } else {
+                    this.$refs.topbg.style['background'] = '';
+                }
+
+                this.$refs.banner.style['transform'] = `translate3d(0, ${translateY}px, 0)`;
+                this.$refs.banner.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`;
 
                 // 下拉图片放大
                 if (newY > 0) {
-                    let scale = 1 + Math.abs(newY / this.imgHeight);
+                    // 乘个2这样效果比较好,很奇怪。。。
+                    let scale = 1 + Math.abs((2 * newY) / this.imgHeight);
+                    // let scale = 1 + Math.abs(newY / this.imgHeight);
                     this.$refs.bgimg.style['transform'] = `scale(${scale})`;
                     this.$refs.bgimg.style['webkitTransform'] = `scale(${scale})`;
                 }
-                // this.$refs.bglayer.style['transform'] = `translate3d(0, ${translateY}px, 0)`;
-                // this.$refs.bglayer.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`;
-                // // 滚动超出范围,设置bgimg的高度 newY this.minTranslateY都是负的
-                // if (newY < this.minTranslateY) {
-                //     zIndex = 10;
-                //     this.$refs.bgimg.style.paddingTop = 0;
-                //     this.$refs.bgimg.style.height = TITLE_HEIGHT + 'px';
-                // } else {
-                //     // 滚动没超出范围,要重置
-                //     this.$refs.bgimg.style.paddingTop = '70%';
-                //     this.$refs.bgimg.style.height = 0;
-                // }
-                // this.$refs.bgimg.style.zIndex = zIndex;
             }
         },
         components: {
@@ -137,12 +151,24 @@
         bottom: 0
         left: 0
         right: 0
+        .topbg
+            position: absolute
+            height: 44px
+            width: 100%
+            background-size: 100%
+            background-position-y: 0
+            z-index: 20
+            .topmask
+                position: absolute
+                top: 0
+                bottom: 0
+                left: 0
+                right: 0
         .top
             position: absolute
             height: 44px
             width: 100%
             z-index: 20
-            // background: rgba(0, 0, 0, 0.2)
             .back
                 position: absolute
                 top: 11px
@@ -180,7 +206,6 @@
             height: 0
             padding-top: 70%
             background-size: 100%
-            // transform: scale(1.1)
             z-index: 10
             .mask
                 position: absolute
@@ -189,6 +214,12 @@
                 left: 0
                 right: 0
                 background: rgba(0, 0, 0, 0.1)
+        .banner
+            position: absolute
+            top: 0
+            height: 0
+            width: 100%
+            z-index: 10
             .collect
                 position: absolute
                 bottom: 14px

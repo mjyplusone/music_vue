@@ -80,8 +80,7 @@
         right: 0
         z-index: 100
         background: #ffffff
-    .slide-enter-active, .slide-leave-acitve
         transition: all 0.3s
-    .slide-enter, .slide-leave-to
-        transform: translate3d(100%, 0, 0)
+        &.slide-enter, &.slide-leave-to
+            transform: translate3d(100%, 0, 0)
 </style>

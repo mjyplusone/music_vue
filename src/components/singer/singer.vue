@@ -215,6 +215,7 @@
                 // fixtitle向上偏移量
                 let fixedTopOffset = 0;
                 if (newdiff > 0 && newdiff < FIXED_TITLE_HEIGHT) {
+                    fixedTopOffset = newdiff - FIXED_TITLE_HEIGHT;
                 }
                 // 只有变化时才修改，减少dom修改的频率
                 if (this.fixedTopOffset === fixedTopOffset) {

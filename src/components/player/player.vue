@@ -1,73 +1,153 @@
 <template>
-    <transition name="slide">
-        <!-- <div class="player" v-show="playList && playList.length > 0"> -->
-        <div class="player" v-show="playList && playList.length > 0 && fullScreen">
-            <div class="bg">
-                <img width="100%" height="100%" :src="currentSong.picUrl" alt="">
-            </div>
-            <div class="top">
-                <div class="back" @click="back">
-                    <i class="icon-left"></i>
+    <div class="play">
+        <transition name="slide">
+            <div class="normal-player" v-show="playList && playList.length > 0 && fullScreen">
+                <div class="bg">
+                    <img width="100%" height="100%" :src="currentSong.picUrl" alt="">
                 </div>
-                <div class="title">
-                    <h1 class="songname">{{ currentSong.name }}</h1>
-                    <h2 class="singername">{{ currentSong.singer }}</h2>
+                <div class="top">
+                    <div class="back" @click="back">
+                        <i class="icon-left"></i>
+                    </div>
+                    <div class="title">
+                        <h1 class="songname">{{ currentSong.name }}</h1>
+                        <h2 class="singername">{{ currentSong.singer }}</h2>
+                    </div>
+                    <div class="share">
+                        <i class="icon-share"></i>
+                    </div>
                 </div>
-                <div class="share">
-                    <i class="icon-share"></i>
-                </div>
-            </div>
-            <div class="middle">
-                <div class="cd-bg">
-                    <div class="cd-wrapper">
-                        <div class="cd">
-                            <img width="100%" height="100%" :src="currentSong.picUrl" alt="">
+                <div class="middle">
+                    <div class="stick" :class="stickRotate"></div>
+                    <div class="cd-bg">
+                        <div class="cd-wrapper" :class="cdRotate">
+                            <div class="cd">
+                                <img width="100%" height="100%" :src="currentSong.picUrl" alt="">
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="tool">
+                    <div class="icon"><i class="icon-like"></i></div>
+                    <div class="icon"><i class="icon-download"></i></div>
+                    <div class="icon"><i class="icon-msg"></i></div>
+                    <div class="icon"><i class="icon-list-circle-small"></i></div>
+                </div>
+                <div class="progress">
+                    <div class="dot-wrapper"></div>
+                    <span class="time time-l">00:00</span>
+                    <div class="progress-bar"></div>
+                    <span class="time time-r">03:35</span>
+                </div>
+                <div class="control">
+                    <div class="icon icon-1"><i class="icon-music-shunxu"></i></div>
+                    <div class="icon icon-2"><i class="icon-prevdetail" @click="preSong"></i></div>
+                    <div class="icon"><i :class="playIcon" @click="togglePlaying"></i></div>
+                    <div class="icon icon-2"><i class="icon-nextdetail" @click="nextSong"></i></div>
+                    <div class="icon icon-1"><i class="icon-list-music"></i></div>
+                </div>
             </div>
-            <div class="tool">
-                <div class="icon"><i class="icon-like"></i></div>
-                <div class="icon"><i class="icon-download"></i></div>
-                <div class="icon"><i class="icon-msg"></i></div>
-                <div class="icon"><i class="icon-list-circle-small"></i></div>
-            </div>
-            <div class="progress">
-                <div class="dot-wrapper"></div>
-                <span class="time time-l">00:00</span>
-                <div class="progress-bar"></div>
-                <span class="time time-r">03:35</span>
-            </div>
-            <div class="control">
-                <div class="icon icon-1"><i class="icon-music-shunxu"></i></div>
-                <div class="icon icon-2"><i class="icon-prevdetail"></i></div>
-                <div class="icon"><i class="icon-playdetail"></i></div>
-                <div class="icon icon-2"><i class="icon-nextdetail"></i></div>
-                <div class="icon icon-1"><i class="icon-list-music"></i></div>
-            </div>
-        </div>
-        <!-- </div> -->
-    </transition>
+        </transition>
+        <audio :src="currentSong.musicUrl" ref="audio" @canplay="ready" @error="error"></audio>
+    </div>
 </template>
 
 <script type="text/ecmascript-6">
     import {mapGetters, mapMutations} from 'vuex';
 
     export default {
+        data () {
+            return {
+                stickchange: '',
+                songReady: false
+            };
+        },
         computed: {
+            playIcon () {
+                return this.playing ? 'icon-pause-detail' : 'icon-playdetail';
+            },
+            cdRotate () {
+                return this.playing ? 'play' : 'play pause';
+            },
+            stickRotate () {
+                return this.stickchange + (this.playing ? ' playing' : ' pausing');
+            },
             ...mapGetters([
                 'fullScreen',
                 'playList',
-                'currentSong'
+                'currentSong',
+                'playing',
+                'currentIndex'
             ])
         },
         methods: {
             back () {
                 this.setFullScreen(false);
             },
+            togglePlaying () {
+                // 只有点击的时候才加上stick totate的动画效果
+                if (this.playing === true) {
+                    this.stickchange = 'pause';
+                } else {
+                    this.stickchange = 'play';
+                }
+                this.setPlaying(!this.playing);
+            },
             ...mapMutations({
-                setFullScreen: 'SET_FULLSCREEN'
-            })
+                setFullScreen: 'SET_FULLSCREEN',
+                setPlaying: 'SET_PLAYING',
+                setCurrentIndex: 'SET_CURRENTINDEX'
+            }),
+            nextSong () {
+                if (!this.songReady) {
+                    return;
+                }
+                let index = this.currentIndex + 1;
+                if (index === this.playList.length) {
+                    index = 0;
+                }
+                this.setCurrentIndex(index);
+                if (!this.playing) {
+                    this.togglePlaying();
+                }
+                this.songReady = false;
+            },
+            preSong () {
+                if (!this.songReady) {
+                    return;
+                }
+                let index = this.currentIndex - 1;
+                if (index === -1) {
+                    index = this.playList.length - 1;
+                }
+                this.setCurrentIndex(index);
+                if (!this.playing) {
+                    this.togglePlaying();
+                }
+                this.songReady = false;
+            },
+            ready () {
+                this.songReady = true;
+            },
+            error () {
+                this.songReady = true;
+            }
+        },
+        watch: {
+            currentSong () {
+                this.$nextTick(() => {
+                    this.$refs.audio.play();
+                });
+            },
+            playing (playingstate) {
+                this.$nextTick(() => {
+                    playingstate ? this.$refs.audio.play() : this.$refs.audio.pause();
+                });
+            },
+            // fullScreen变化将stickchange清空
+            fullScreen () {
+                this.stickchange = '';
+            }
         }
     };
 </script>
@@ -75,7 +155,7 @@
 <style lang="stylus" rel="stylesheet/stylus">
     @import "../../common/stylus/mixin.styl"
     
-    .player
+    .normal-player
         position: fixed
         top: 0
         bottom: 0
@@ -128,6 +208,28 @@
             position: relative
             height: 450px
             width: 100%
+            overflow: hidden
+            .stick
+                position: absolute
+                top: -17px
+                left: 0
+                width: 100%
+                height: 160px
+                background: url('../../common/image/stick.png') no-repeat
+                background-size: auto 160px
+                background-position: 50%
+                transform-origin: 50% 17px
+                z-index: 10
+                &.playing
+                    transform: rotate(0)
+                &.pausing
+                    transform: rotate(-30deg)
+                &.play
+                    animation: clockwise 1s
+                    animation-fill-mode: forwards   // 动画执行完保持最后的状态
+                &.pause
+                    animation: anticlockwise 1s
+                    animation-fill-mode: forwards
             .cd-bg
                 position: absolute
                 top: 78px
@@ -147,6 +249,10 @@
                     box-sizing: border-box
                     background: url('../../common/image/cd_wrapper.png')
                     background-size: 100%
+                    &.play
+                        animation: rotate 20s linear infinite
+                    &.pause
+                        animation-play-state: paused
                     .cd
                         width: 100%
                         height: 100%
@@ -193,7 +299,6 @@
             display: flex
             height: 46px
             width: 100%
-            // margin: 0 -10px
             .icon
                 flex: 1
                 text-align: center
@@ -204,4 +309,27 @@
                 font-size: 22px
             .icon-2
                 font-size: 35px
+    
+    // 旋转动画
+    @keyframes rotate
+        0%
+            transform: rotate(0)
+        100%
+            transform: rotate(360deg)
+    
+    @keyframes clockwise
+        0%
+            transform: rotate(-30deg)
+            transform-origin: 50% 17px
+        100%
+            transform: rotate(0)
+            transform-origin: 50% 17px
+    
+    @keyframes anticlockwise
+        0%
+            transform: rotate(0)
+            transform-origin: 50% 17px
+        100%
+            transform: rotate(-30deg)
+            transform-origin: 50% 17px
 </style>

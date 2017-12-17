@@ -8,7 +8,7 @@
                 <i class="icon-left"></i>
             </div>
             <h1 class="title">{{ title }}</h1>
-            <div class="music-on"></div>
+            <div class="music-on" :class="{'on': playing}" @click="openPlayer"></div>
         </div>
         <!-- bgimg filter后,遮不住scroll,加上一个z-index为5的遮罩层,不影响bgimg,同时遮住scroll -->
         <div class="bgmask"></div>
@@ -46,7 +46,7 @@
     import songlist from 'components/songlist/songlist.vue';
     import scroll from 'base/scroll/scroll.vue';
     import loading from 'base/loading/loading.vue';
-    import {mapActions} from 'vuex';
+    import {mapActions, mapMutations, mapGetters} from 'vuex';
 
     const TITLE_HEIGHT = 44;
     const LIST_TAB_HEIGHT = 40;
@@ -89,7 +89,10 @@
         computed: {
             bgStyle () {
                 return `background-image: url(${this.bgimg})`;
-            }
+            },
+            ...mapGetters([
+                'playing'
+            ])
         },
         methods: {
             scrollPos (pos) {
@@ -104,9 +107,15 @@
                     index: index
                 });
             },
+            openPlayer () {
+                this.setFullScreen(true);
+            },
             ...mapActions([
                 'selectPlay'
-            ])
+            ]),
+            ...mapMutations({
+                setFullScreen: 'SET_FULLSCREEN'
+            })
         },
         watch: {
             scrollY (newY) {
@@ -203,6 +212,9 @@
                 height: 22px
                 background: url("../../common/image/music.png")
                 background-size: 22px 22px
+                &.on
+                    background: url("../../common/image/music_on.gif")
+                    background-size: 22px 22px
         .bgmask
             position: absolute
             top: 0

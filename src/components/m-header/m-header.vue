@@ -4,11 +4,13 @@
         <div class="mymusic-more" v-show="tabType==='mymusic'">更多</div>
         <div class="search" v-show="tabType==='findmusic'"></div>
         <div class="subtitle" v-show="tabType==='mymusic' || tabType==='account' || tabType==='friends'">{{ title }}</div>
-        <div class="music-on"></div>
+        <div class="music-on" :class="{'on': playing}" @click="openPlayer"></div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
+    import {mapGetters, mapMutations} from 'vuex';
+
     export default {
         props: {
             tabType: {
@@ -19,6 +21,19 @@
                 type: String,
                 default: ''
             }
+        },
+        computed: {
+            ...mapGetters([
+                'playing'
+            ])
+        },
+        methods: {
+            openPlayer () {
+                this.setFullScreen(true);
+            },
+            ...mapMutations({
+                setFullScreen: 'SET_FULLSCREEN'
+            })
         }
     };
 </script>
@@ -68,5 +83,8 @@
             height: 24px
             background: url("../../common/image/music.png")
             background-size: 24px 24px
+            &.on
+                background: url("../../common/image/music_on.gif")
+                background-size: 24px 24px
 
 </style>

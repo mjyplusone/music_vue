@@ -33,11 +33,11 @@
                     <div class="icon"><i class="icon-msg"></i></div>
                     <div class="icon"><i class="icon-list-circle-small"></i></div>
                 </div>
-                <div class="progress">
+                <div class="progress-wrapper">
                     <div class="dot-wrapper"></div>
-                    <span class="time time-l">00:00</span>
-                    <div class="progress-bar"></div>
-                    <span class="time time-r">03:35</span>
+                    <span class="time time-l">{{ format(currentTime) }}</span>
+                    <m-progress></m-progress>
+                    <span class="time time-r">{{ format(allTime) }}</span>
                 </div>
                 <div class="control">
                     <div class="icon icon-1"><i class="icon-music-shunxu"></i></div>
@@ -48,18 +48,22 @@
                 </div>
             </div>
         </transition>
-        <audio :src="currentSong.musicUrl" ref="audio" @canplay="ready" @error="error"></audio>
+        <audio :src="currentSong.musicUrl" ref="audio" @canplay="ready" @error="error" @timeupdate="timeUpdate"></audio>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import {mapGetters, mapMutations} from 'vuex';
+    import MProgress from 'components/m-progress/m-progress.vue';
 
     export default {
         data () {
             return {
                 stickchange: '',
-                songReady: false
+                songReady: false,
+                currentTime: 0,
+                // 歌曲总时长
+                allTime: 0
             };
         },
         computed: {
@@ -128,9 +132,28 @@
             },
             ready () {
                 this.songReady = true;
+                // 获取歌曲总时长
+                this.allTime = this.$refs.audio.duration;
             },
             error () {
                 this.songReady = true;
+            },
+            timeUpdate (event) {
+                this.currentTime = event.target.currentTime;
+            },
+            format (interval) {
+                interval = Math.floor(interval);
+                const minute = this._padZero(Math.floor(interval / 60));
+                const second = this._padZero(interval % 60);
+                return `${minute}:${second}`;
+            },
+            _padZero (num) {
+                let len = num.toString().length;
+                while (len < 2) {
+                    num = '0' + num;
+                    len++;
+                }
+                return num;
             }
         },
         watch: {
@@ -148,6 +171,9 @@
             fullScreen () {
                 this.stickchange = '';
             }
+        },
+        components: {
+            MProgress
         }
     };
 </script>
@@ -206,7 +232,7 @@
                 color: #ffffff
         .middle
             position: relative
-            height: 450px
+            height: 67vh
             width: 100%
             overflow: hidden
             .stick
@@ -235,17 +261,17 @@
                 top: 78px
                 left: 50%
                 transform: translateX(-50%)
-                width: 307px
-                height: 307px
+                width: 82vw
+                height: 82vw
                 border-radius: 50%
-                padding: 9px
+                padding: 2.4vw
                 box-sizing: border-box
                 background: rgba(255, 255, 255, 0.1)
                 .cd-wrapper
                     width: 100%
                     height: 100%
                     border-radius: 50%
-                    padding: 47px
+                    padding: 12.5vw
                     box-sizing: border-box
                     background: url('../../common/image/cd_wrapper.png')
                     background-size: 100%
@@ -260,23 +286,23 @@
                         overflow: hidden
         .tool
             display: flex
-            height: 28px
+            height: 4.2vh
             width: 100%
-            padding: 0 35px
+            padding: 0 9.3vw
             box-sizing: border-box
             // background: yellow 
             .icon
                 flex: 1
                 text-align: center
-                line-height: 28px
-                font-size: 28px
+                line-height: 4.2vh
+                font-size: 4.2vh
                 color: #ffffff
-        .progress
+        .progress-wrapper
             position: relative
             margin-top: 3px
-            height: 55px
+            height: 8.2vh
             width: 100%
-            line-height: 55px
+            line-height: 8.2vh
             font-size: 0
             // background: lightblue
             .time
@@ -287,28 +313,28 @@
                 left: 12px
             .time-r
                 right: 12px
-            .progress-bar
-                position: absolute
-                top: 50%
-                left: 50%
-                transform: translate(-50%)
-                height: 2px
-                width: 268px
-                background: rgba(255, 255, 255, 0.2)
+            // .progress-bar
+            //     position: absolute
+            //     top: 50%
+            //     left: 50%
+            //     transform: translate(-50%)
+            //     height: 2px
+            //     width: 268px
+            //     background: rgba(255, 255, 255, 0.2)
         .control
             display: flex
-            height: 46px
+            height: 6.9vh
             width: 100%
             .icon
                 flex: 1
                 text-align: center
-                line-height: 46px
-                font-size: 46px
+                line-height: 6.9vh
+                font-size: 6.9vh
                 color: #ffffff  
             .icon-1
-                font-size: 22px
+                font-size: 3.3vh
             .icon-2
-                font-size: 35px
+                font-size: 5.2vh
     
     // 旋转动画
     @keyframes rotate

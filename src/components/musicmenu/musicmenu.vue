@@ -47,7 +47,9 @@
     import scroll from 'base/scroll/scroll.vue';
     import loading from 'base/loading/loading.vue';
     import {mapActions, mapMutations, mapGetters} from 'vuex';
+    import {prefixStyle} from 'common/js/dom.js';
 
+    const transform = prefixStyle('transform');
     const TITLE_HEIGHT = 44;
     const LIST_TAB_HEIGHT = 40;
 
@@ -121,10 +123,8 @@
             scrollY (newY) {
                 this.minTranslateY = -this.imgHeight + TITLE_HEIGHT;
                 let translateY = Math.max(this.minTranslateY, newY);
-                this.$refs.bgimg.style['transform'] = `translate3d(0, ${translateY}px, 0)`;
-                this.$refs.bgimg.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`;
-                this.$refs.tab.style['transform'] = `translate3d(0, ${translateY}px, 0)`;
-                this.$refs.tab.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`;
+                this.$refs.bgimg.style[transform] = `translate3d(0, ${translateY}px, 0)`;
+                this.$refs.tab.style[transform] = `translate3d(0, ${translateY}px, 0)`;
                 let blurSize = (translateY / this.minTranslateY) * 3;
                 this.$refs.bgimg.style['filter'] = `blur(${blurSize}px)`;
                 let bgOpacity = (translateY / this.minTranslateY) * 0.7;
@@ -140,16 +140,14 @@
                     this.$refs.topbg.style['background'] = '';
                 }
 
-                this.$refs.banner.style['transform'] = `translate3d(0, ${translateY}px, 0)`;
-                this.$refs.banner.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`;
+                this.$refs.banner.style[transform] = `translate3d(0, ${translateY}px, 0)`;
 
                 // 下拉图片放大
                 if (newY > 0) {
                     // 乘个2这样效果比较好,很奇怪。。。
                     let scale = 1 + Math.abs((2 * newY) / this.imgHeight);
                     // let scale = 1 + Math.abs(newY / this.imgHeight);
-                    this.$refs.bgimg.style['transform'] = `scale(${scale})`;
-                    this.$refs.bgimg.style['webkitTransform'] = `scale(${scale})`;
+                    this.$refs.bgimg.style[transform] = `scale(${scale})`;
                 }
             }
         },

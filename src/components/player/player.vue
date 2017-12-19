@@ -36,7 +36,7 @@
                 <div class="progress-wrapper">
                     <div class="dot-wrapper"></div>
                     <span class="time time-l">{{ format(currentTime) }}</span>
-                    <m-progress></m-progress>
+                    <m-progress :percent="percent" @percentChange="percentChange"></m-progress>
                     <span class="time time-r">{{ format(allTime) }}</span>
                 </div>
                 <div class="control">
@@ -75,6 +75,9 @@
             },
             stickRotate () {
                 return this.stickchange + (this.playing ? ' playing' : ' pausing');
+            },
+            percent () {
+                return this.currentTime / this.allTime;
             },
             ...mapGetters([
                 'fullScreen',
@@ -146,6 +149,12 @@
                 const minute = this._padZero(Math.floor(interval / 60));
                 const second = this._padZero(interval % 60);
                 return `${minute}:${second}`;
+            },
+            percentChange (percent) {
+                this.$refs.audio.currentTime = this.allTime * percent;
+                if (!this.playing) {
+                    this.togglePlaying();
+                }
             },
             _padZero (num) {
                 let len = num.toString().length;

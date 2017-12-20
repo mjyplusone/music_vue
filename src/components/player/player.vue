@@ -40,7 +40,7 @@
                     <span class="time time-r">{{ format(allTime) }}</span>
                 </div>
                 <div class="control">
-                    <div class="icon icon-1"><i class="icon-music-shunxu"></i></div>
+                    <div class="icon icon-1"><i :class="iconMode" @click="changeMode"></i></div>
                     <div class="icon icon-2"><i class="icon-prevdetail" @click="preSong"></i></div>
                     <div class="icon"><i :class="playIcon" @click="togglePlaying"></i></div>
                     <div class="icon icon-2"><i class="icon-nextdetail" @click="nextSong"></i></div>
@@ -48,13 +48,15 @@
                 </div>
             </div>
         </transition>
-        <audio :src="currentSong.musicUrl" ref="audio" @canplay="ready" @error="error" @timeupdate="timeUpdate"></audio>
+        <audio :src="currentSong.musicUrl" ref="audio" @canplay="ready" @error="error" @timeupdate="timeUpdate" @ended="end"></audio>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import {mapGetters, mapMutations} from 'vuex';
     import MProgress from 'components/m-progress/m-progress.vue';
+    import {playMode} from 'common/js/config.js';
+    import {shuffle} from 'common/js/util.js';
 
     export default {
         data () {
@@ -79,12 +81,23 @@
             percent () {
                 return this.currentTime / this.allTime;
             },
+            iconMode () {
+                if (this.mode === playMode.sequence) {
+                    return 'icon-music-shunxu';
+                } else if (this.mode === playMode.loop) {
+                    return 'icon-music-danqu1';
+                } else if (this.mode === playMode.random) {
+                    return 'icon-music-random';
+                }
+            },
             ...mapGetters([
                 'fullScreen',
                 'playList',
                 'currentSong',
                 'playing',
-                'currentIndex'
+                'currentIndex',
+                'mode',
+                'sequenceList'
             ])
         },
         methods: {
@@ -100,11 +113,6 @@
                 }
                 this.setPlaying(!this.playing);
             },
-            ...mapMutations({
-                setFullScreen: 'SET_FULLSCREEN',
-                setPlaying: 'SET_PLAYING',
-                setCurrentIndex: 'SET_CURRENTINDEX'
-            }),
             nextSong () {
                 if (!this.songReady) {
                     return;
@@ -133,6 +141,10 @@
                 }
                 this.songReady = false;
             },
+            loopSong () {
+                this.$refs.audio.currentTime = 0;
+                this.$refs.audio.play();
+            },
             ready () {
                 this.songReady = true;
                 // 获取歌曲总时长
@@ -140,6 +152,14 @@
             },
             error () {
                 this.songReady = true;
+            },
+            // 歌曲播放结束
+            end () {
+                if (this.mode === playMode.loop) {
+                    this.loopSong();
+                } else {
+                    this.nextSong();
+                }
             },
             timeUpdate (event) {
                 this.currentTime = event.target.currentTime;
@@ -156,6 +176,25 @@
                     this.togglePlaying();
                 }
             },
+            changeMode () {
+                const mode = (this.mode + 1) % 3;
+                this.setPlayMode(mode);
+                let list = [];
+                if (mode === playMode.random) {
+                    list = shuffle(this.sequenceList);
+                } else {
+                    list = this.sequenceList;
+                }
+                this.resetCurrentIndex(list);
+                this.setPlayList(list);
+            },
+            // 改变mode时,playList改变导致currentSong改变,所以在此之前重置currentIndex,使currentSong保持不变
+            resetCurrentIndex (playlist) {
+                let index = playlist.findIndex((item) => {
+                    return item.id === this.currentSong.id;
+                });
+                this.setCurrentIndex(index);
+            },
             _padZero (num) {
                 let len = num.toString().length;
                 while (len < 2) {
@@ -163,10 +202,20 @@
                     len++;
                 }
                 return num;
-            }
+            },
+            ...mapMutations({
+                setFullScreen: 'SET_FULLSCREEN',
+                setPlaying: 'SET_PLAYING',
+                setCurrentIndex: 'SET_CURRENTINDEX',
+                setPlayMode: 'SET_PLAYMODE',
+                setPlayList: 'SET_PLAYLIST'
+            })
         },
         watch: {
-            currentSong () {
+            currentSong (newsong, oldsong) {
+                if (newsong.id === oldsong.id) {
+                    return;
+                }
                 this.$nextTick(() => {
                     this.$refs.audio.play();
                 });

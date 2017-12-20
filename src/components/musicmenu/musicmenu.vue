@@ -103,6 +103,7 @@
             back () {
                 this.$router.back();
             },
+            // 向state提交此歌手的全部歌曲列表和当前点击歌曲的index
             selectSong (song, index) {
                 this.selectPlay({
                     song: this.songs,

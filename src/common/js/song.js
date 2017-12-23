@@ -1,3 +1,5 @@
+import {getLyrics} from 'api/song.js';
+
 export default class Song {
     constructor ({id, name, singer, album, picUrl, musicUrl}) {
         this.id = id;
@@ -6,6 +8,23 @@ export default class Song {
         this.album = album;
         this.picUrl = picUrl;
         this.musicUrl = musicUrl;
+    }
+    getLyrics () {
+        if (this.lyric) {
+            return Promise.resolve(this.lyric);
+        }
+
+        return new Promise((resolve, reject) => {
+            getLyrics(this.id).then((res) => {
+                if (res.code === 200) {
+                    this.lyric = res.lrc.lyric;
+                    resolve(this.lyric);
+                } else {
+                    // reject('no lyric');
+                    console.log('aha no lyric');
+                }
+            });
+        });
     }
 }
 

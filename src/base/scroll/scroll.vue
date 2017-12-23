@@ -35,6 +35,7 @@
         },
         methods: {
             _initScroll () {
+                // console.log(this.click);
                 if (!this.$refs.wrapper) {
                     return;
                 }

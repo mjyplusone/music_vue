@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export function getSinger () {
-    const url = 'http://dgfd.lihulab.net/top/artists';
+    const url = 'http://musicapi.leanapp.cn/top/artists';
 
     return axios.get(url)
         .then((response) => {
@@ -13,7 +13,7 @@ export function getSinger () {
 }
 
 export function getSingerDetail (singerid) {
-    const url = 'http://dgfd.lihulab.net/artists?id=' + singerid;
+    const url = 'http://musicapi.leanapp.cn/artists?id=' + singerid;
 
     return axios.get(url)
         .then((response) => {

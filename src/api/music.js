@@ -11,7 +11,7 @@ export function getRecommend () {
 }
 
 export function getRecommendMusicList () {
-    const url = 'http://dgfd.lihulab.net/personalized';
+    const url = 'http://musicapi.leanapp.cn/personalized';
 
     return axios.get(url)
       .then((response) => {

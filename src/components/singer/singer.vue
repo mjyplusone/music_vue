@@ -65,10 +65,10 @@
         },
         created () {
             // 延时1s测试loading
-            setTimeout(() => {
-                this._getSinger();
-            }, 1000);
-            // this._getSinger();
+            // setTimeout(() => {
+            //     this._getSinger();
+            // }, 1000);
+            this._getSinger();
         },
         computed: {
             shortcutList () {

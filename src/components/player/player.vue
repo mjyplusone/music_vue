@@ -18,20 +18,33 @@
                     </div>
                 </div>
                 <div class="middle">
-                    <div class="stick" :class="stickRotate"></div>
-                    <div class="cd-bg">
-                        <div class="cd-wrapper" :class="cdRotate">
-                            <div class="cd">
-                                <img width="100%" height="100%" :src="currentSong.picUrl" alt="">
+                    <transition name="fade">
+                    <div class="middle-cd" v-show="showCDPage" @click="togglePage">
+                        <div class="stick" :class="stickRotate"></div>
+                        <div class="cd-bg">
+                            <div class="cd-wrapper" :class="cdRotate">
+                                <div class="cd">
+                                    <img width="100%" height="100%" :src="currentSong.picUrl" alt="">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="tool">
-                    <div class="icon"><i class="icon-like"></i></div>
-                    <div class="icon"><i class="icon-download"></i></div>
-                    <div class="icon"><i class="icon-msg"></i></div>
-                    <div class="icon"><i class="icon-list-circle-small"></i></div>
+                    </transition>
+                    <transition name="fade">
+                        <div class="tool" v-show="showCDPage">
+                            <div class="icon"><i class="icon-like"></i></div>
+                            <div class="icon"><i class="icon-download"></i></div>
+                            <div class="icon"><i class="icon-msg"></i></div>
+                            <div class="icon"><i class="icon-list-circle-small"></i></div>
+                        </div>
+                    </transition>
+                    <div class="middle-lyric" v-if="parsedLyric" v-show="!showCDPage" @click="togglePage">
+                        <scroll class="lyric-wrapper" :data="parsedLyric && parsedLyric.lines" :click="false" ref="lyric">
+                            <div>
+                                <p ref="lyricLine" class="lyric-line" :class="{'current': currentLineNum === index}" v-for="(line, index) in parsedLyric.lines">{{ line.txt }}</p>
+                            </div>
+                        </scroll>
+                    </div>
                 </div>
                 <div class="progress-wrapper">
                     <div class="dot-wrapper"></div>
@@ -57,6 +70,9 @@
     import MProgress from 'components/m-progress/m-progress.vue';
     import {playMode} from 'common/js/config.js';
     import {shuffle} from 'common/js/util.js';
+    import Lyric from 'lyric-parser';
+    import scroll from 'base/scroll/scroll.vue';
+    // import {getLyrics} from 'api/song.js';
 
     export default {
         data () {
@@ -65,7 +81,13 @@
                 songReady: false,
                 currentTime: 0,
                 // 歌曲总时长
-                allTime: 0
+                allTime: 0,
+                // 解析后的歌词
+                parsedLyric: null,
+                // 当前歌词行
+                currentLineNum: 0,
+                // 当前显示界面
+                showCDPage: true
             };
         },
         computed: {
@@ -112,18 +134,25 @@
                     this.stickchange = 'play';
                 }
                 this.setPlaying(!this.playing);
+                if (this.parsedLyric) {
+                    this.parsedLyric.togglePlay();
+                }
             },
             nextSong () {
                 if (!this.songReady) {
                     return;
                 }
-                let index = this.currentIndex + 1;
-                if (index === this.playList.length) {
-                    index = 0;
-                }
-                this.setCurrentIndex(index);
-                if (!this.playing) {
-                    this.togglePlaying();
+                if (this.playList.length === 1) {
+                    this.loop();
+                } else {
+                    let index = this.currentIndex + 1;
+                    if (index === this.playList.length) {
+                        index = 0;
+                    }
+                    this.setCurrentIndex(index);
+                    if (!this.playing) {
+                        this.togglePlaying();
+                    }
                 }
                 this.songReady = false;
             },
@@ -131,19 +160,26 @@
                 if (!this.songReady) {
                     return;
                 }
-                let index = this.currentIndex - 1;
-                if (index === -1) {
-                    index = this.playList.length - 1;
-                }
-                this.setCurrentIndex(index);
-                if (!this.playing) {
-                    this.togglePlaying();
+                if (this.playList.length === 1) {
+                    this.loop();
+                } else {
+                    let index = this.currentIndex - 1;
+                    if (index === -1) {
+                        index = this.playList.length - 1;
+                    }
+                    this.setCurrentIndex(index);
+                    if (!this.playing) {
+                        this.togglePlaying();
+                    }
                 }
                 this.songReady = false;
             },
             loopSong () {
                 this.$refs.audio.currentTime = 0;
                 this.$refs.audio.play();
+                if (this.parsedLyric) {
+                    this.parsedLyric.seek(0);
+                }
             },
             ready () {
                 this.songReady = true;
@@ -171,9 +207,13 @@
                 return `${minute}:${second}`;
             },
             percentChange (percent) {
-                this.$refs.audio.currentTime = this.allTime * percent;
+                const currentTime = this.allTime * percent;
+                this.$refs.audio.currentTime = currentTime;
                 if (!this.playing) {
                     this.togglePlaying();
+                }
+                if (this.parsedLyric) {
+                    this.parsedLyric.seek(currentTime * 1000);
                 }
             },
             changeMode () {
@@ -194,6 +234,35 @@
                     return item.id === this.currentSong.id;
                 });
                 this.setCurrentIndex(index);
+            },
+            getLyric () {
+                this.currentSong.getLyrics().then((lyric) => {
+                    this.parsedLyric = new Lyric(lyric, this.handleLyric);
+                    if (this.playing) {
+                        this.parsedLyric.play();
+                    }
+                    console.log(this.parsedLyric);
+                }).catch((e) => {
+                    console.log(e);
+                    this.parsedLyric = null;
+                    this.currentLineNum = 0;
+                });
+            },
+            handleLyric ({lineNum, text}) {
+                this.currentLineNum = lineNum;
+                // 设置歌词中间行
+                let middleLine = 6;
+                if (lineNum > middleLine) {
+                    let scrollLine = this.$refs.lyricLine[lineNum - middleLine];
+                    this.$refs.lyric.scrollToElement(scrollLine, 1000);
+                } else {
+                    this.$refs.lyric.scrollTo(0, 0, 1000);
+                }
+            },
+            togglePage () {
+                this.showCDPage = !this.showCDPage;
+                // 将stickchange清空,这样切换cd和歌词,stick不会有改变的动画效果
+                this.stickchange = '';
             },
             _padZero (num) {
                 let len = num.toString().length;
@@ -216,9 +285,13 @@
                 if (newsong.id === oldsong.id) {
                     return;
                 }
-                this.$nextTick(() => {
+                if (this.parsedLyric) {
+                    this.parsedLyric.stop();
+                }
+                setTimeout(() => {
                     this.$refs.audio.play();
-                });
+                    this.getLyric();
+                }, 1000);
             },
             playing (playingstate) {
                 this.$nextTick(() => {
@@ -231,13 +304,16 @@
             }
         },
         components: {
-            MProgress
+            MProgress,
+            scroll
         }
     };
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
     @import "../../common/stylus/mixin.styl"
+
+    * { touch-action: none; } 
     
     .normal-player
         position: fixed
@@ -247,7 +323,7 @@
         right: 0
         z-index: 200   // singer-detail index 100   tab 150
         background: black
-        transition: all 0.3s
+        transition: all 0.3s linear
         &.slide-enter, &.slide-leave-to
             transform: translate3d(100%, 0, 0)
         .bg
@@ -290,71 +366,104 @@
                 color: #ffffff
         .middle
             position: relative
-            height: 67vh
+            height: 71.2vh
             width: 100%
             overflow: hidden
-            .stick
+            .middle-cd
                 position: absolute
-                top: -17px
-                left: 0
+                top: 0
                 width: 100%
-                height: 160px
-                background: url('../../common/image/stick.png') no-repeat
-                background-size: auto 160px
-                background-position: 50%
-                transform-origin: 50% 17px
-                z-index: 10
-                &.playing
-                    transform: rotate(0)
-                &.pausing
-                    transform: rotate(-30deg)
-                &.play
-                    animation: clockwise 1s
-                    animation-fill-mode: forwards   // 动画执行完保持最后的状态
-                &.pause
-                    animation: anticlockwise 1s
-                    animation-fill-mode: forwards
-            .cd-bg
-                position: absolute
-                top: 78px
-                left: 50%
-                transform: translateX(-50%)
-                width: 82vw
-                height: 82vw
-                border-radius: 50%
-                padding: 2.4vw
-                box-sizing: border-box
-                background: rgba(255, 255, 255, 0.1)
-                .cd-wrapper
+                height: 67vh
+                transition: all 0.7s
+                &.fade-enter, &.fade-leave-to
+                    opacity: 0
+                .stick
+                    position: absolute
+                    top: -17px
+                    left: 0
                     width: 100%
-                    height: 100%
-                    border-radius: 50%
-                    padding: 12.5vw
-                    box-sizing: border-box
-                    background: url('../../common/image/cd_wrapper.png')
-                    background-size: 100%
+                    height: 160px
+                    background: url('../../common/image/stick.png') no-repeat
+                    background-size: auto 160px
+                    background-position: 50%
+                    transform-origin: 50% 17px
+                    z-index: 10
+                    &.playing
+                        transform: rotate(0)
+                    &.pausing
+                        transform: rotate(-30deg)
                     &.play
-                        animation: rotate 20s linear infinite
+                        animation: clockwise 1s
+                        animation-fill-mode: forwards   // 动画执行完保持最后的状态
                     &.pause
-                        animation-play-state: paused
-                    .cd
+                        animation: anticlockwise 1s
+                        animation-fill-mode: forwards
+                .cd-bg
+                    position: absolute
+                    top: 78px
+                    left: 50%
+                    transform: translateX(-50%)
+                    width: 82vw
+                    height: 82vw
+                    border-radius: 50%
+                    padding: 2.4vw
+                    box-sizing: border-box
+                    background: rgba(255, 255, 255, 0.1)
+                    .cd-wrapper
                         width: 100%
                         height: 100%
                         border-radius: 50%
-                        overflow: hidden
-        .tool
-            display: flex
-            height: 4.2vh
-            width: 100%
-            padding: 0 9.3vw
-            box-sizing: border-box
-            // background: yellow 
-            .icon
-                flex: 1
-                text-align: center
-                line-height: 4.2vh
-                font-size: 4.2vh
-                color: #ffffff
+                        padding: 12.5vw
+                        box-sizing: border-box
+                        background: url('../../common/image/cd_wrapper.png')
+                        background-size: 100%
+                        &.play
+                            animation: rotate 20s linear infinite
+                        &.pause
+                            animation-play-state: paused
+                        .cd
+                            width: 100%
+                            height: 100%
+                            border-radius: 50%
+                            overflow: hidden
+            .tool
+                position: absolute
+                top: 67vh
+                display: flex
+                height: 4.2vh
+                width: 100%
+                padding: 0 9.3vw
+                box-sizing: border-box
+                // background: yellow 
+                transition: all 0.7s linear
+                &.fade-enter, &.fade-leave-to
+                    opacity: 0
+                .icon
+                    flex: 1
+                    text-align: center
+                    line-height: 4.2vh
+                    font-size: 4.2vh
+                    color: #ffffff
+            .middle-lyric
+                position: absolute
+                width: 100%
+                height: 100%
+                overflow: hidden
+                // background: red
+                .lyric-wrapper
+                    width: 80%
+                    height: 90%
+                    overflow: hidden
+                    margin: 30px auto
+                    text-align: center
+                    font-weight: 300
+                    // background: blue
+                    .lyric-line
+                        line-height: 32px
+                        font-size: 13px
+                        color: rgba(255, 255, 255, 0.4)
+                        &.current
+                            color: #ffffff
         .progress-wrapper
             position: relative
             margin-top: 3px

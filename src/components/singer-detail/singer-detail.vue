@@ -1,7 +1,7 @@
 <template>
     <transition name="slide">
         <div class="singer-detail">
-            <musicmenu :songs="hotSongs" :title="title" :bgimg="bgimg"></musicmenu>
+            <musicmenu :songs="hotSongs" :title="title" :bgimg="bgimg" :singerId="singerId" :singerName="singerName"></musicmenu>
         </div>
     </transition>
 </template>
@@ -25,6 +25,13 @@
             this._getSingerDetail();
         },
         computed: {
+            // singerId和singerName用于singerinfo路由
+            singerId () {
+                return this.singer.id;
+            },
+            singerName () {
+                return this.singer.name;
+            },
             title () {
                 if (this.singer.alias.length !== 0) {
                     return this.singer.name + '(' + this.singer.alias[0] + ')';

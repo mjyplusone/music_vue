@@ -76,6 +76,7 @@
             data () {
                 setTimeout(() => {
                     this.refresh();
+                    console.log('scroll refresh');
                 }, 20);
             }
         }

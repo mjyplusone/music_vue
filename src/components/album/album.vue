@@ -1,0 +1,78 @@
+<template>
+    <div class="album">
+        <ul>
+            <li v-for="album in hotAlbums" class="album-list">
+                <div class="pic">
+                    <img :src="album.picUrl" width="54" height="54" alt="">
+                </div>
+                <div class="content">
+                    <div class="album-name">{{ album.name }}</div>
+                    <div class="date-size">{{ album.publishTime }} {{ album.size }}首</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</template>
+
+<script type="text/ecmascript-6">
+    import {getSingerAlbum} from 'api/singer.js';
+    import {createAlbum} from 'common/js/album.js';
+
+    export default {
+        data () {
+            return {
+                hotAlbums: []
+            };
+        },
+        props: {
+            singerId: {
+                type: Number,
+                default: null
+            }
+        },
+        created () {
+            this._getSingerAlbum();
+        },
+        methods: {
+            _getSingerAlbum () {
+                getSingerAlbum(this.singerId).then((res) => {
+                    if (res.code === 200) {
+                        this.hotAlbums = this._normalizeAlbum(res.hotAlbums);
+                        this.$emit('albumRefresh', this.hotAlbums);
+                        console.log(this.hotAlbums);
+                    }
+                });
+            },
+            _normalizeAlbum (hotAlbums) {
+                let ret = [];
+                hotAlbums.forEach((album) => {
+                    ret.push(createAlbum(album));
+                });
+                return ret;
+            }
+        }
+    };
+</script>
+
+<style lang="stylus" rel="stylesheet/stylus">
+    .album
+        .album-list
+            display: flex
+            width: 100%
+            height: 60px
+            padding: 3px 6px
+            box-sizing: border-box
+            .pic
+                flex: 0 0 54px
+            .content
+                margin-left: 15px
+                .album-name
+                    margin-top: 10px
+                    line-height: 1
+                    font-size: 14px
+                .date-size
+                    margin-top: 10px
+                    line-height: 1
+                    font-size: 10px
+                    color: #949496
+</style>

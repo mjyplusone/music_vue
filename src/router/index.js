@@ -8,6 +8,9 @@ import music from 'components/music/music.vue';
 import singer from 'components/singer/singer.vue';
 import rank from 'components/rank/rank.vue';
 import singerDetail from 'components/singer-detail/singer-detail.vue';
+import songlist from 'components/songlist/songlist.vue';
+import singerinfo from 'components/singerinfo/singerinfo.vue';
+import album from 'components/album/album.vue';
 
 Vue.use(Router);
 
@@ -31,7 +34,13 @@ export default new Router({
           children: [
             {
               path: ':id',
-              component: singerDetail
+              component: singerDetail,
+              redirect: ':id/hotsong',
+              children: [
+                {path: 'hotsong', component: songlist},
+                {path: 'album', component: album},
+                {path: 'info', component: singerinfo}
+              ]
             }
           ]
         },

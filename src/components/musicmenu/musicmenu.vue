@@ -19,20 +19,27 @@
             <div class="collect" ref="collect"><span class="add">+</span>&nbsp;&nbsp;收&nbsp;&nbsp;藏</div>
         </div>
         <div class="list-tab border-1px" ref="tab">
-            <div class="tab-item active">
+            <div class="tab-item" :class="{'active': tabType === 0}" @click="selectHotsong">
                 <span>热门50</span>
             </div>
-            <div class="tab-item">
+            <div class="tab-item" :class="{'active': tabType === 1}" @click="selectAlbum">
                 <span>专辑</span>
             </div>
-            <div class="tab-item">
+            <div class="tab-item" :class="{'active': tabType === 2}" @click="selectInfo">
                 <span>歌手信息</span>
             </div>
         </div>
         <!-- <div class="bg-layer" ref="bglayer"></div> -->
-        <scroll @scrollPos="scrollPos" :data="songs" :probeType="probeType" :listenScroll="listenScroll" class="songlist-wrapper" ref="songlist">
+        <scroll @scrollPos="scrollPos" :data="scrollData" :probeType="probeType" :listenScroll="listenScroll" 
+                class="songlist-wrapper" ref="songlist">
             <div>
-                <songlist :songs="songs" :toolbarType="1" @selectsong="selectSong"></songlist>
+                <!-- <songlist :songs="songs" :toolbarType="1" @selectsong="selectSong"></songlist> -->
+                <keep-alive>
+                    <router-view :songs="songs" :toolbarType="1" @selectsong="selectSong" 
+                                 :singerId="singerId" :singerName="singerName" @infoRefresh="infoRefresh"
+                                 @albumRefresh="albumRefresh">
+                    </router-view>
+                </keep-alive>
                 <div class="bottom"></div>
             </div>
         </scroll>
@@ -43,7 +50,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import songlist from 'components/songlist/songlist.vue';
     import scroll from 'base/scroll/scroll.vue';
     import loading from 'base/loading/loading.vue';
     import {mapActions, mapMutations, mapGetters} from 'vuex';
@@ -55,6 +61,7 @@
 
     export default {
         props: {
+            // 用于hotsong路由
             songs: {
                 type: Array,
                 default: []
@@ -66,16 +73,30 @@
             bgimg: {
                 type: String,
                 default: ''
+            },
+            // 用于singerinfo路由
+            singerId: {
+                type: Number,
+                default: null
+            },
+            singerName: {
+                type: String,
+                default: ''
             }
         },
         data () {
             return {
-                scrollY: 0
+                scrollY: 0,
+                // 选择的tab
+                tabType: 0,
+                introduction: [],
+                hotAlbums: []
             };
         },
         created () {
             this.probeType = 3;
             this.listenScroll = true;
+            this.isActive = true;
         },
         mounted () {
             this.imgHeight = this.$refs.bgimg.clientHeight;
@@ -92,6 +113,15 @@
             bgStyle () {
                 return `background-image: url(${this.bgimg})`;
             },
+            scrollData () {
+                if (this.tabType === 0) {
+                    return this.songs;
+                } else if (this.tabType === 1) {
+                    return this.hotAlbums;
+                } else if (this.tabType === 2) {
+                    return this.introduction;
+                }
+            },
             ...mapGetters([
                 'playing'
             ])
@@ -101,7 +131,10 @@
                 this.scrollY = pos.y;
             },
             back () {
-                this.$router.back();
+                // this.$router.back();
+                this.$router.push({
+                    path: `/findmusic/singer`
+                });
             },
             // 向state提交此歌手的全部歌曲列表和当前点击歌曲的index
             selectSong (song, index) {
@@ -112,6 +145,30 @@
             },
             openPlayer () {
                 this.setFullScreen(true);
+            },
+            infoRefresh (introduction) {
+                this.introduction = introduction;
+            },
+            albumRefresh (hotAlbums) {
+                this.hotAlbums = hotAlbums;
+            },
+            selectHotsong () {
+                this.tabType = 0;
+                this.$router.push({
+                    path: '/findmusic/singer/this.singerId/hotsong'
+                });
+            },
+            selectAlbum () {
+                this.tabType = 1;
+                this.$router.push({
+                    path: '/findmusic/singer/this.singerId/album'
+                });
+            },
+            selectInfo () {
+                this.tabType = 2;
+                this.$router.push({
+                    path: '/findmusic/singer/this.singerId/info'
+                });
             },
             ...mapActions([
                 'selectPlay'
@@ -153,7 +210,6 @@
             }
         },
         components: {
-            songlist,
             scroll,
             loading
         }

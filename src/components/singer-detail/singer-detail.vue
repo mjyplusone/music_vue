@@ -1,7 +1,7 @@
 <template>
     <transition name="slide">
         <div class="singer-detail">
-            <musicmenu :songs="hotSongs" :title="title" :bgimg="bgimg" :singerId="singerId" :singerName="singerName"></musicmenu>
+            <singermenu :songs="hotSongs" :title="title" :bgimg="bgimg" :singerId="singerId" :singerName="singerName"></singermenu>
         </div>
     </transition>
 </template>
@@ -10,7 +10,7 @@
     import {mapGetters} from 'vuex';
     import {getSingerDetail} from 'api/singer.js';
     import {createSong} from 'common/js/song.js';
-    import musicmenu from 'components/musicmenu/musicmenu.vue';
+    import singermenu from 'components/singermenu/singermenu.vue';
 
     const SUCCESS_CODE = 200;
 
@@ -73,7 +73,7 @@
             }
         },
         components: {
-            musicmenu
+            singermenu
         }
     };
 </script>

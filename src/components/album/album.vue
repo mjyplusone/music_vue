@@ -55,6 +55,8 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+    @import "../../common/stylus/mixin.styl"
+
     .album
         .album-list
             display: flex
@@ -65,7 +67,9 @@
             .pic
                 flex: 0 0 54px
             .content
+                flex: 1
                 margin-left: 15px
+                border-1px(rgba(7, 17, 27, 0.1), after, bottom)
                 .album-name
                     margin-top: 10px
                     line-height: 1

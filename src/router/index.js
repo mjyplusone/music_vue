@@ -11,6 +11,7 @@ import singerDetail from 'components/singer-detail/singer-detail.vue';
 import songlist from 'components/songlist/songlist.vue';
 import singerinfo from 'components/singerinfo/singerinfo.vue';
 import album from 'components/album/album.vue';
+import musicmenu from 'components/musicmenu/musicmenu.vue';
 
 Vue.use(Router);
 
@@ -27,7 +28,13 @@ export default new Router({
       component: findmusic,
       redirect: '/findmusic/music',
       children: [
-        {path: 'music', component: music},
+        {
+          path: 'music',
+          component: music,
+          children: [
+            {path: 'musicmenu/:id', component: musicmenu}
+          ]
+        },
         {
           path: 'singer',
           component: singer,

@@ -52,7 +52,8 @@
                     </div>
                     <div class="content">
                         <ul>
-                            <li v-for="(item, index) in recommendList" v-if="index < 6" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}">
+                            <li v-for="(item, index) in recommendList" v-if="index < 6" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}"
+                                @click="selectMenu(item)">
                                 <div class="item-img">
                                     <img :width="MusicItemWidth" :height="MusicItemWidth" v-lazy="item.picUrl" alt="">
                                 </div>
@@ -86,6 +87,7 @@
                 <div class="bottom border-1px">发现更多有趣内容&nbsp;&nbsp;></div>
             </div>
         </scroll>
+        <router-view></router-view>
     </div>
 </template>
 
@@ -95,6 +97,7 @@
     import slider from 'base/slider/slider.vue';
     import scroll from 'base/scroll/scroll.vue';
     import loading from 'base/loading/loading.vue';
+    import {mapMutations} from 'vuex';
 
     export default {
         data () {
@@ -158,7 +161,16 @@
                     this.$refs.slider._setSliderWidth(true);
                     this.$refs.scroll.refresh();
                 }
-            }
+            },
+            selectMenu (menu) {
+                this.$router.push({
+                    path: `/findmusic/music/musicmenu/${menu.id}`
+                });
+                this.setMusicMenu(menu);
+            },
+            ...mapMutations({
+                setMusicMenu: 'SET_MUSICMENU'
+            })
         },
         components: {
             slider,

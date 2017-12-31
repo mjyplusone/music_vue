@@ -1,10 +1,10 @@
 <template>
     <div class="songlist">
         <ul>
-            <li class="toolbar border-1px">
+            <li class="toolbar border-1px" v-show="isShow">
                 <div class="left">
-                    <span class="icon"><i :class="toolbarLeftIcon"></i></span>
-                    <span class="text">{{ toolbarLeftText }}</span>
+                    <span class="icon"><i class="icon-add-project"></i></span>
+                    <span class="text">收藏热门50</span>
                 </div>
                 <div class="right">
                     <span class="icon"><i class="icon-list-music"></i></span>
@@ -16,7 +16,7 @@
                 <span class="songinfo border-1px">
                     <div class="left">
                         <div class="name"><span>{{ song.name }}</span></div>
-                        <div class="album">{{ song.album }}</div>
+                        <div class="album"><span v-show="!isShow">{{ song.singer }} - </span>{{ song.album }}</div>
                     </div>
                     <div class="playdetail"><i class="icon-playdetail"></i></div>
                     <div class="list-circle"><i class="icon-list-circle"></i></div>
@@ -45,20 +45,27 @@
             // window.addEventListener('touchmove', fn, { passive: false });
         },
         computed: {
-            toolbarLeftIcon () {
+            isShow () {
                 if (this.toolbarType === MUSIC_MENU_TYPE) {
-                    return 'icon-playdetail';
+                    return false;
                 } else if (this.toolbarType === SINGER_HOTSONG_LIST_TYPE) {
-                    return 'icon-add-project';
-                }
-            },
-            toolbarLeftText () {
-                if (this.toolbarType === MUSIC_MENU_TYPE) {
-                    return '播放全部';
-                } else if (this.toolbarType === SINGER_HOTSONG_LIST_TYPE) {
-                    return '收藏热门50';
+                    return true;
                 }
             }
+            // toolbarLeftIcon () {
+            //     if (this.toolbarType === MUSIC_MENU_TYPE) {
+            //         return 'icon-playdetail';
+            //     } else if (this.toolbarType === SINGER_HOTSONG_LIST_TYPE) {
+            //         return 'icon-add-project';
+            //     }
+            // },
+            // toolbarLeftText () {
+            //     if (this.toolbarType === MUSIC_MENU_TYPE) {
+            //         return '播放全部';
+            //     } else if (this.toolbarType === SINGER_HOTSONG_LIST_TYPE) {
+            //         return '收藏热门50';
+            //     }
+            // }
         },
         methods: {
             selectSong (song, index) {

@@ -22,3 +22,15 @@ export function getRecommendMusicList () {
           console.log(error);
       });
 }
+
+export function getMusicMenu (menuid) {
+    const url = 'http://musicapi.leanapp.cn/playlist/detail?id=' + menuid;
+
+    return axios.get(url)
+        .then((response) => {
+            return Promise.resolve(response.data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}

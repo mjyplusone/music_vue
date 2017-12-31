@@ -22,6 +22,9 @@ const mutations = {
     },
     [types.SET_CURRENTINDEX] (state, index) {
         state.currentIndex = index;
+    },
+    [types.SET_MUSICMENU] (state, musicmenu) {
+        state.musicmenu = musicmenu;
     }
 };
 

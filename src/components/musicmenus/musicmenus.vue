@@ -1,6 +1,6 @@
 <template>
 <transition name="slide">
-    <div class="rank">
+    <div class="musicmenus">
         <m-header :tabType="tabType" :title="title"></m-header>
     </div>
 </transition>
@@ -13,7 +13,7 @@
         data () {
             return {
                 tabType: 'back',
-                title: '排行榜'
+                title: '歌单'
             };
         },
         components: {
@@ -23,7 +23,7 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-    .rank
+    .musicmenus
         position: fixed   // 相对于视窗
         top: 0
         bottom: 0

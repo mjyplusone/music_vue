@@ -49,3 +49,14 @@ function allSinger (ar) {
     });
     return allsinger.join('/');
 }
+
+export function createRecommendSong (song) {
+    return new Song({
+        id: song.id,
+        name: song.name,
+        singer: allSinger(song.song.artists),
+        album: song.song.album.name,
+        picUrl: song.song.album.picUrl,
+        musicUrl: `http://music.163.com/song/media/outer/url?id=${song.id}.mp3`
+    });
+}

@@ -20,30 +20,30 @@
                             <span>私人FM</span>
                         </div> 
                     </div>
-                    <div class="navigator-item">
+                    <router-link to="/findmusic/music/recommend" tag="div" class="navigator-item">
                         <div class="navigator-img">
                             <i class="icon-text icon-date"></i>
                         </div>
                         <div class="navigator-text">
                             <span>每日推荐</span>
                         </div> 
-                    </div>
-                    <div class="navigator-item">
+                    </router-link>
+                    <router-link to="/findmusic/music/musicmenu" tag="div" class="navigator-item">
                         <div class="navigator-img">
                             <i class="icon-text icon-diantai"></i>
                         </div>
                         <div class="navigator-text">
                             <span>歌单</span>
                         </div> 
-                    </div>
-                    <div class="navigator-item">
+                    </router-link>
+                    <router-link to="/findmusic/music/rank" tag="div" class="navigator-item">
                         <div class="navigator-img">
                             <i class="icon-text icon-rank-list"></i>
                         </div>
                         <div class="navigator-text">
                             <span>排行榜</span>
                         </div> 
-                    </div> 
+                    </router-link> 
                 </div>
                 <div class="music-list" ref="list">
                     <div class="title">
@@ -72,7 +72,8 @@
                     </div>
                     <div class="content">
                         <ul>
-                            <li v-for="(item, index) in recommendList" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}">
+                            <li v-for="(item, index) in recommendList" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}"
+                                @click="selectMenu(item)">
                                 <div class="item-img">
                                     <img :width="MusicItemWidth" :height="MusicItemWidth" v-lazy="item.picUrl" alt="">
                                 </div>

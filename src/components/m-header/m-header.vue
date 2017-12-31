@@ -2,8 +2,11 @@
     <div class="m-header">
         <div class="speak" v-show="tabType==='findmusic'"></div>
         <div class="mymusic-more" v-show="tabType==='mymusic'">更多</div>
+        <div class="back icon-left" v-show="tabType==='back'" @click="back"></div>
+
         <div class="search" v-show="tabType==='findmusic'"></div>
-        <div class="subtitle" v-show="tabType==='mymusic' || tabType==='account' || tabType==='friends'">{{ title }}</div>
+        <div class="subtitle" v-show="tabType !=='findmusic'">{{ title }}</div>
+
         <div class="music-on" :class="{'on': playing}" @click="openPlayer"></div>
     </div>
 </template>
@@ -31,6 +34,11 @@
             openPlayer () {
                 this.setFullScreen(true);
             },
+            back () {
+                this.$router.push({
+                    path: '/findmusic/music'
+                });
+            },
             ...mapMutations({
                 setFullScreen: 'SET_FULLSCREEN'
             })
@@ -46,6 +54,7 @@
         background: #d43c33
         font-size: 16px
         color: #ffffff
+        z-index: 20
         .speak
             position: absolute
             left: 12px
@@ -59,6 +68,11 @@
             left: 12px
             top: 50%
             transform: translateY(-50%)
+        .back
+            position: absolute
+            left: 12px
+            top: 10px
+            font-size: 24px
         .search
             position: absolute
             left: 50%

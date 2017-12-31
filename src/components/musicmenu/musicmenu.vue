@@ -65,7 +65,7 @@
         <scroll @scrollPos="scrollPos" :data="menuSongs" :probeType="probeType" :listenScroll="listenScroll" 
                 class="songlist-wrapper" ref="songlist">
             <div>
-                <songlist :songs="menuSongs" :toolbarType="0" @selectsong="selectSong" ></songlist>
+                <songlist :songs="menuSongs" :toolbarType="0" @selectsong="selectSong"></songlist>
                 <div class="bottom"></div>
             </div>
         </scroll>

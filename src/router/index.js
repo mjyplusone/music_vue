@@ -6,12 +6,14 @@ import friends from 'components/friends/friends.vue';
 import account from 'components/account/account.vue';
 import music from 'components/music/music.vue';
 import singer from 'components/singer/singer.vue';
-import rank from 'components/rank/rank.vue';
 import singerDetail from 'components/singer-detail/singer-detail.vue';
 import songlist from 'components/songlist/songlist.vue';
 import singerinfo from 'components/singerinfo/singerinfo.vue';
 import album from 'components/album/album.vue';
 import musicmenu from 'components/musicmenu/musicmenu.vue';
+import dailyrecommend from 'components/dailyrecommend/dailyrecommend.vue';
+import musicmenus from 'components/musicmenus/musicmenus.vue';
+import rank from 'components/rank/rank.vue';
 
 Vue.use(Router);
 
@@ -32,6 +34,9 @@ export default new Router({
           path: 'music',
           component: music,
           children: [
+            {path: 'recommend', component: dailyrecommend},
+            {path: 'musicmenu', component: musicmenus},
+            {path: 'rank', component: rank},
             {path: 'musicmenu/:id', component: musicmenu}
           ]
         },

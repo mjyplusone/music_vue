@@ -35,9 +35,15 @@ export default new Router({
           component: music,
           children: [
             {path: 'recommend', component: dailyrecommend},
-            {path: 'musicmenu', component: musicmenus},
-            {path: 'rank', component: rank},
-            {path: 'musicmenu/:id', component: musicmenu}
+            {path: 'musicmenu/:id', component: musicmenu},
+            {
+              path: 'musicmenus',
+              component: musicmenus,
+              children: [
+                {path: ':id', component: musicmenu}
+              ]
+            },
+            {path: 'rank', component: rank}
           ]
         },
         {

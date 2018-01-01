@@ -10,6 +10,7 @@ export function getRecommend () {
     return jsonp(url, data, options);
 }
 
+// 推荐歌单
 export function getRecommendMusicList () {
     const url = 'http://musicapi.leanapp.cn/personalized';
 
@@ -21,6 +22,32 @@ export function getRecommendMusicList () {
       .catch((error) => {
           console.log(error);
       });
+}
+
+// 歌单
+export function getMusicMenuList () {
+    const url = 'http://musicapi.leanapp.cn/top/playlist';
+
+    return axios.get(url)
+        .then((response) => {
+            return Promise.resolve(response.data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
+// 精品歌单
+export function getTopMusicMenuList () {
+    const url = 'http://musicapi.leanapp.cn/top/playlist/highquality';
+
+    return axios.get(url)
+    .then((response) => {
+        return Promise.resolve(response.data);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
 }
 
 export function getMusicMenu (menuid) {

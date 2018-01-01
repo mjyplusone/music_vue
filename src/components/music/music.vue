@@ -28,7 +28,7 @@
                             <span>每日推荐</span>
                         </div> 
                     </router-link>
-                    <router-link to="/findmusic/music/musicmenu" tag="div" class="navigator-item">
+                    <router-link to="/findmusic/music/musicmenus" tag="div" class="navigator-item">
                         <div class="navigator-img">
                             <i class="icon-text icon-diantai"></i>
                         </div>
@@ -88,12 +88,12 @@
                 <div class="bottom border-1px">发现更多有趣内容&nbsp;&nbsp;></div>
             </div>
         </scroll>
-        <router-view></router-view>
+        <router-view :banner="topMenuBanner"></router-view>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
-    import {getRecommend, getRecommendMusicList} from 'api/music.js';
+    import {getRecommend, getRecommendMusicList, getTopMusicMenuList} from 'api/music.js';
     import {ERR_OK} from 'api/config';
     import slider from 'base/slider/slider.vue';
     import scroll from 'base/scroll/scroll.vue';
@@ -106,7 +106,8 @@
                 recommends: [],
                 recommendList: [],
                 // 每个music-item的宽度
-                MusicItemWidth: ''
+                MusicItemWidth: '',
+                topMenuBanner: {}  // 精品歌单,传入歌单router的封面信息
             };
         },
         created () {
@@ -115,6 +116,7 @@
             // setTimeout(() => {
             this._getRecommendMusicList();
             // }, 1000);
+            this._getTopMusicMenuList();
         },
         mounted () {
             // 计算每个music-item的宽度
@@ -138,6 +140,19 @@
                     this.recommendList = res.result;
                     console.log(res);
                     console.log(this.recommendList);
+                });
+            },
+            // 精品歌单
+            _getTopMusicMenuList () {
+                getTopMusicMenuList().then((res) => {
+                    if (res.code === 200) {
+                        console.log(res);
+                        // banner 信息
+                        this.topMenuBanner.picUrl = res.playlists[0].coverImgUrl;
+                        console.log(this.topMenuBanner.picUrl);
+                        this.topMenuBanner.name = res.playlists[0].name;
+                        this.topMenuBanner.copywriter = res.playlists[0].copywriter;
+                    }
                 });
             },
             _getMusicItemWidth () {

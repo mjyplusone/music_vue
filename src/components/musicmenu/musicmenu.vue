@@ -23,7 +23,7 @@
         <div class="banner" ref="banner">
             <div class="info">
                 <div class="left">
-                    <img :src="this.musicmenu.picUrl" width="100%" height="100%" alt="" ref="bannerImg">
+                    <img :src="this.banner.picUrl" width="100%" height="100%" alt="" ref="bannerImg">
                 </div>
                 <div class="right">
                     <div class="title">{{ musicmenu.name }}</div>
@@ -130,6 +130,7 @@
                         this.menuSongs = this._normalizeSongs(res.playlist.tracks);
                         console.log(this.menuSongs);
                         // banner上所需要的信息
+                        this.banner.picUrl = res.playlist.coverImgUrl;
                         this.banner.authorName = res.playlist.creator.nickname;
                         this.banner.authorAvatar = res.playlist.creator.avatarUrl;
                         this.banner.commentCount = res.playlist.commentCount;
@@ -340,7 +341,7 @@
                 box-sizing: border-box
                 display: flex
                 .left
-                    display: 0 0 142px
+                    flex: 0 0 142px
                 .right
                     flex: 1
                     margin-left: 17px

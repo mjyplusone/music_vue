@@ -2,7 +2,7 @@
 <transition name="slide">
     <div class="musicmenus" ref="musicmenus">
         <m-header :tabType="tabType" :title="title"></m-header>
-        <scroll :data="musicMenuList" class="musicmenulist">
+        <scroll :data="filterMenuList" class="musicmenulist">
             <div>
                 <div class="banner" :style="bgStyle" ref="banner">
                 </div>
@@ -22,16 +22,17 @@
                     </div>
                 </div>
                 <div class="filter">
-                    <div class="category">全部歌单</div>
+                    <div class="category">{{ categoryName }}</div>
                     <div class="tag">
-                        <div class="tag-item">华语</div>
-                        <div class="tag-item">民谣</div>
-                        <div class="tag-item">影视原声</div>
+                        <div class="tag-item" @click="changeCategory(0)">全部</div>
+                        <div class="tag-item" @click="changeCategory(1)">华语</div>
+                        <div class="tag-item" @click="changeCategory(2)">民谣</div>
+                        <div class="tag-item" @click="changeCategory(3)">影视原声</div>
                     </div>
                 </div>
                 <div class="menulist">
                     <ul>
-                        <li v-for="(item, index) in musicMenuList" class="menu-item" :style="{width: menuItemWidth, marginRight: menuItemMargin(index)}"
+                        <li v-for="(item, index) in filterMenuList" class="menu-item" :style="{width: menuItemWidth, marginRight: menuItemMargin(index)}"
                             @click="selectMenu(item)">
                             <div class="item-img">
                                 <img :width="menuItemWidth" :height="menuItemWidth" v-lazy="item.coverImgUrl" alt="">
@@ -42,7 +43,7 @@
                         </li>
                     </ul>
                 </div>
-                <loading v-show="!musicMenuList.length"></loading>
+                <loading v-show="!filterMenuList.length"></loading>
                 <div class="bottom"></div>
             </div>
         </scroll>
@@ -58,13 +59,20 @@
     import scroll from 'base/scroll/scroll.vue';
     import {mapMutations} from 'vuex';
 
+    const categoryAll = 0;
+    const categoryHuayu = 1;
+    const categoryMinyao = 2;
+    const categoryYingshi = 3;
+
     export default {
         data () {
             return {
                 tabType: 'back',
                 title: '歌单',
-                musicMenuList: [],
-                menuItemWidth: ''  // 每个menu-item的宽高
+                musicMenuList: [],  // 歌单列表
+                menuItemWidth: '',  // 每个menu-item的宽高
+                categoryName: '全部歌单',  // 类别名称
+                currentCategory: 0  // 当前类别
             };
         },
         props: {
@@ -101,6 +109,18 @@
             bgStyle () {
                 console.log(this.banner);
                 return `background-image: url(${this.banner.picUrl})`;
+            },
+            // 过滤后的歌单列表
+            filterMenuList () {
+                if (this.currentCategory === categoryAll) {
+                    return this.musicMenuList;
+                } else if (this.currentCategory === categoryHuayu) {
+                    return this.filterMenu(this.musicMenuList, '华语');
+                } else if (this.currentCategory === categoryMinyao) {
+                    return this.filterMenu(this.musicMenuList, '民谣');
+                } else if (this.currentCategory === categoryYingshi) {
+                    return this.filterMenu(this.musicMenuList, '影视原声');
+                }
             }
         },
         methods: {
@@ -143,6 +163,27 @@
                     path: `/findmusic/music/musicmenus/${menu.id}`
                 });
                 this.setMusicMenu(menu);
+            },
+            changeCategory (category) {
+                this.currentCategory = category;
+                if (category === categoryAll) {
+                    this.categoryName = '全部歌单';
+                } else if (category === categoryHuayu) {
+                    this.categoryName = '华语';
+                } else if (category === categoryMinyao) {
+                    this.categoryName = '民谣';
+                } else if (category === categoryYingshi) {
+                    this.categoryName = '影视原声';
+                }
+            },
+            filterMenu (menu, category) {
+                let ret = [];
+                menu.forEach((item) => {
+                    if (item.tags.indexOf(category) !== -1) {
+                        ret.push(item);
+                    }
+                });
+                return ret;
             },
             ...mapMutations({
                 setMusicMenu: 'SET_MUSICMENU'
@@ -233,7 +274,7 @@
                 .tag
                     position: absolute
                     right: 10px
-                    width: 170px
+                    width: 210px
                     display: flex
                     .tag-item
                         flex: 1

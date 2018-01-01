@@ -46,7 +46,7 @@
                     </router-link> 
                 </div>
                 <div class="music-list" ref="list">
-                    <div class="title">
+                    <div class="title" @click="selectMusicMenus">
                         <span>推荐歌单</span>
                         <i class="icon-right"></i>
                     </div>
@@ -66,7 +66,7 @@
                 </div>
                 <loading v-show="!recommendList.length"></loading>
                 <div class="music-list">
-                    <div class="title">
+                    <div class="title" @click="selectMusicMenus">
                         <span>最新音乐</span>
                         <i class="icon-right"></i>
                     </div>
@@ -183,6 +183,11 @@
                     path: `/findmusic/music/musicmenu/${menu.id}`
                 });
                 this.setMusicMenu(menu);
+            },
+            selectMusicMenus () {
+                this.$router.push({
+                    path: '/findmusic/music/musicmenus'
+                });
             },
             ...mapMutations({
                 setMusicMenu: 'SET_MUSICMENU'

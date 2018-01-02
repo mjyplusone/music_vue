@@ -1,20 +1,30 @@
 <template>
-    <div class="m-header">
+    <div class="m-header" ref="header">
         <div class="speak" v-show="tabType==='findmusic'"></div>
         <div class="mymusic-more" v-show="tabType==='mymusic'">更多</div>
         <div class="back icon-left" v-show="tabType==='back'" @click="back"></div>
 
-        <div class="search" v-show="tabType==='findmusic'"></div>
+        <div class="search" v-show="tabType==='findmusic'" ref="search" :class="{'focus': isFocus}">
+            <input type="text" @focus="focusInput" @blur="blurInput">
+        </div>
         <div class="subtitle" v-show="tabType !=='findmusic'">{{ title }}</div>
 
         <div class="music-on" :class="{'on': playing}" @click="openPlayer"></div>
+        <div class="cancel" v-show="isFocus">取消</div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import {mapGetters, mapMutations} from 'vuex';
 
+    // const originSearchWidth = 268;
+
     export default {
+        data () {
+            return {
+                isFocus: false
+            };
+        },
         props: {
             tabType: {
                 type: String,
@@ -38,6 +48,14 @@
                 this.$router.push({
                     path: '/findmusic/music'
                 });
+            },
+            focusInput () {
+                console.log('focus');
+                this.isFocus = true;
+            },
+            blurInput () {
+                console.log('blur');
+                this.isFocus = false;
             },
             ...mapMutations({
                 setFullScreen: 'SET_FULLSCREEN'
@@ -75,15 +93,28 @@
             font-size: 24px
         .search
             position: absolute
-            left: 50%
+            right: 50%
             top: 50%
-            transform: translate(-50%, -50%)
-            width: 268px
+            transform: translate(35.7vw, -50%)
+            width: 71.4vw  // 相对于屏幕布局
             height: 30px
             border-radius: 15px
             background: #ffffff
+            overflow: hidden
+            transition: width 0.3s linear
             @media only screen and (max-width: 320px)
                 width: 220px
+            &.focus
+                width: 83vw
+                transform: translate(35.7vw, -50%)
+                transition: width 0.3s linear
+                @media only screen and (min-width: 500px)
+                    width: 71.4vw
+            input
+                width: 100%
+                height: 100%
+                padding: 0 20px
+                box-sizing: border-box
         .subtitle
             position: absolute
             left: 50%
@@ -100,5 +131,13 @@
             &.on
                 background: url("../../common/image/music_on.gif")
                 background-size: 24px 24px
-
+        .cancel
+            position: absolute
+            right: 10px
+            top: 10px
+            width: 30px
+            height: 24px
+            line-height: 24px
+            background: #d43c33
+            font-size: 14px
 </style>

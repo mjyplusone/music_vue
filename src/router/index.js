@@ -43,7 +43,13 @@ export default new Router({
                 {path: ':id', component: musicmenu}
               ]
             },
-            {path: 'rank', component: rank}
+            {
+              path: 'rank',
+              component: rank,
+              children: [
+                {path: ':id', component: musicmenu}
+              ]
+            }
           ]
         },
         {

@@ -10,10 +10,10 @@
             <div class="back" @click="back">
                 <i class="icon-left"></i>
             </div>
-            <h1 class="title-horse" v-show="!showHorse">{{ title }}</h1>
+            <h1 class="title-horse" v-show="!showHorse">{{ menuTitle }}</h1>
             <div class="title-horse" v-show="showHorse">
-                <span class="title">{{ title }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <span class="title">{{ title }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="title">{{ menuTitle }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="title">{{ menuTitle }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
             </div>
             <div class="music-on" :class="{'on': playing}" @click="openPlayer"></div>
         </div>
@@ -25,7 +25,7 @@
                 <div class="left">
                     <img :src="this.banner.picUrl" width="100%" height="100%" alt="" ref="bannerImg">
                 </div>
-                <div class="right">
+                <div class="right" v-show="showMenuInfo">
                     <div class="title">{{ musicmenu.name }}</div>
                     <div class="author">
                         <div class="avatar"><img :src="banner.authorAvatar" width="30" height="30" alt=""></div>
@@ -96,9 +96,19 @@
             return {
                 menuSongs: [],
                 scrollY: 0,
-                title: '歌单',
-                showHorse: false  // 走马灯标志位
+                showHorse: false,  // 走马灯标志位
+                menuTitle: this.title  // 单项数据流,不能直接改变props传过来的值
             };
+        },
+        props: {
+            title: {
+                type: String,
+                default: '歌单'
+            },
+            showMenuInfo: {
+                type: Boolean,
+                default: true
+            }
         },
         created () {
             this._getMusicMenu();
@@ -149,10 +159,10 @@
                 return ret;
             },
             back () {
-                // this.$router.back();
-                this.$router.push({
-                    path: '/findmusic/music'
-                });
+                this.$router.back();
+                // this.$router.push({
+                //     path: '/findmusic/music'
+                // });
             },
             openPlayer () {
                 this.setFullScreen(true);
@@ -203,10 +213,13 @@
 
                 // 滚到一定位置,歌单标题改变,且改变走马灯标志位
                 if (newY <= -this.imgHeight / 2) {
-                    this.title = this.musicmenu.name;
-                    this.showHorse = true;
+                    this.menuTitle = this.musicmenu.name;
+                    // ranklist时不启用走马灯
+                    if (this.showMenuInfo === true) {
+                        this.showHorse = true;
+                    }
                 } else {
-                    this.title = '歌单';
+                    this.menuTitle = '歌单';
                     this.showHorse = false;
                 }
             }

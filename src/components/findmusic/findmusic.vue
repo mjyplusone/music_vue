@@ -1,6 +1,6 @@
 <template>
     <div class="findmusic">
-        <m-header :tabType="tabType"></m-header>
+        <m-header :tabType="tabType" @gosearch="gosearch" @outsearch="outsearch"></m-header>
         <div class="musictab">
             <router-link to="/findmusic/music" tag="div" class="subtab-item"><span>音乐</span></router-link>
             <router-link to="/findmusic/singer" tag="div" class="subtab-item"><span>歌手</span></router-link>
@@ -20,6 +20,16 @@
             return {
                 tabType: 'findmusic'
             };
+        },
+        methods: {
+            gosearch () {
+                this.$router.push({
+                    path: '/findmusic/search'
+                });
+            },
+            outsearch () {
+                this.$router.back();
+            }
         },
         components: {
             MHeader

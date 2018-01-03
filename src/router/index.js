@@ -14,6 +14,7 @@ import musicmenu from 'components/musicmenu/musicmenu.vue';
 import dailyrecommend from 'components/dailyrecommend/dailyrecommend.vue';
 import musicmenus from 'components/musicmenus/musicmenus.vue';
 import rank from 'components/rank/rank.vue';
+import search from 'components/search/search.vue';
 
 Vue.use(Router);
 
@@ -68,7 +69,8 @@ export default new Router({
             }
           ]
         },
-        {path: 'rank', component: rank}
+        {path: 'rank', component: rank},
+        {path: 'search', component: search}
       ]
     },
     {

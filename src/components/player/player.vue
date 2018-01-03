@@ -38,12 +38,15 @@
                             <div class="icon"><i class="icon-list-circle-small"></i></div>
                         </div>
                     </transition>
-                    <div class="middle-lyric" v-if="parsedLyric" v-show="!showCDPage" @click="togglePage">
+                    <div class="middle-lyric" v-show="!showCDPage" @click="togglePage">
+                        <!-- v-if写在middle-lyric层会导致获取不到歌词时,也无法再次togglePage到cd界面 -->
+                        <div v-if="parsedLyric">
                         <scroll class="lyric-wrapper" :data="parsedLyric && parsedLyric.lines" :click="false" ref="lyric">
                             <div>
                                 <p ref="lyricLine" class="lyric-line" :class="{'current': currentLineNum === index}" v-for="(line, index) in parsedLyric.lines">{{ line.txt }}</p>
                             </div>
                         </scroll>
+                        </div>
                     </div>
                 </div>
                 <div class="progress-wrapper">
@@ -263,6 +266,7 @@
                 this.showCDPage = !this.showCDPage;
                 // 将stickchange清空,这样切换cd和歌词,stick不会有改变的动画效果
                 this.stickchange = '';
+                console.log(this.showCDPage);
             },
             _padZero (num) {
                 let len = num.toString().length;

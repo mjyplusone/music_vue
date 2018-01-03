@@ -5,12 +5,13 @@
         <div class="back icon-left" v-show="tabType==='back'" @click="back"></div>
 
         <div class="search" v-show="tabType==='findmusic'" ref="search" :class="{'focus': isFocus}">
-            <input type="text" @focus="focusInput" @blur="blurInput">
+            <input type="text" @focus="focusInput" :placeholder="placeholder" v-model="query">
+            <i class="icon-close" v-show="query" @click="clear"></i>
         </div>
         <div class="subtitle" v-show="tabType !=='findmusic'">{{ title }}</div>
 
         <div class="music-on" :class="{'on': playing}" @click="openPlayer"></div>
-        <div class="cancel" v-show="isFocus">取消</div>
+        <div class="cancel" v-show="isFocus" @click="cancel">取消</div>
     </div>
 </template>
 
@@ -22,7 +23,8 @@
     export default {
         data () {
             return {
-                isFocus: false
+                isFocus: false,
+                placeholder: '搜索'
             };
         },
         props: {
@@ -36,8 +38,17 @@
             }
         },
         computed: {
+            query: {
+                get () {
+                    return this.query;
+                },
+                set (newQuery) {
+                    this.setQuery(newQuery);
+                }
+            },
             ...mapGetters([
-                'playing'
+                'playing',
+                'query'
             ])
         },
         methods: {
@@ -50,17 +61,28 @@
                 });
             },
             focusInput () {
-                console.log('focus');
                 this.isFocus = true;
+                this.$emit('gosearch');
             },
-            blurInput () {
-                console.log('blur');
+            cancel () {
+                this.$emit('outsearch');
                 this.isFocus = false;
             },
+            clear () {
+                // this.query = '';
+                this.setQuery('');
+            },
             ...mapMutations({
-                setFullScreen: 'SET_FULLSCREEN'
+                setFullScreen: 'SET_FULLSCREEN',
+                setQuery: 'SET_QUERY'
             })
         }
+        // watch: {
+        //     querydata (newQuery) {
+        //         // this.$emit('query', newQuery);
+        //         this.setQuery(newQuery);
+        //     }
+        // }
     };
 </script>
 
@@ -115,6 +137,17 @@
                 height: 100%
                 padding: 0 20px
                 box-sizing: border-box
+                font-size: 13px
+                &::placeholder
+                    font-size: 13px
+                    color: rgba(0, 0, 0, 0.3)
+            .icon-close
+                position: absolute
+                top: 50%
+                transform: translateY(-50%)
+                right: 10px
+                font-size: 14px
+                color: rgba(0, 0, 0, 0.3)
         .subtitle
             position: absolute
             left: 50%

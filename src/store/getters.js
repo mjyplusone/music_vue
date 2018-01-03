@@ -17,3 +17,5 @@ export const currentSong = (state) => {
 };
 
 export const musicmenu = state => state.musicmenu;
+
+export const query = state => state.query;

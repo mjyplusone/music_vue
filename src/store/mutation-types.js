@@ -13,3 +13,5 @@ export const SET_PLAYMODE = 'SET_PLAYMODE';
 export const SET_CURRENTINDEX = 'SET_CURRENTINDEX';
 
 export const SET_MUSICMENU = 'SET_MUSICMENU';
+
+export const SET_QUERY = 'SET_QUERY';

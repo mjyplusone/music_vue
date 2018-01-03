@@ -25,6 +25,9 @@ const mutations = {
     },
     [types.SET_MUSICMENU] (state, musicmenu) {
         state.musicmenu = musicmenu;
+    },
+    [types.SET_QUERY] (state, query) {
+        state.query = query;
     }
 };
 

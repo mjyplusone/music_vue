@@ -40,7 +40,7 @@
                     </transition>
                     <div class="middle-lyric" v-show="!showCDPage" @click="togglePage">
                         <!-- v-if写在middle-lyric层会导致获取不到歌词时,也无法再次togglePage到cd界面 -->
-                        <div v-if="parsedLyric">
+                        <div class="scroll-wrapper" v-if="parsedLyric">
                         <scroll class="lyric-wrapper" :data="parsedLyric && parsedLyric.lines" :click="false" ref="lyric">
                             <div>
                                 <p ref="lyricLine" class="lyric-line" :class="{'current': currentLineNum === index}" v-for="(line, index) in parsedLyric.lines">{{ line.txt }}</p>
@@ -454,20 +454,24 @@
                 height: 100%
                 overflow: hidden
                 // background: red
-                .lyric-wrapper
-                    width: 80%
-                    height: 90%
+                .scroll-wrapper
+                    width: 100%
+                    height: 100%
                     overflow: hidden
-                    margin: 30px auto
-                    text-align: center
-                    font-weight: 300
-                    // background: blue
-                    .lyric-line
-                        line-height: 32px
-                        font-size: 13px
-                        color: rgba(255, 255, 255, 0.4)
-                        &.current
-                            color: #ffffff
+                    .lyric-wrapper
+                        width: 80%
+                        height: 90%
+                        overflow: hidden
+                        margin: 30px auto
+                        text-align: center
+                        font-weight: 300
+                        // background: blue
+                        .lyric-line
+                            line-height: 32px
+                            font-size: 13px
+                            color: rgba(255, 255, 255, 0.4)
+                            &.current
+                                color: #ffffff
         .progress-wrapper
             position: relative
             margin-top: 3px

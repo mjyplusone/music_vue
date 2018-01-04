@@ -8,12 +8,14 @@
                 </li>
             </ul>
         </div>
+        <searchresult v-show="query"></searchresult>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import {getHotKey} from 'api/search.js';
-    import {mapMutations} from 'vuex';
+    import {mapMutations, mapGetters} from 'vuex';
+    import searchresult from 'components/searchresult/searchresult.vue';
 
     export default {
         data () {
@@ -23,6 +25,11 @@
         },
         created () {
             this._getHotKey();
+        },
+        computed: {
+            ...mapGetters([
+                'query'
+            ])
         },
         methods: {
             _getHotKey () {
@@ -40,6 +47,9 @@
             ...mapMutations({
                 setQuery: 'SET_QUERY'
             })
+        },
+        components: {
+            searchresult
         }
     };
 </script>

@@ -60,3 +60,14 @@ export function createRecommendSong (song) {
         musicUrl: `http://music.163.com/song/media/outer/url?id=${song.id}.mp3`
     });
 }
+
+export function createSearchSong (song) {
+    return new Song({
+        id: song.id,
+        name: song.name,
+        singer: allSinger(song.artists),
+        album: song.album.name,
+        picUrl: song.album.picUrl,
+        musicUrl: `http://music.163.com/song/media/outer/url?id=${song.id}.mp3`
+    });
+}

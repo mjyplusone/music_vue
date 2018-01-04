@@ -5,7 +5,7 @@
         <div class="back icon-left" v-show="tabType==='back'" @click="back"></div>
 
         <div class="search" v-show="tabType==='findmusic'" ref="search" :class="{'focus': isFocus}">
-            <input type="text" @focus="focusInput" :placeholder="placeholder" v-model="query">
+            <input type="text" @focus="focusInput" :placeholder="placeholder" v-model="querydata">
             <i class="icon-close" v-show="query" @click="clear"></i>
         </div>
         <div class="subtitle" v-show="tabType !=='findmusic'">{{ title }}</div>
@@ -38,7 +38,7 @@
             }
         },
         computed: {
-            query: {
+            querydata: {
                 get () {
                     return this.query;
                 },
@@ -67,9 +67,9 @@
             cancel () {
                 this.$emit('outsearch');
                 this.isFocus = false;
+                this.setQuery('');
             },
             clear () {
-                // this.query = '';
                 this.setQuery('');
             },
             ...mapMutations({

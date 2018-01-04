@@ -12,7 +12,7 @@
                 </div>
             </li>
             <li class="song-item" v-for="(song, index) in songs" @click="selectSong(song, index)">
-                <span class="num">{{ index + 1 }}</span>
+                <span class="num" v-show="showIndex">{{ index + 1 }}</span>
                 <span class="songinfo border-1px">
                     <div class="left">
                         <div class="name"><span>{{ song.name }}</span></div>
@@ -29,6 +29,7 @@
 <script type="text/ecmascript-6">
     const MUSIC_MENU_TYPE = 0;
     const SINGER_HOTSONG_LIST_TYPE = 1;
+    const SEARCH_LIST_TYPE = 2;
 
     export default {
         props: {
@@ -46,10 +47,15 @@
         },
         computed: {
             isShow () {
-                if (this.toolbarType === MUSIC_MENU_TYPE) {
+                if (this.toolbarType === MUSIC_MENU_TYPE || this.toolbarType === SEARCH_LIST_TYPE) {
                     return false;
                 } else if (this.toolbarType === SINGER_HOTSONG_LIST_TYPE) {
                     return true;
+                }
+            },
+            showIndex () {
+                if (this.toolbarType === SEARCH_LIST_TYPE) {
+                    return false;
                 }
             }
             // toolbarLeftIcon () {

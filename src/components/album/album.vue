@@ -15,42 +15,46 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {getSingerAlbum} from 'api/singer.js';
-    import {createAlbum} from 'common/js/album.js';
+    // import {getSingerAlbum} from 'api/singer.js';
+    // import {createAlbum} from 'common/js/album.js';
 
     export default {
-        data () {
-            return {
-                hotAlbums: []
-            };
-        },
+        // data () {
+        //     return {
+        //         hotAlbums: []
+        //     };
+        // },
         props: {
+            hotAlbums: {
+                type: Array,
+                default: []
+            },
             singerId: {
                 type: Number,
                 default: null
             }
-        },
-        created () {
-            this._getSingerAlbum();
-        },
-        methods: {
-            _getSingerAlbum () {
-                getSingerAlbum(this.singerId).then((res) => {
-                    if (res.code === 200) {
-                        this.hotAlbums = this._normalizeAlbum(res.hotAlbums);
-                        this.$emit('albumRefresh', this.hotAlbums);
-                        console.log(this.hotAlbums);
-                    }
-                });
-            },
-            _normalizeAlbum (hotAlbums) {
-                let ret = [];
-                hotAlbums.forEach((album) => {
-                    ret.push(createAlbum(album));
-                });
-                return ret;
-            }
         }
+        // created () {
+        //     this._getSingerAlbum();
+        // },
+        // methods: {
+        //     _getSingerAlbum () {
+        //         getSingerAlbum(this.singerId).then((res) => {
+        //             if (res.code === 200) {
+        //                 this.hotAlbums = this._normalizeAlbum(res.hotAlbums);
+        //                 this.$emit('albumRefresh', this.hotAlbums);
+        //                 console.log(this.hotAlbums);
+        //             }
+        //         });
+        //     },
+        //     _normalizeAlbum (hotAlbums) {
+        //         let ret = [];
+        //         hotAlbums.forEach((album) => {
+        //             ret.push(createAlbum(album));
+        //         });
+        //         return ret;
+        //     }
+        // }
     };
 </script>
 

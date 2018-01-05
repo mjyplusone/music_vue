@@ -36,3 +36,15 @@ export function searchsuggest (query) {
             console.log(error);
         });
 }
+
+export function searchmatch (query) {
+    const url = 'http://musicapi.leanapp.cn/search/multimatch?keywords=' + query;
+
+    return axios.get(url)
+        .then((response) => {
+            return Promise.resolve(response.data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}

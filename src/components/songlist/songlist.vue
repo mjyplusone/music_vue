@@ -56,6 +56,8 @@
             showIndex () {
                 if (this.toolbarType === SEARCH_LIST_TYPE) {
                     return false;
+                } else {
+                    return true;
                 }
             }
             // toolbarLeftIcon () {

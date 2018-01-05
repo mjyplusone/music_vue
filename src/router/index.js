@@ -70,7 +70,15 @@ export default new Router({
           ]
         },
         {path: 'rank', component: rank},
-        {path: 'search', component: search}
+        {
+          path: 'search',
+          component: search,
+          redirect: 'search/song',
+          children: [
+            {path: 'song', component: songlist},
+            {path: 'album', component: album}
+          ]
+        }
       ]
     },
     {

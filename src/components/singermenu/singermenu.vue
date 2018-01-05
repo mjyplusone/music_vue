@@ -37,7 +37,7 @@
                 <keep-alive>
                     <router-view :songs="songs" :toolbarType="1" @selectsong="selectSong" 
                                  :singerId="singerId" :singerName="singerName" @infoRefresh="infoRefresh"
-                                 @albumRefresh="albumRefresh">
+                                 :hotAlbums="hotAlbums">
                     </router-view>
                 </keep-alive>
                 <div class="bottom"></div>
@@ -53,6 +53,8 @@
     import scroll from 'base/scroll/scroll.vue';
     import loading from 'base/loading/loading.vue';
     import {mapActions, mapMutations, mapGetters} from 'vuex';
+    import {getSingerAlbum} from 'api/singer.js';
+    import {createAlbum} from 'common/js/album.js';
     import {prefixStyle} from 'common/js/dom.js';
 
     const transform = prefixStyle('transform');
@@ -160,6 +162,7 @@
             },
             selectAlbum () {
                 this.tabType = 1;
+                this._getSingerAlbum();
                 this.$router.push({
                     path: '/findmusic/singer/this.singerId/album'
                 });
@@ -169,6 +172,22 @@
                 this.$router.push({
                     path: '/findmusic/singer/this.singerId/info'
                 });
+            },
+             _getSingerAlbum () {
+                getSingerAlbum(this.singerId).then((res) => {
+                    if (res.code === 200) {
+                        this.hotAlbums = this._normalizeAlbum(res.hotAlbums);
+                        // this.$emit('albumRefresh', this.hotAlbums);
+                        console.log(this.hotAlbums);
+                    }
+                });
+            },
+            _normalizeAlbum (hotAlbums) {
+                let ret = [];
+                hotAlbums.forEach((album) => {
+                    ret.push(createAlbum(album));
+                });
+                return ret;
             },
             ...mapActions([
                 'selectPlay'

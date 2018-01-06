@@ -18,17 +18,26 @@
     export default {
         data () {
             return {
-                tabType: 'findmusic'
+                tabType: 'findmusic',
+                originRoute: ''   // 进入search前的初始路由
             };
         },
         methods: {
             gosearch () {
-                this.$router.push({
-                    path: '/findmusic/search'
-                });
+                // 只有在findmusic/xxx路由下,点击搜索框才保存当前路由和跳转到findmusic/search
+                // 在findmusic/search/xxx下点击搜索框,路由不改变
+                if (this.$route.path.match(/\//g).length <= 2) {
+                    this.originRoute = this.$route.path;
+                    this.$router.push({
+                        path: '/findmusic/search'
+                    });
+                }
             },
             outsearch () {
-                this.$router.back();
+                console.log(this.originRoute);
+                this.$router.push({
+                    path: this.originRoute
+                });
             }
         },
         components: {

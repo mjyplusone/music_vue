@@ -15,6 +15,8 @@ import dailyrecommend from 'components/dailyrecommend/dailyrecommend.vue';
 import musicmenus from 'components/musicmenus/musicmenus.vue';
 import rank from 'components/rank/rank.vue';
 import search from 'components/search/search.vue';
+import searchartistlist from 'components/searchartistlist/searchartistlist.vue';
+import searchmenulist from 'components/searchmenulist/searchmenulist.vue';
 
 Vue.use(Router);
 
@@ -76,7 +78,9 @@ export default new Router({
           redirect: 'search/song',
           children: [
             {path: 'song', component: songlist},
-            {path: 'album', component: album}
+            {path: 'artist', component: searchartistlist},
+            {path: 'album', component: album},
+            {path: 'menu', component: searchmenulist}
           ]
         }
       ]

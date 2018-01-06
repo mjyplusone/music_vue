@@ -3,7 +3,7 @@
         <ul>
             <li v-for="album in hotAlbums" class="album-list">
                 <div class="pic">
-                    <img :src="album.picUrl" width="54" height="54" alt="">
+                    <img v-lazy="album.picUrl" width="54" height="54" alt="">
                 </div>
                 <div class="content">
                     <div class="album-name">{{ album.name }}</div>
@@ -66,16 +66,16 @@
             display: flex
             width: 100%
             height: 60px
-            padding: 3px 6px
             box-sizing: border-box
             .pic
                 flex: 0 0 54px
+                padding: 3px 6px
             .content
                 flex: 1
-                margin-left: 15px
+                margin-left: 9px
                 border-1px(rgba(7, 17, 27, 0.1), after, bottom)
                 .album-name
-                    margin-top: 10px
+                    margin-top: 13px
                     line-height: 1
                     font-size: 14px
                 .date-size

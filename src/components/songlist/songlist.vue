@@ -13,6 +13,7 @@
             </li>
             <li class="song-item" v-for="(song, index) in songs" @click="selectSong(song, index)">
                 <span class="num" v-show="showIndex">{{ index + 1 }}</span>
+                <span class="leftpad" v-show="!showIndex"></span>
                 <span class="songinfo border-1px">
                     <div class="left">
                         <div class="name"><span>{{ song.name }}</span></div>
@@ -131,6 +132,8 @@
                 text-align: center
                 font-size: 14px
                 color: #949496
+            .leftpad
+                flex: 0 0 10px
             .songinfo
                 position: relative
                 flex: 1

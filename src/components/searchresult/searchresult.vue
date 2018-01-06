@@ -1,20 +1,20 @@
 <template>
     <div class="searchresult">
         <div class="search-tab border-1px">
-            <div class="tab-item" :class="{'active': tabType === 0}"  @click="selectSong"><span>单曲</span></div>
-            <div class="tab-item" :class="{'active': tabType === 1}"  @click="selectSinger"><span>歌手</span></div>
-            <div class="tab-item" :class="{'active': tabType === 2}"  @click="selectAlbum"><span>专辑</span></div>
-            <div class="tab-item" :class="{'active': tabType === 3}"  @click="selectMenu"><span>歌单</span></div>
+            <div class="tab-item" :class="{'active': tabType === 0}"  @click="selectSongTab"><span>单曲</span></div>
+            <div class="tab-item" :class="{'active': tabType === 1}"  @click="selectSingerTab"><span>歌手</span></div>
+            <div class="tab-item" :class="{'active': tabType === 2}"  @click="selectAlbumTab"><span>专辑</span></div>
+            <div class="tab-item" :class="{'active': tabType === 3}"  @click="selectMenuTab"><span>歌单</span></div>
         </div>
-        <scroll :data="searchSongList" :probeType="probeType" :listenScroll="listenScroll" 
-                class="songlist-wrapper">
+        <scroll :data="scrollData" :probeType="probeType" :listenScroll="listenScroll" 
+                class="songlist-wrapper" ref="scroll">
             <div>
                 <div class="match" v-show="(tabType === 0) && (matchArtist.length || matchAlbum.length)">
                     <h1 class="match-name">最佳匹配</h1>
                     <ul>
                         <li class="match-item match-artist border-1px" v-for="artist in matchArtist">
                             <div class="left">
-                                <img :src="artist.picUrl" width="54" height="54" alt="">
+                                <img :src="artist.picUrl" @load="loadImage" width="54" height="54" alt="">
                             </div>
                             <div class="right">
                                 歌手:&nbsp;{{ artist.name }}&nbsp;<span v-if="artist.alias.length" class="alias">({{ artist.alias[0] }})</span>
@@ -35,9 +35,12 @@
                         </li>
                     </ul>
                 </div>
-                <router-view :songs="searchSongList" :toolbarType="2"
-                             :hotAlbums="hotAlbums"></router-view>
-                <!-- <songlist :songs="searchSongList" :toolbarType="2"></songlist> -->
+                <keep-alive>
+                    <router-view :songs="searchSongList" :toolbarType="2" @selectsong="selectSong"
+                             :hotAlbums="searchAlbumList" 
+                             :artists="searchArtistList" @selectartist="selectArtist"
+                             :menus="searchMenuList"></router-view>
+                </keep-alive>
                 <div class="bottom"></div>
             </div>
         </scroll>
@@ -45,10 +48,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {mapGetters, mapMutations} from 'vuex';
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
     import {search, searchsuggest, searchmatch} from 'api/search.js';
     import songlist from 'components/songlist/songlist.vue';
     import {createSearchSong} from 'common/js/song.js';
+    import {createAlbum} from 'common/js/album.js';
     import scroll from 'base/scroll/scroll.vue';
 
     export default {
@@ -59,70 +63,119 @@
                 matchAlbum: [],
                 // 单曲
                 searchSongList: [],
+                // 歌手
+                searchArtistList: [],
                 // 专辑
-                hotAlbums: [],
+                searchAlbumList: [],
+                // 歌单
+                searchMenuList: [],
                 tabType: 0
             };
         },
         created () {
             this.probeType = 3;
             this.listenScroll = true;
+            this.searchmatch();
+            this.search(1);
         },
         computed: {
+            scrollData () {
+                if (this.tabType === 0) {
+                    return this.searchSongList;
+                } else if (this.tabType === 1) {
+                    return this.searchArtistList;
+                } else if (this.tabType === 2) {
+                    return this.searchAlbumList;
+                } else if (this.tabType === 3) {
+                    return this.searchMenuList;
+                }
+            },
             ...mapGetters([
                 'query'
             ])
         },
         methods: {
-            search () {
-                search(this.query).then((res) => {
+            search (type) {
+                search(this.query, type).then((res) => {
                     if (res.code === 200) {
                         console.log(res.result);
-                        this.searchSongList = this._normalizeSongs(res.result.songs);
-                        console.log(this.searchSongList);
+                        if (this.tabType === 0) {
+                            this.searchSongList = this._normalizeSongs(res.result.songs);
+                            // console.log(this.searchSongList);
+                        } else if (this.tabType === 1) {
+                            this.searchArtistList = this._normalizeArtists(res.result.artists);
+                            // console.log(this.searchArtistList);
+                        } else if (this.tabType === 2) {
+                            this.searchAlbumList = this._normalizeAlbums(res.result.albums);
+                        } else if (this.tabType === 3) {
+                            this.searchMenuList = this._normalizeMenus(res.result.playlists);
+                        }
                     }
                 });
             },
             searchsuggest () {
                 searchsuggest(this.query).then((res) => {
                     if (res.code === 200) {
-                        console.log(res.result);
+                        // console.log(res.result);
                     }
                 });
             },
             searchmatch () {
                 searchmatch(this.query).then((res) => {
                     if (res.code === 200) {
-                        console.log(res.result);
+                        // console.log(res.result);
                         res.result.orders.forEach((item) => {
                             if (item === 'artist') {
                                 this.matchArtist = res.result.artist;
-                                console.log(this.matchArtist);
+                                // console.log(this.matchArtist);
                             } else if (item === 'album') {
                                 this.matchAlbum = res.result.album;
-                                console.log(this.matchAlbum);
+                                // console.log(this.matchAlbum);
                             }
                         });
                     }
                 });
             },
-            selectSong () {
+            selectSongTab () {
                 this.tabType = 0;
                 this.$router.push({
                     path: '/findmusic/search/song'
                 });
             },
-            selectSinger () {
+            selectSingerTab () {
                 this.tabType = 1;
+                this.$router.push({
+                    path: '/findmusic/search/artist'
+                });
             },
-            selectAlbum () {
+            selectAlbumTab () {
                 this.tabType = 2;
                 this.$router.push({
                     path: '/findmusic/search/album'
                 });
             },
-            selectMenu () {
+            selectMenuTab () {
                 this.tabType = 3;
+                this.$router.push({
+                    path: '/findmusic/search/menu'
+                });
+            },
+            loadImage () {
+                this.$refs.scroll.refresh();
+            },
+            // 各个列表点击进入具体页面
+            // 向state提交全部歌曲列表和当前点击歌曲的index
+            selectSong (song, index) {
+                this.selectPlay({
+                    song: this.searchSongList,
+                    index: index
+                });
+            },
+            selectArtist (artist) {
+                // this.$router.push({
+                //     path: `/findmusic/singer/${singer.id}`
+                // });
+                this.setSinger(artist);
             },
             _normalizeSongs (songs) {
                 let ret = [];
@@ -133,22 +186,87 @@
                 });
                 return ret;
             },
+            _normalizeArtists (artists) {
+                let ret = [];
+                artists.forEach((artist) => {
+                    if (artist.id) {
+                        ret.push({
+                            id: artist.id,
+                            name: artist.name,
+                            picUrl: artist.picUrl,
+                            alias: artist.alias
+                        });
+                    }
+                });
+                return ret;
+            },
+            _normalizeAlbums (albums) {
+                let ret = [];
+                albums.forEach((album) => {
+                    if (album.id) {
+                        ret.push(createAlbum(album));
+                    }
+                });
+                return ret;
+            },
+            _normalizeMenus (menus) {
+                let ret = [];
+                menus.forEach((menu) => {
+                    if (menu.id) {
+                        ret.push({
+                            id: menu.id,
+                            name: menu.name,
+                            trackCount: menu.trackCount,
+                            creator: menu.creator.nickname,
+                            playCount: this.normalCount(menu.playCount),
+                            picUrl: menu.coverImgUrl
+                        });
+                    }
+                });
+                return ret;
+            },
+            // 歌单播放次数超过99999次,按...万次的格式显示
+            normalCount (count) {
+                if (count > 99999) {
+                    return (count / 10000).toFixed(1) + '万';
+                } else {
+                    return count;
+                }
+            },
             ...mapMutations({
-                setQuery: 'SET_QUERY'
-            })
+                setQuery: 'SET_QUERY',
+                setSinger: 'SET_SINGER'
+            }),
+            ...mapActions([
+                'selectPlay'
+            ])
         },
         watch: {
             query () {
-                // query值为空时,清空列表且不发请求
-                if (this.query === '') {
-                    this.searchSongList = [];
-                    this.matchArtist = [];
-                    this.matchAlbum = [];
-                    return;
+                // 这里不能watch query为空的情况,因为query为空,这个组件不渲染
+                if (this.tabType === 0) {
+                    this.searchmatch();
+                    this.search(1);
+                } else if (this.tabType === 1) {
+                    this.search(100);
+                } else if (this.tabType === 2) {
+                    this.search(10);
+                } else if (this.tabType === 3) {
+                    this.search(1000);
                 }
-                this.searchmatch();
-                this.search();
                 // this.searchsuggest();
+            },
+            tabType (newtab) {
+                if (newtab === 0) {
+                    this.searchmatch();
+                    this.search(1);
+                } else if (newtab === 1) {
+                    this.search(100);
+                } else if (newtab === 2) {
+                    this.search(10);
+                } else if (newtab === 3) {
+                    this.search(1000);
+                }
             }
         },
         components: {
@@ -167,6 +285,7 @@
         bottom: 0
         width: 100%
         background: #ffffff
+        overflow: hidden
         .search-tab
             height: 40px
             display: flex
@@ -190,11 +309,13 @@
         .songlist-wrapper
             width: 100%
             height: 100%
-            padding-left: 10px
+            // padding-left: 10px
             box-sizing: border-box
             overflow: hidden
             .match
                 width: 100%
+                padding-left: 10px
+                box-sizing: border-box
                 .match-name
                     height: 30px
                     line-height: 30px
@@ -212,6 +333,7 @@
                     .left
                         flex: 0 0 54px
                     .right
+                        position: relative
                         flex: 1
                         margin-left: 18px
                         font-size: 14px
@@ -229,12 +351,19 @@
                 .match-album
                     .right
                         .albumname
-                            margin-top: 10px
+                            position: absolute
+                            top: 10px
+                            left: 0
+                            right: 30px
                             line-height: 1
+                            white-space: nowrap
+                            text-overflow: ellipsis
+                            overflow: hidden
                             .alias
                                 color: rgba(0, 0, 0, 0.7)
                         .aritistname
-                            margin-top: 10px
+                            position: absolute
+                            top: 34px
                             line-height: 1
                             font-size: 12px
                             color: rgba(0, 0, 0, 0.5)

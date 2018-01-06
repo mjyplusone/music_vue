@@ -8,7 +8,7 @@
                 </li>
             </ul>
         </div>
-        <searchresult v-show="query"></searchresult>
+        <searchresult v-if="query"></searchresult>
     </div>
 </template>
 
@@ -47,6 +47,16 @@
             ...mapMutations({
                 setQuery: 'SET_QUERY'
             })
+        },
+        watch: {
+            // 在这里watch query,如果为由空向不空变化,则将路由定位到findmusic/search
+            query (newquery, oldquery) {
+                if (oldquery === '' && newquery !== '') {
+                    this.$router.push({
+                        path: '/findmusic/search'
+                    });
+                }
+            }
         },
         components: {
             searchresult

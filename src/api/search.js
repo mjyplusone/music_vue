@@ -13,8 +13,8 @@ export function getHotKey () {
     return jsonp(url, data, options);
 }
 
-export function search (query) {
-    const url = 'http://musicapi.leanapp.cn/search?keywords=' + query;
+export function search (query, type) {
+    const url = 'http://musicapi.leanapp.cn/search?keywords=' + query + '&type=' + type;
 
     return axios.get(url)
         .then((response) => {

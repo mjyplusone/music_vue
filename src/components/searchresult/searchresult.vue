@@ -6,10 +6,10 @@
             <div class="tab-item" :class="{'active': tabType === 2}"  @click="selectAlbumTab"><span>专辑</span></div>
             <div class="tab-item" :class="{'active': tabType === 3}"  @click="selectMenuTab"><span>歌单</span></div>
         </div>
-        <scroll :data="scrollData" :probeType="probeType" :listenScroll="listenScroll" 
-                class="songlist-wrapper" ref="scroll">
-            <div>
-                <div class="match" v-show="(tabType === 0) && (matchArtist.length || matchAlbum.length)">
+        <!-- <scroll :data="scrollData" :probeType="probeType" :listenScroll="listenScroll" 
+                class="songlist-wrapper" ref="scroll"> -->
+            <!-- <div> -->
+                <!-- <div class="match" v-show="(tabType === 0) && (matchArtist.length || matchAlbum.length)">
                     <h1 class="match-name">最佳匹配</h1>
                     <ul>
                         <li class="match-item match-artist border-1px" v-for="artist in matchArtist">
@@ -34,21 +34,21 @@
                             <i class="icon-right"></i>
                         </li>
                     </ul>
-                </div>
+                </div> -->
                 <keep-alive>
-                    <router-view :songs="searchSongList" :toolbarType="2" @selectsong="selectSong"
-                             :hotAlbums="searchAlbumList" 
-                             :artists="searchArtistList" @selectartist="selectArtist"
+                    <router-view :searchSongList="searchSongList" :toolbarType="2" :matchArtist="matchArtist" :matchAlbum="matchAlbum"
+                             :searchAlbumList="searchAlbumList" 
+                             :artists="searchArtistList"
                              :menus="searchMenuList"></router-view>
                 </keep-alive>
-                <div class="bottom"></div>
-            </div>
-        </scroll>
+                <!-- <div class="bottom"></div> -->
+            <!-- </div> -->
+        <!-- </scroll> -->
     </div>
 </template>
 
 <script type="text/ecmascript-6">
-    import {mapGetters, mapMutations, mapActions} from 'vuex';
+    import {mapGetters, mapMutations} from 'vuex';
     import {search, searchsuggest, searchmatch} from 'api/search.js';
     import songlist from 'components/songlist/songlist.vue';
     import {createSearchSong} from 'common/js/song.js';
@@ -73,23 +73,23 @@
             };
         },
         created () {
-            this.probeType = 3;
-            this.listenScroll = true;
+            // this.probeType = 3;
+            // this.listenScroll = true;
             this.searchmatch();
             this.search(1);
         },
         computed: {
-            scrollData () {
-                if (this.tabType === 0) {
-                    return this.searchSongList;
-                } else if (this.tabType === 1) {
-                    return this.searchArtistList;
-                } else if (this.tabType === 2) {
-                    return this.searchAlbumList;
-                } else if (this.tabType === 3) {
-                    return this.searchMenuList;
-                }
-            },
+            // scrollData () {
+            //     if (this.tabType === 0) {
+            //         return this.searchSongList;
+            //     } else if (this.tabType === 1) {
+            //         return this.searchArtistList;
+            //     } else if (this.tabType === 2) {
+            //         return this.searchAlbumList;
+            //     } else if (this.tabType === 3) {
+            //         return this.searchMenuList;
+            //     }
+            // },
             ...mapGetters([
                 'query'
             ])
@@ -160,23 +160,17 @@
                     path: '/findmusic/search/menu'
                 });
             },
-            loadImage () {
-                this.$refs.scroll.refresh();
-            },
-            // 各个列表点击进入具体页面
-            // 向state提交全部歌曲列表和当前点击歌曲的index
-            selectSong (song, index) {
-                this.selectPlay({
-                    song: this.searchSongList,
-                    index: index
-                });
-            },
-            selectArtist (artist) {
-                // this.$router.push({
-                //     path: `/findmusic/singer/${singer.id}`
-                // });
-                this.setSinger(artist);
-            },
+            // loadImage () {
+            //     this.$refs.scroll.refresh();
+            // },
+            // // 各个列表点击进入具体页面
+            // // 向state提交全部歌曲列表和当前点击歌曲的index
+            // selectSong (song, index) {
+            //     this.selectPlay({
+            //         song: this.searchSongList,
+            //         index: index
+            //     });
+            // },
             _normalizeSongs (songs) {
                 let ret = [];
                 songs.forEach((song) => {
@@ -234,12 +228,11 @@
                 }
             },
             ...mapMutations({
-                setQuery: 'SET_QUERY',
-                setSinger: 'SET_SINGER'
-            }),
-            ...mapActions([
-                'selectPlay'
-            ])
+                setQuery: 'SET_QUERY'
+            })
+            // ...mapActions([
+            //     'selectPlay'
+            // ])
         },
         watch: {
             query () {
@@ -306,69 +299,69 @@
                     color: #d33a31
                     span 
                         border-bottom: 2px solid #d33a31
-        .songlist-wrapper
-            width: 100%
-            height: 100%
+        // .songlist-wrapper
+        //     width: 100%
+        //     height: 100%
             // padding-left: 10px
-            box-sizing: border-box
-            overflow: hidden
-            .match
-                width: 100%
-                padding-left: 10px
-                box-sizing: border-box
-                .match-name
-                    height: 30px
-                    line-height: 30px
-                    font-size: 13px
-                    color: rgba(0, 0, 0, 0.7)
-                .match-item
-                    display: flex
-                    width: 100%
-                    height: 64px
-                    padding: 5px 0
-                    box-sizing: border-box
-                    border-1px(rgba(7, 17, 27, 0.1), after, bottom)
-                    &:last-child
-                        border-1px(rgba(0, 0, 0, 0), after, bottom)
-                    .left
-                        flex: 0 0 54px
-                    .right
-                        position: relative
-                        flex: 1
-                        margin-left: 18px
-                        font-size: 14px
-                    .icon-right
-                        position: absolute
-                        top: 24px
-                        right: 9px
-                        font-size: 16px
-                        color: rgba(7, 17, 27, 0.3)
-                .match-artist
-                    .right
-                        line-height: 54px
-                        .alias
-                            color: rgba(0, 0, 0, 0.7)
-                .match-album
-                    .right
-                        .albumname
-                            position: absolute
-                            top: 10px
-                            left: 0
-                            right: 30px
-                            line-height: 1
-                            white-space: nowrap
-                            text-overflow: ellipsis
-                            overflow: hidden
-                            .alias
-                                color: rgba(0, 0, 0, 0.7)
-                        .aritistname
-                            position: absolute
-                            top: 34px
-                            line-height: 1
-                            font-size: 12px
-                            color: rgba(0, 0, 0, 0.5)
-            .bottom
-                width: 100%
-                height: 110px
+            // box-sizing: border-box
+            // overflow: hidden
+            // .match
+            //     width: 100%
+            //     padding-left: 10px
+            //     box-sizing: border-box
+            //     .match-name
+            //         height: 30px
+            //         line-height: 30px
+            //         font-size: 13px
+            //         color: rgba(0, 0, 0, 0.7)
+            //     .match-item
+            //         display: flex
+            //         width: 100%
+            //         height: 64px
+            //         padding: 5px 0
+            //         box-sizing: border-box
+            //         border-1px(rgba(7, 17, 27, 0.1), after, bottom)
+            //         &:last-child
+            //             border-1px(rgba(0, 0, 0, 0), after, bottom)
+            //         .left
+            //             flex: 0 0 54px
+            //         .right
+            //             position: relative
+            //             flex: 1
+            //             margin-left: 18px
+            //             font-size: 14px
+            //         .icon-right
+            //             position: absolute
+            //             top: 24px
+            //             right: 9px
+            //             font-size: 16px
+            //             color: rgba(7, 17, 27, 0.3)
+            //     .match-artist
+            //         .right
+            //             line-height: 54px
+            //             .alias
+            //                 color: rgba(0, 0, 0, 0.7)
+            //     .match-album
+            //         .right
+            //             .albumname
+            //                 position: absolute
+            //                 top: 10px
+            //                 left: 0
+            //                 right: 30px
+            //                 line-height: 1
+            //                 white-space: nowrap
+            //                 text-overflow: ellipsis
+            //                 overflow: hidden
+            //                 .alias
+            //                     color: rgba(0, 0, 0, 0.7)
+            //             .aritistname
+            //                 position: absolute
+            //                 top: 34px
+            //                 line-height: 1
+            //                 font-size: 12px
+            //                 color: rgba(0, 0, 0, 0.5)
+            // .bottom
+            //     width: 100%
+            //     height: 110px
         
 </style>

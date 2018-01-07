@@ -28,6 +28,9 @@ const mutations = {
     },
     [types.SET_QUERY] (state, query) {
         state.query = query;
+    },
+    [types.SET_SINGERBACKROUTE] (state, singerbackroute) {
+        state.singerBackRoute = singerbackroute;
     }
 };
 

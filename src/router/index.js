@@ -17,6 +17,8 @@ import rank from 'components/rank/rank.vue';
 import search from 'components/search/search.vue';
 import searchartistlist from 'components/searchartistlist/searchartistlist.vue';
 import searchmenulist from 'components/searchmenulist/searchmenulist.vue';
+import searchsonglist from 'components/searchsonglist/searchsonglist.vue';
+import searchalbumlist from 'components/searchalbumlist/searchalbumlist.vue';
 
 Vue.use(Router);
 
@@ -77,10 +79,46 @@ export default new Router({
           component: search,
           redirect: 'search/song',
           children: [
-            {path: 'song', component: songlist},
-            {path: 'artist', component: searchartistlist},
-            {path: 'album', component: album},
-            {path: 'menu', component: searchmenulist}
+            {
+              path: 'song',
+              component: searchsonglist,
+              children: [
+                {
+                  path: ':id',
+                  component: singerDetail,
+                  redirect: ':id/hotsong',
+                  children: [
+                    {path: 'hotsong', component: songlist},
+                    {path: 'album', component: album},
+                    {path: 'info', component: singerinfo}
+                  ]
+                }
+              ]
+            },
+            {
+              path: 'artist',
+              component: searchartistlist,
+              children: [
+                {
+                  path: ':id',
+                  component: singerDetail,
+                  redirect: ':id/hotsong',
+                  children: [
+                    {path: 'hotsong', component: songlist},
+                    {path: 'album', component: album},
+                    {path: 'info', component: singerinfo}
+                  ]
+                }
+              ]
+            },
+            {path: 'album', component: searchalbumlist},
+            {
+              path: 'menu',
+              component: searchmenulist,
+              children: [
+                {path: ':id', component: musicmenu}
+              ]
+            }
           ]
         }
       ]

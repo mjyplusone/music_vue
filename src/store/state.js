@@ -9,7 +9,8 @@ const state = {
     mode: playMode.sequence,  // 播放模式
     currentIndex: -1,  // 当前播放
     musicmenu: {},  // 歌单信息
-    query: ''  // 搜索值
+    query: '',  // 搜索值
+    singerBackRoute: '/findmusic/singer'  // 返回路由
 };
 
 export default state;

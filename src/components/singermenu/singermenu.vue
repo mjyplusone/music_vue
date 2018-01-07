@@ -76,7 +76,7 @@
                 type: String,
                 default: ''
             },
-            // 用于singerinfo路由
+            // 用于singerinfo路由,singerId同时用于album路由
             singerId: {
                 type: Number,
                 default: null
@@ -125,7 +125,8 @@
                 }
             },
             ...mapGetters([
-                'playing'
+                'playing',
+                'singerBackRoute'
             ])
         },
         methods: {
@@ -135,7 +136,7 @@
             back () {
                 // this.$router.back();
                 this.$router.push({
-                    path: '/findmusic/singer'
+                    path: this.singerBackRoute
                 });
             },
             // 向state提交此歌手的全部歌曲列表和当前点击歌曲的index
@@ -157,20 +158,20 @@
             selectHotsong () {
                 this.tabType = 0;
                 this.$router.push({
-                    path: '/findmusic/singer/this.singerId/hotsong'
+                    path: this.singerBackRoute + `/${this.singerId}/hotsong`
                 });
             },
             selectAlbum () {
                 this.tabType = 1;
                 this._getSingerAlbum();
                 this.$router.push({
-                    path: '/findmusic/singer/this.singerId/album'
+                    path: this.singerBackRoute + `/${this.singerId}/album`
                 });
             },
             selectInfo () {
                 this.tabType = 2;
                 this.$router.push({
-                    path: '/findmusic/singer/this.singerId/info'
+                    path: this.singerBackRoute + `/${this.singerId}/info`
                 });
             },
              _getSingerAlbum () {

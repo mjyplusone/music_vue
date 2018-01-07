@@ -190,6 +190,8 @@
                 }
             },
             selectSinger (singer) {
+                // 保存进入歌手详情页前的路由
+                this.setSingerBackRoute(this.$route.path);
                 this.$router.push({
                     path: `/findmusic/singer/${singer.id}`
                 });
@@ -201,7 +203,8 @@
             //     this.$store.commit('SET_SINGER', singer);
             // },
             ...mapMutations({
-                setSinger: 'SET_SINGER'
+                setSinger: 'SET_SINGER',
+                setSingerBackRoute: 'SET_SINGERBACKROUTE'
             })
         },
         watch: {

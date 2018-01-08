@@ -16,8 +16,11 @@
                 <span class="leftpad" v-show="!showIndex"></span>
                 <span class="songinfo border-1px">
                     <div class="left">
-                        <div class="name"><span>{{ song.name }}</span></div>
-                        <div class="album"><span v-show="!isShow">{{ song.singer }} - </span>{{ song.album }}</div>
+                        <div class="name" v-html="song.highlightname || song.name"></div>
+                        <div class="album">
+                            <span v-show="!isShow"><span v-html="song.highlightsinger || song.singer"></span> - </span>
+                            <span v-html="song.highlightalbum || song.album"></span>
+                        </div>
                     </div>
                     <div class="playdetail"><i class="icon-playdetail"></i></div>
                     <div class="list-circle"><i class="icon-list-circle"></i></div>

@@ -38,6 +38,11 @@
                         console.log(res.data);
                         // 截取前10个hotkey
                         this.hotKey = res.data.hotkey.slice(0, 10);
+                        // hotkey每个k后面有一个' ',要去掉,不然搜索的时候会影响高亮结果
+                        this.hotKey.forEach((item) => {
+                            item.k = item.k.substr(0, item.k.length - 1);
+                        });
+                        console.log(this.hotkey);
                     }
                 });
             },

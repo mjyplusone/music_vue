@@ -6,7 +6,7 @@
                     <img v-lazy="album.picUrl" width="54" height="54" alt="">
                 </div>
                 <div class="content">
-                    <div class="album-name">{{ album.name }}</div>
+                    <div class="album-name" v-html="album.highlightname || album.name"></div>
                     <div class="date-size">{{ album.publishTime }} {{ album.size }}首</div>
                 </div>
             </li>

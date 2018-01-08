@@ -35,25 +35,27 @@
                         </li>
                     </ul>
                 </div> -->
-                <keep-alive>
-                    <router-view :searchSongList="searchSongList" :toolbarType="2" :matchArtist="matchArtist" :matchAlbum="matchAlbum"
-                             :searchAlbumList="searchAlbumList" 
-                             :artists="searchArtistList"
-                             :menus="searchMenuList"></router-view>
-                </keep-alive>
+        <keep-alive>
+            <router-view :searchSongList="searchSongList" :toolbarType="2" :matchArtist="matchArtist" :matchAlbum="matchAlbum"
+                        :searchAlbumList="searchAlbumList" 
+                        :artists="searchArtistList"
+                        :menus="searchMenuList"></router-view>
+        </keep-alive>
                 <!-- <div class="bottom"></div> -->
             <!-- </div> -->
         <!-- </scroll> -->
+        <div class="loading" v-show="!loading"><loading></loading></div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import {mapGetters, mapMutations} from 'vuex';
-    import {search, searchsuggest, searchmatch} from 'api/search.js';
+    import {search, searchmatch} from 'api/search.js';
     import songlist from 'components/songlist/songlist.vue';
     import {createSearchSong} from 'common/js/song.js';
     import {createAlbum} from 'common/js/album.js';
     import scroll from 'base/scroll/scroll.vue';
+    import loading from 'base/loading/loading.vue';
 
     export default {
         data () {
@@ -90,6 +92,17 @@
             //         return this.searchMenuList;
             //     }
             // },
+            loading () {
+                if (this.tabType === 0) {
+                    return this.searchSongList;
+                } else if (this.tabType === 1) {
+                    return this.searchArtistList;
+                } else if (this.tabType === 2) {
+                    return this.searchAlbumList;
+                } else if (this.tabType === 3) {
+                    return this.searchMenuList;
+                }
+            },
             ...mapGetters([
                 'query'
             ])
@@ -101,25 +114,29 @@
                         console.log(res.result);
                         if (this.tabType === 0) {
                             this.searchSongList = this._normalizeSongs(res.result.songs);
-                            // console.log(this.searchSongList);
+                            this.highlight(this.searchSongList);
+                            console.log(this.searchSongList);
                         } else if (this.tabType === 1) {
                             this.searchArtistList = this._normalizeArtists(res.result.artists);
+                            this.highlight(this.searchArtistList);
                             // console.log(this.searchArtistList);
                         } else if (this.tabType === 2) {
                             this.searchAlbumList = this._normalizeAlbums(res.result.albums);
+                            this.highlight(this.searchAlbumList);
                         } else if (this.tabType === 3) {
                             this.searchMenuList = this._normalizeMenus(res.result.playlists);
+                            this.highlight(this.searchMenuList);
                         }
                     }
                 });
             },
-            searchsuggest () {
-                searchsuggest(this.query).then((res) => {
-                    if (res.code === 200) {
-                        // console.log(res.result);
-                    }
-                });
-            },
+            // searchsuggest () {
+            //     searchsuggest(this.query).then((res) => {
+            //         if (res.code === 200) {
+            //             // console.log(res.result);
+            //         }
+            //     });
+            // },
             searchmatch () {
                 searchmatch(this.query).then((res) => {
                     if (res.code === 200) {
@@ -127,9 +144,11 @@
                         res.result.orders.forEach((item) => {
                             if (item === 'artist') {
                                 this.matchArtist = res.result.artist;
+                                this.highlight(this.matchArtist);
                                 // console.log(this.matchArtist);
                             } else if (item === 'album') {
                                 this.matchAlbum = res.result.album;
+                                this.highlight(this.matchAlbum);
                                 // console.log(this.matchAlbum);
                             }
                         });
@@ -219,6 +238,24 @@
                 });
                 return ret;
             },
+            highlight (list) {
+                let re = RegExp(this.query, 'g');
+                for (let i = 0; i < list.length; i++) {
+                    if (list[i].name && re.test(list[i].name)) {
+                        list[i].highlightname = list[i].name.replace(re, '<span class="highlight">' + this.query + '</span>');
+                    }
+                    if (list[i].singer && re.test(list[i].singer)) {
+                        list[i].highlightsinger = list[i].singer.replace(re, '<span class="highlight">' + this.query + '</span>');
+                    }
+                    if (list[i].album && re.test(list[i].album)) {
+                        list[i].highlightalbum = list[i].album.replace(re, '<span class="highlight">' + this.query + '</span>');
+                    }
+                    // 匹配专辑的作者名  matchAlbum.artist.name
+                    if (list[i].artist && list[i].artist.name && re.test(list[i].artist.name)) {
+                        list[i].artist.highlightname = list[i].artist.name.replace(re, '<span class="highlight">' + this.query + '</span>');
+                    }
+                }
+            },
             // 歌单播放次数超过99999次,按...万次的格式显示
             normalCount (count) {
                 if (count > 99999) {
@@ -247,7 +284,6 @@
                 } else if (this.tabType === 3) {
                     this.search(1000);
                 }
-                // this.searchsuggest();
             },
             tabType (newtab) {
                 if (newtab === 0) {
@@ -264,7 +300,8 @@
         },
         components: {
             songlist,
-            scroll
+            scroll,
+            loading
         }
     };
 </script>
@@ -299,6 +336,12 @@
                     color: #d33a31
                     span 
                         border-bottom: 2px solid #d33a31
+        .loading
+            position: absolute
+            top: 20%
+            width: 100%
+        .highlight
+            color: #648db9
         // .songlist-wrapper
         //     width: 100%
         //     height: 100%

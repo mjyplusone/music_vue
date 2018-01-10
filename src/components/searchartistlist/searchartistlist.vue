@@ -1,6 +1,6 @@
 <template>
     <div class="searchartistlist">
-        <scroll :data="artists" class="list-wrapper">
+        <scroll :data="artists" :pullup="pullup" @scrollToEnd="searchMore" class="list-wrapper">
             <div>
                 <ul>
                     <li v-for="artist in artists" class="artist-content" @click="selectArtist(artist)">
@@ -12,6 +12,7 @@
                             <span v-html="artist.highlightname || artist.name"></span>&nbsp;<span v-if="artist.alias.length" class="alias">({{ artist.alias[0] }})</span>
                         </div>
                     </li>
+                    <div class="loading"><loading v-show="hasMore"></loading></div>
                 </ul>
                 <div class="bottom"></div>
             </div>
@@ -23,12 +24,22 @@
 <script type="text/ecmascript-6">
     import {mapMutations} from 'vuex';
     import scroll from 'base/scroll/scroll.vue';
+    import loading from 'base/loading/loading.vue';
 
     export default {
+        data () {
+            return {
+                pullup: true
+            };
+        },
         props: {
             artists: {
                 type: Array,
                 default: []
+            },
+            hasMore: {
+                type: Boolean,
+                default: true
             }
         },
         methods: {
@@ -39,13 +50,18 @@
                     path: this.$route.path + `/${artist.id}`
                 });
             },
+            searchMore () {
+                console.log('searchMore');
+                this.$emit('searchmore', 100);
+            },
             ...mapMutations({
                 setSinger: 'SET_SINGER',
                 setSingerBackRoute: 'SET_SINGERBACKROUTE'
             })
         },
         components: {
-            scroll
+            scroll,
+            loading
         }
     };
 </script>
@@ -78,6 +94,9 @@
                     .alias
                         color: rgba(0, 0, 0, 0.7)
                         font-weight: 100
+            .loading
+                position: relative
+                width: 100%
             .bottom
                 width: 100%
                 height: 110px

@@ -1,5 +1,5 @@
 import jsonp from 'common/js/jsonp.js';
-import {commonParams, options} from './config';
+import {commonParams, options, baseUrl} from './config';
 import axios from 'axios';
 
 export function getRecommend () {
@@ -12,7 +12,7 @@ export function getRecommend () {
 
 // 推荐歌单
 export function getRecommendMusicList () {
-    const url = 'http://musicapi.leanapp.cn/personalized';
+    const url = baseUrl + '/personalized';
 
     return axios.get(url)
       .then((response) => {
@@ -26,7 +26,7 @@ export function getRecommendMusicList () {
 
 // 歌单
 export function getMusicMenuList () {
-    const url = 'http://musicapi.leanapp.cn/top/playlist';
+    const url = baseUrl + '/top/playlist';
 
     return axios.get(url)
         .then((response) => {
@@ -39,7 +39,7 @@ export function getMusicMenuList () {
 
 // 精品歌单
 export function getTopMusicMenuList () {
-    const url = 'http://musicapi.leanapp.cn/top/playlist/highquality';
+    const url = baseUrl + '/top/playlist/highquality';
 
     return axios.get(url)
     .then((response) => {
@@ -51,7 +51,7 @@ export function getTopMusicMenuList () {
 }
 
 export function getMusicMenu (menuid) {
-    const url = 'http://musicapi.leanapp.cn/playlist/detail?id=' + menuid;
+    const url = baseUrl + '/playlist/detail?id=' + menuid;
 
     return axios.get(url)
         .then((response) => {

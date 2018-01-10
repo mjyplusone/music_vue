@@ -1,7 +1,8 @@
 import axios from 'axios';
+import {baseUrl} from './config.js';
 
 export function getSinger () {
-    const url = 'http://musicapi.leanapp.cn/top/artists';
+    const url = baseUrl + '/top/artists';
 
     return axios.get(url)
         .then((response) => {
@@ -13,7 +14,7 @@ export function getSinger () {
 }
 
 export function getSingerDetail (singerid) {
-    const url = 'http://musicapi.leanapp.cn/artists?id=' + singerid;
+    const url = baseUrl + '/artists?id=' + singerid;
 
     return axios.get(url)
         .then((response) => {
@@ -25,7 +26,7 @@ export function getSingerDetail (singerid) {
 }
 
 export function getSingerInfo (singerid) {
-    const url = 'http://musicapi.leanapp.cn/artist/desc?id=' + singerid;
+    const url = baseUrl + '/artist/desc?id=' + singerid;
 
     return axios.get(url)
         .then((response) => {
@@ -37,7 +38,7 @@ export function getSingerInfo (singerid) {
 }
 
 export function getSingerAlbum (singerid) {
-    const url = 'http://musicapi.leanapp.cn/artist/album?id=' + singerid;
+    const url = baseUrl + '/artist/album?id=' + singerid;
 
     return axios.get(url)
         .then((response) => {

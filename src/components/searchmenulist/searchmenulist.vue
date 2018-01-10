@@ -1,6 +1,6 @@
 <template>
     <div class="searchmenulist">
-        <scroll :data="menus" class="list-wrapper">
+        <scroll :data="menus" :pullup="pullup" @scrollToEnd="searchMore" class="list-wrapper">
             <div>
                 <ul>
                     <li v-for="menu in menus" class="menu-content" @click="selectMenu(menu)">
@@ -13,6 +13,7 @@
                             <div class="info">{{ menu.trackCount }}首音乐&nbsp;&nbsp;by&nbsp;{{ menu.creator }}，播放{{ menu.playCount }}次</div>
                         </div>
                     </li>
+                    <div class="loading"><loading v-show="hasMore"></loading></div>
                 </ul>
                 <div class="bottom"></div>
             </div>
@@ -24,12 +25,22 @@
 <script type="text/ecmascript-6">
     import scroll from 'base/scroll/scroll.vue';
     import {mapMutations} from 'vuex';
+    import loading from 'base/loading/loading.vue';
 
     export default {
+        data () {
+            return {
+                pullup: true
+            };
+        },
         props: {
             menus: {
                 type: Array,
                 default: []
+            },
+            hasMore: {
+                type: Boolean,
+                default: true
             }
         },
         methods: {
@@ -39,12 +50,17 @@
                 });
                 this.setMusicMenu(menu);
             },
+            searchMore () {
+                // console.log('searchMore');
+                this.$emit('searchmore', 1000);
+            },
             ...mapMutations({
                 setMusicMenu: 'SET_MUSICMENU'
             })
         },
         components: {
-            scroll
+            scroll,
+            loading
         }
     };
 </script>
@@ -80,6 +96,9 @@
                         line-height: 1
                         font-size: 10px
                         color: #949496
+            .loading
+                position: relative
+                width: 100%
             .bottom
                 width: 100%
                 height: 110px

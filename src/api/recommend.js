@@ -1,7 +1,8 @@
 import axios from 'axios';
+import {baseUrl} from './config.js';
 
 export function getRecommendBanner () {
-    const url = 'http://musicapi.leanapp.cn/banner';
+    const url = baseUrl + '/banner';
 
     return axios.get(url)
         .then((response) => {
@@ -13,7 +14,7 @@ export function getRecommendBanner () {
 }
 
 export function getRecommendSongs () {
-    const url = 'http://musicapi.leanapp.cn/personalized/newsong';
+    const url = baseUrl + '/personalized/newsong';
 
     return axios.get(url)
         .then((response) => {

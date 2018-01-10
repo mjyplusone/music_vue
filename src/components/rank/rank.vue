@@ -55,8 +55,10 @@
                     .all([getRankList(0), getRankList(1), getRankList(2), getRankList(3), getRankList(4)])
                     .then((results) => {
                         results.forEach((item) => {
+                            console.log(item);
                             if (item.code === 200) {
                                 this.ranklists.push(item.result);
+                                // this.ranklists.push(item.playlist);
                             }
                         });
                         console.log(this.ranklists);

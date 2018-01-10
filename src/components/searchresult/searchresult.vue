@@ -37,9 +37,11 @@
                 </div> -->
         <keep-alive>
             <router-view :searchSongList="searchSongList" :toolbarType="2" :matchArtist="matchArtist" :matchAlbum="matchAlbum"
-                        :searchAlbumList="searchAlbumList" 
-                        :artists="searchArtistList"
-                        :menus="searchMenuList"></router-view>
+                         :searchAlbumList="searchAlbumList" 
+                         :artists="searchArtistList"
+                         :menus="searchMenuList"
+                         @searchmore="searchMore"
+                         :hasMore="hasMore"></router-view>
         </keep-alive>
                 <!-- <div class="bottom"></div> -->
             <!-- </div> -->
@@ -54,8 +56,9 @@
     import songlist from 'components/songlist/songlist.vue';
     import {createSearchSong} from 'common/js/song.js';
     import {createAlbum} from 'common/js/album.js';
-    import scroll from 'base/scroll/scroll.vue';
     import loading from 'base/loading/loading.vue';
+
+    const limit = 20;  // 分页返回数据时,每页返回数量
 
     export default {
         data () {
@@ -71,7 +74,12 @@
                 searchAlbumList: [],
                 // 歌单
                 searchMenuList: [],
-                tabType: 0
+                // 当前tab
+                tabType: 0,
+                // 有更多可加载项
+                hasMore: true,
+                // 用于分页的页数
+                currentPage: 0
             };
         },
         created () {
@@ -109,26 +117,103 @@
         },
         methods: {
             search (type) {
-                search(this.query, type).then((res) => {
+                // 每次重新请求数据时,要吧hasMore恢复为true,不然可能上一次searchmore结束之后已经被置为false
+                // 同时把currentPage的值也恢复
+                this.hasMore = true;
+                this.currentPage = 0;
+                search(this.query, type, 0).then((res) => {
                     if (res.code === 200) {
                         console.log(res.result);
                         if (this.tabType === 0) {
+                            // 修APIbug 保存一开始返回值中歌曲的总量
+                            this.songCount = res.result.songCount;
                             this.searchSongList = this._normalizeSongs(res.result.songs);
                             this.highlight(this.searchSongList);
                             console.log(this.searchSongList);
                         } else if (this.tabType === 1) {
+                            // 修APIbug 保存一开始返回值中歌手的总量
+                            this.artistCount = res.result.artistCount;
                             this.searchArtistList = this._normalizeArtists(res.result.artists);
                             this.highlight(this.searchArtistList);
-                            // console.log(this.searchArtistList);
+                            console.log(this.searchArtistList);
                         } else if (this.tabType === 2) {
+                            // 修APIbug 保存一开始返回值中专辑的总量
+                            this.albumCount = res.result.albumCount;
                             this.searchAlbumList = this._normalizeAlbums(res.result.albums);
                             this.highlight(this.searchAlbumList);
                         } else if (this.tabType === 3) {
+                            // 修APIbug 保存一开始返回值中歌单的总量
+                            this.playlistCount = res.result.playlistCount;
                             this.searchMenuList = this._normalizeMenus(res.result.playlists);
                             this.highlight(this.searchMenuList);
                         }
                     }
+                    this._checkMore(res.result);
                 });
+            },
+            // 下拉加载
+            searchMore (type) {
+                if (!this.hasMore) {
+                    return;
+                }
+                this.currentPage ++;
+                search(this.query, type, this.currentPage * limit).then((res) => {
+                    if (res.code === 200) {
+                        console.log(res.result);
+                        if (this.tabType === 0) {
+                            // 修APIbug,防止没有res.result.songs,把hasMore置false,之后不再加载
+                            if (!res.result.songs) {
+                                this.hasMore = false;
+                                return;
+                            }
+                            this.searchSongList = this.searchSongList.concat(this._normalizeSongs(res.result.songs));
+                            this.highlight(this.searchSongList);
+                        } else if (this.tabType === 1) {
+                            if (!res.result.artists) {
+                                this.hasMore = false;
+                                return;
+                            }
+                            this.searchArtistList = this.searchArtistList.concat(this._normalizeArtists(res.result.artists));
+                            this.highlight(this.searchArtistList);
+                        } else if (this.tabType === 2) {
+                            if (!res.result.albums) {
+                                this.hasMore = false;
+                                return;
+                            }
+                            this.searchAlbumList = this.searchAlbumList.concat(this._normalizeAlbums(res.result.albums));
+                            this.highlight(this.searchAlbumList);
+                        } else if (this.tabType === 3) {
+                            if (!res.result.playlists) {
+                                this.hasMore = false;
+                                return;
+                            }
+                            this.searchMenuList = this.searchMenuList.concat(this._normalizeMenus(res.result.playlists));
+                            this.highlight(this.searchMenuList);
+                        }
+                    }
+                    this._checkMore(res.result);
+                });
+            },
+            _checkMore (result) {
+                // hasMore置false,表示不能继续加载
+                if (this.tabType === 0) {
+                    if (!result.songs || this.searchSongList.length >= this.songCount) {
+                        this.hasMore = false;
+                    }
+                } else if (this.tabType === 1) {
+                    console.log(this.searchArtistList.length);
+                    if (!result.artists || this.searchArtistList.length >= this.artistCount) {
+                        this.hasMore = false;
+                    }
+                } else if (this.tabType === 2) {
+                    if (!result.albums || this.searchAlbumList.length >= this.albumCount) {
+                        this.hasMore = false;
+                    }
+                } else if (this.tabType === 3) {
+                     if (!result.playlists || this.searchMenuList.length >= this.playlistCount) {
+                        this.hasMore = false;
+                    }
+                }
             },
             // searchsuggest () {
             //     searchsuggest(this.query).then((res) => {
@@ -137,6 +222,7 @@
             //         }
             //     });
             // },
+            // 最佳匹配
             searchmatch () {
                 searchmatch(this.query).then((res) => {
                     if (res.code === 200) {
@@ -300,7 +386,6 @@
         },
         components: {
             songlist,
-            scroll,
             loading
         }
     };
@@ -339,6 +424,12 @@
         .loading
             position: absolute
             top: 20%
+            width: 100%
+        .loading-more
+            position: absolute
+            bottom: 50px
+            height: 25px
+            transform: translateY(-100%)
             width: 100%
         .highlight
             color: #648db9

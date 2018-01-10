@@ -15,6 +15,7 @@ export function createRank (rank) {
         picUrl: rank.coverImgUrl,
         songs: [rank.tracks[0].name, rank.tracks[1].name, rank.tracks[2].name],
         artists: [Allsinger(rank.tracks[0].artists), Allsinger(rank.tracks[1].artists), Allsinger(rank.tracks[2].artists)]
+        // artists: [Allsinger(rank.tracks[0].ar), Allsinger(rank.tracks[1].ar), Allsinger(rank.tracks[2].ar)]
     });
 }
 

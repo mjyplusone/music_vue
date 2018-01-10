@@ -25,6 +25,11 @@
             listenScroll: {
                 type: Boolean,
                 default: false
+            },
+            // 是否开启上拉加载
+            pullup: {
+                type: Boolean,
+                default: false
             }
         },
         mounted () {
@@ -50,6 +55,14 @@
                     this.scroll.on('scroll', (pos) => {
                         // 这里的this是scroll的this，要派发事件要在外层保留vue实例的this
                         th.$emit('scrollPos', pos);
+                    });
+                }
+                // 是否开启上拉加载
+                if (this.pullup) {
+                    this.scroll.on('scrollEnd', () => {
+                        if (this.scroll.y <= this.scroll.maxScrollY + 50) {
+                            this.$emit('scrollToEnd');
+                        }
                     });
                 }
             },

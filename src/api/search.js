@@ -1,5 +1,5 @@
 import jsonp from 'common/js/jsonp.js';
-import {commonParams, options} from './config';
+import {commonParams, options, baseUrl} from './config';
 import axios from 'axios';
 
 export function getHotKey () {
@@ -13,8 +13,10 @@ export function getHotKey () {
     return jsonp(url, data, options);
 }
 
-export function search (query, type) {
-    const url = 'http://musicapi.leanapp.cn/search?keywords=' + query + '&type=' + type;
+export function search (query, type, offset) {
+    const limit = 20;
+    const url = baseUrl + '/search?keywords=' + query + '&type=' + type + '&offset=' + offset + '&limit=' + limit;
+    console.log(url);
 
     return axios.get(url)
         .then((response) => {
@@ -26,7 +28,7 @@ export function search (query, type) {
 }
 
 export function searchsuggest (query) {
-    const url = 'http://musicapi.leanapp.cn/search/suggest?keywords=' + query;
+    const url = baseUrl + '/search/suggest?keywords=' + query;
 
     return axios.get(url)
         .then((response) => {
@@ -38,7 +40,7 @@ export function searchsuggest (query) {
 }
 
 export function searchmatch (query) {
-    const url = 'http://musicapi.leanapp.cn/search/multimatch?keywords=' + query;
+    const url = baseUrl + '/search/multimatch?keywords=' + query;
 
     return axios.get(url)
         .then((response) => {

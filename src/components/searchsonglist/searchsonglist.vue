@@ -1,6 +1,7 @@
 <template>
     <div class="searchsonglist">
-        <scroll :data="searchSongList" :probeType="probeType" :listenScroll="listenScroll" 
+        <scroll :data="searchSongList"
+                :pullup="pullup" @scrollToEnd="searchMore"
                 class="list-wrapper" ref="scroll">
             <div>
                 <div class="match" v-show="matchArtist.length || matchAlbum.length">
@@ -30,6 +31,7 @@
                     </ul>
                 </div>
                 <songlist :songs="searchSongList" :toolbarType="2" :highlight="true" @selectsong="selectSong"></songlist>
+                <div class="loading"><loading v-show="hasMore"></loading></div>
                 <div class="bottom"></div>
             </div>
         </scroll>
@@ -41,8 +43,14 @@
     import songlist from 'components/songlist/songlist.vue';
     import scroll from 'base/scroll/scroll.vue';
     import {mapActions, mapMutations, mapGetters} from 'vuex';
+    import loading from 'base/loading/loading.vue';
 
     export default {
+        data () {
+            return {
+                pullup: true
+            };
+        },
         props: {
             searchSongList: {
                 type: Array,
@@ -59,11 +67,14 @@
             matchAlbum: {
                 type: Array,
                 default: []
+            },
+            hasMore: {
+                type: Boolean,
+                default: true
             }
         },
         created () {
             this.probeType = 3;
-            this.listenScroll = true;
         },
         computed: {
             ...mapGetters([
@@ -89,6 +100,10 @@
             loadImage () {
                 this.$refs.scroll.refresh();
             },
+            searchMore () {
+                // console.log('searchMore');
+                this.$emit('searchmore', 1);
+            },
             ...mapMutations({
                 setSinger: 'SET_SINGER',
                 setSingerBackRoute: 'SET_SINGERBACKROUTE'
@@ -99,7 +114,8 @@
         },
         components: {
             songlist,
-            scroll
+            scroll,
+            loading
         }
     };
 </script>
@@ -170,6 +186,9 @@
                             line-height: 1
                             font-size: 12px
                             color: rgba(0, 0, 0, 0.5)
+        .loading
+            position: relative
+            width: 100%
         .bottom
             width: 100%
             height: 110px

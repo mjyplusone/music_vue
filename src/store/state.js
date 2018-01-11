@@ -1,4 +1,5 @@
 import {playMode} from 'common/js/config.js';
+import {loadSearch} from 'common/js/cache.js';
 
 const state = {
     singer: {},
@@ -10,7 +11,8 @@ const state = {
     currentIndex: -1,  // 当前播放
     musicmenu: {},  // 歌单信息
     query: '',  // 搜索值
-    singerBackRoute: '/findmusic/singer'  // 返回路由
+    singerBackRoute: '/findmusic/singer',  // 返回路由
+    searchHistory: loadSearch()  // 搜索历史
 };
 
 export default state;

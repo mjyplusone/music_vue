@@ -18,6 +18,7 @@
                 <div class="bottom"></div>
             </div>
         </scroll>
+        <div class="no-result" v-show="!menus.length && !hasMore">无结果</div>
         <router-view></router-view>
     </div>
 </template>
@@ -102,4 +103,10 @@
             .bottom
                 width: 100%
                 height: 110px
+        .no-result
+            position: absolute
+            top: 20%
+            width: 100%
+            text-align: center
+            color: rgba(0, 0, 0, 0.7)
 </style>

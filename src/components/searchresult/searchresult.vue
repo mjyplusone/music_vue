@@ -57,6 +57,7 @@
     import {createSearchSong} from 'common/js/song.js';
     import {createAlbum} from 'common/js/album.js';
     import loading from 'base/loading/loading.vue';
+    import {debounce} from 'common/js/util.js';
 
     const limit = 20;  // 分页返回数据时,每页返回数量
 
@@ -83,10 +84,26 @@
             };
         },
         created () {
-            // this.probeType = 3;
-            // this.listenScroll = true;
             this.searchmatch();
             this.search(1);
+            // 第一次输入的query,由于searchresult组件未渲染完成,不能watch到
+            // 一旦created,一定是query不为空,所以直接派发事件保存query
+            this.$emit('changesearch');
+            // 用回调函数的形式写,方便加上节流函数
+            this.$watch('query', debounce(() => {
+                // 这里不能watch query为空的情况,因为query为空,这个组件不渲染
+                if (this.tabType === 0) {
+                    this.searchmatch();
+                    this.search(1);
+                } else if (this.tabType === 1) {
+                    this.search(100);
+                } else if (this.tabType === 2) {
+                    this.search(10);
+                } else if (this.tabType === 3) {
+                    this.search(1000);
+                }
+                this.$emit('changesearch');
+            }, 200));
         },
         computed: {
             // scrollData () {
@@ -121,27 +138,52 @@
                 // 同时把currentPage的值也恢复
                 this.hasMore = true;
                 this.currentPage = 0;
+                // 列表恢复
+                this.searchSongList = [];
+                this.searchArtistList = [];
+                this.searchAlbumList = [];
+                this.searchMenuList = [];
                 search(this.query, type, 0).then((res) => {
                     if (res.code === 200) {
                         console.log(res.result);
                         if (this.tabType === 0) {
+                            if (!res.result.songs) {
+                                this.searchSongList = [];
+                                this.hasMore = false;
+                                return;
+                            }
                             // 修APIbug 保存一开始返回值中歌曲的总量
                             this.songCount = res.result.songCount;
                             this.searchSongList = this._normalizeSongs(res.result.songs);
                             this.highlight(this.searchSongList);
                             console.log(this.searchSongList);
                         } else if (this.tabType === 1) {
+                            if (!res.result.artists) {
+                                this.searchArtistList = [];
+                                this.hasMore = false;
+                                return;
+                            }
                             // 修APIbug 保存一开始返回值中歌手的总量
                             this.artistCount = res.result.artistCount;
                             this.searchArtistList = this._normalizeArtists(res.result.artists);
                             this.highlight(this.searchArtistList);
                             console.log(this.searchArtistList);
                         } else if (this.tabType === 2) {
+                            if (!res.result.albums) {
+                                this.searchAlbumList = [];
+                                this.hasMore = false;
+                                return;
+                            }
                             // 修APIbug 保存一开始返回值中专辑的总量
                             this.albumCount = res.result.albumCount;
                             this.searchAlbumList = this._normalizeAlbums(res.result.albums);
                             this.highlight(this.searchAlbumList);
                         } else if (this.tabType === 3) {
+                            if (!res.result.playlists) {
+                                this.searchMenuList = [];
+                                this.hasMore = false;
+                                return;
+                            }
                             // 修APIbug 保存一开始返回值中歌单的总量
                             this.playlistCount = res.result.playlistCount;
                             this.searchMenuList = this._normalizeMenus(res.result.playlists);
@@ -224,9 +266,14 @@
             // },
             // 最佳匹配
             searchmatch () {
+                this.matchArtist = [];
+                this.matchAlbum = [];
                 searchmatch(this.query).then((res) => {
+                    console.log(res);
                     if (res.code === 200) {
-                        // console.log(res.result);
+                        if (!res.result.orders) {
+                            return;
+                        }
                         res.result.orders.forEach((item) => {
                             if (item === 'artist') {
                                 this.matchArtist = res.result.artist;
@@ -358,19 +405,19 @@
             // ])
         },
         watch: {
-            query () {
-                // 这里不能watch query为空的情况,因为query为空,这个组件不渲染
-                if (this.tabType === 0) {
-                    this.searchmatch();
-                    this.search(1);
-                } else if (this.tabType === 1) {
-                    this.search(100);
-                } else if (this.tabType === 2) {
-                    this.search(10);
-                } else if (this.tabType === 3) {
-                    this.search(1000);
-                }
-            },
+            // query () {
+            //     // 这里不能watch query为空的情况,因为query为空,这个组件不渲染
+            //         if (this.tabType === 0) {
+            //             this.searchmatch();
+            //             this.search(1);
+            //         } else if (this.tabType === 1) {
+            //             this.search(100);
+            //         } else if (this.tabType === 2) {
+            //             this.search(10);
+            //         } else if (this.tabType === 3) {
+            //             this.search(1000);
+            //         }
+            // },
             tabType (newtab) {
                 if (newtab === 0) {
                     this.searchmatch();
@@ -424,12 +471,6 @@
         .loading
             position: absolute
             top: 20%
-            width: 100%
-        .loading-more
-            position: absolute
-            bottom: 50px
-            height: 25px
-            transform: translateY(-100%)
             width: 100%
         .highlight
             color: #648db9

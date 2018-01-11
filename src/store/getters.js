@@ -21,3 +21,5 @@ export const musicmenu = state => state.musicmenu;
 export const query = state => state.query;
 
 export const singerBackRoute = state => state.singerBackRoute;
+
+export const searchHistory = state => state.searchHistory;

@@ -31,6 +31,9 @@ const mutations = {
     },
     [types.SET_SINGERBACKROUTE] (state, singerbackroute) {
         state.singerBackRoute = singerbackroute;
+    },
+    [types.SET_SEARCHHISTORY] (state, searchhistory) {
+        state.searchHistory = searchhistory;
     }
 };
 

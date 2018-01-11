@@ -35,6 +35,7 @@
                 <div class="bottom"></div>
             </div>
         </scroll>
+        <div class="no-result" v-show="!searchSongList.length && !hasMore">无结果</div>
         <router-view></router-view>
     </div>
 </template>
@@ -82,12 +83,8 @@
             ])
         },
         methods: {
-            // 向state提交全部歌曲列表和当前点击歌曲的index
             selectSong (song, index) {
-                this.selectPlay({
-                    song: this.searchSongList,
-                    index: index
-                });
+                this.insertSong(song);
             },
             selectArtist (artist) {
                 // console.log(artist);
@@ -109,7 +106,7 @@
                 setSingerBackRoute: 'SET_SINGERBACKROUTE'
             }),
             ...mapActions([
-                'selectPlay'
+                'insertSong'
             ])
         },
         components: {
@@ -186,10 +183,16 @@
                             line-height: 1
                             font-size: 12px
                             color: rgba(0, 0, 0, 0.5)
-        .loading
-            position: relative
+            .loading
+                position: relative
+                width: 100%
+            .bottom
+                width: 100%
+                height: 110px
+        .no-result
+            position: absolute
+            top: 20%
             width: 100%
-        .bottom
-            width: 100%
-            height: 110px
+            text-align: center
+            color: rgba(0, 0, 0, 0.7)
 </style>

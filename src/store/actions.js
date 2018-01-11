@@ -1,6 +1,7 @@
 import * as types from './mutation-types';
 import {playMode} from 'common/js/config.js';
 import {shuffle} from 'common/js/util.js';
+import {saveSearch} from 'common/js/cache.js';
 
 export const selectPlay = function ({commit, state}, {song, index}) {
     commit(types.SET_SEQUENCELIST, song);
@@ -16,4 +17,64 @@ export const selectPlay = function ({commit, state}, {song, index}) {
     commit(types.SET_CURRENTINDEX, index);
     commit(types.SET_FULLSCREEN, true);
     commit(types.SET_PLAYING, true);
+};
+
+function findIndex (list, song) {
+    return list.findIndex((item) => {
+      return item.id === song.id;
+    });
+  }
+
+export const insertSong = function ({commit, state}, song) {
+    let playList = state.playList.slice();
+    let sequenceList = state.sequenceList.slice();
+    let currentIndex = state.currentIndex;
+    // 记录当前歌曲
+    let currentSong = playList[currentIndex];
+    // 查找列表是否已经有要插入的歌,并返回其索引
+    let pindex = findIndex(playList, song);
+    // 在当前索引的下一个插入歌曲
+    currentIndex++;
+    playList.splice(currentIndex, 0, song);
+
+    // 列表中已经有待插入的歌曲
+    if (pindex > -1) {
+        // 然后从列表中删除之前已经有的这首歌
+        // 当前插入歌曲索引大于之前存在歌曲的索引,直接删除之前存在的歌曲,然后当前插入歌曲的currentIndex减1
+        if (currentIndex > pindex) {
+            playList.splice(pindex, 1);
+            currentIndex--;
+        } else {
+            // 当前插入歌曲索引小于之前存在歌曲的索引,原来存在的歌曲索引增加1
+            // 删除原来存在的歌曲
+            playList.splice(pindex + 1, 1);
+        }
+    }
+
+    // sequenList中应该插入的位置
+    let currentSIndex = findIndex(sequenceList, currentSong) + 1;
+    // 查找squenceList中是否已经有要插入的歌,并返回其索引
+    let sindex = findIndex(sequenceList, song);
+    // sequenceList中插入歌曲
+    sequenceList.splice(currentSIndex, 0, song);
+
+    // squenceList中已经有待插入的歌曲
+    if (sindex > -1) {
+        if (currentSIndex > sindex) {
+            sequenceList.splice(sindex, 1);
+        } else {
+            sequenceList.splice(sindex + 1, 1);
+        }
+    }
+
+    // 提交到vuex
+    commit(types.SET_PLAYLIST, playList);
+    commit(types.SET_SEQUENCELIST, sequenceList);
+    commit(types.SET_CURRENTINDEX, currentIndex);
+    commit(types.SET_FULLSCREEN, true);
+    commit(types.SET_PLAYING, true);
+};
+
+export const saveSearchHistory = function ({commit}, query) {
+    commit(types.SET_SEARCHHISTORY, saveSearch(query));
 };

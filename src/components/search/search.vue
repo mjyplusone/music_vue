@@ -1,6 +1,6 @@
 <template>
     <div class="search">
-        <scroll class="scroll-wrapper" :data="searchHistory">
+        <scroll class="scroll-wrapper" :data="scrollData">
             <div>
                 <div class="hotkey">
                     <h1 class="title">热门搜索</h1>
@@ -12,10 +12,10 @@
                 </div>
                 <div class="searchhistory" v-show="searchHistory.length">
                     <ul>
-                        <li v-for="history in searchHistory" class="history">
+                        <li v-for="history in searchHistory" class="history" @click="addQuery(history)">
                             <i class="icon-set-time"></i>
                             <span class="text">{{ history }}</span>
-                            <i class="icon-close"></i>
+                            <i class="icon-close" @click.stop="deleteHistory(history)"></i>
                         </li>
                     </ul>
                 </div>
@@ -42,6 +42,9 @@
             this._getHotKey();
         },
         computed: {
+            scrollData () {
+                return this.hotKey.concat(this.searchHistory);
+            },
             ...mapGetters([
                 'query',
                 'searchHistory'
@@ -72,11 +75,15 @@
                 }
                 this.saveSearchHistory(this.query);
             },
+            deleteHistory (history) {
+                this.deleteSearchHistory(history);
+            },
             ...mapMutations({
                 setQuery: 'SET_QUERY'
             }),
             ...mapActions([
-                'saveSearchHistory'
+                'saveSearchHistory',
+                'deleteSearchHistory'
             ])
         },
         watch: {

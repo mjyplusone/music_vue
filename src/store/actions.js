@@ -21,7 +21,7 @@ export const selectPlay = function ({commit, state}, {song, index}) {
 
 function findIndex (list, song) {
     return list.findIndex((item) => {
-      return item.id === song.id;
+        return item.id === song.id;
     });
   }
 
@@ -81,4 +81,47 @@ export const saveSearchHistory = function ({commit}, query) {
 
 export const deleteSearchHistory = function ({commit}, query) {
     commit(types.SET_SEARCHHISTORY, deleteSearch(query));
+};
+
+export const deleteSong = function ({commit, state}, song) {
+    let playList = state.playList.slice();
+    let sequenceList = state.sequenceList.slice();
+    let currentIndex = state.currentIndex;
+
+    // 找到要删除歌曲在playList中的索引
+    let pindex = findIndex(playList, song);
+    // 在playList中删除这首歌
+    playList.splice(pindex, 1);
+
+    // 找到要删除歌曲在sequenceList中的索引
+    let sindex = findIndex(sequenceList, song);
+    // 在sequenceList中删除这首歌
+    sequenceList.splice(sindex, 1);
+
+    // 如果当前播放歌曲在删除歌曲的后面 或 currentIndex是最后一首歌
+    if (currentIndex > pindex || currentIndex === playList.length) {
+        currentIndex--;
+    }
+
+    // 提交到vuex
+    commit(types.SET_PLAYLIST, playList);
+    commit(types.SET_SEQUENCELIST, sequenceList);
+    commit(types.SET_CURRENTINDEX, currentIndex);
+
+    // 如果把整个列表删完了
+    if (!playList.length) {
+        // 要把playing状态置为false
+        commit(types.SET_PLAYING, false);
+        // fullScreen也要置为false,退出播放器
+        commit(types.SET_FULLSCREEN, false);
+    }
+};
+
+// 清空列表
+export const clearSongList = function ({commit}) {
+    commit(types.SET_PLAYLIST, []);
+    commit(types.SET_SEQUENCELIST, []);
+    commit(types.SET_CURRENTINDEX, -1);
+    commit(types.SET_PLAYING, false);
+    commit(types.SET_FULLSCREEN, false);
 };

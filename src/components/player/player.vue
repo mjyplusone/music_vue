@@ -60,11 +60,12 @@
                     <div class="icon icon-2"><i class="icon-prevdetail" @click="preSong"></i></div>
                     <div class="icon"><i :class="playIcon" @click="togglePlaying"></i></div>
                     <div class="icon icon-2"><i class="icon-nextdetail" @click="nextSong"></i></div>
-                    <div class="icon icon-1"><i class="icon-list-music"></i></div>
+                    <div class="icon icon-1"><i class="icon-list-music" @click="showPlayList"></i></div>
                 </div>
             </div>
         </transition>
         <audio :src="currentSong.musicUrl" ref="audio" @canplay="ready" @error="error" @timeupdate="timeUpdate" @ended="end"></audio>
+        <playlist ref="playlist" @changeplaying="changePlaying"></playlist>
     </div>
 </template>
 
@@ -75,7 +76,7 @@
     import {shuffle} from 'common/js/util.js';
     import Lyric from 'lyric-parser';
     import scroll from 'base/scroll/scroll.vue';
-    // import {getLyrics} from 'api/song.js';
+    import playlist from 'components/playlist/playlist.vue';
 
     export default {
         data () {
@@ -268,6 +269,14 @@
                 this.stickchange = '';
                 console.log(this.showCDPage);
             },
+            showPlayList () {
+                this.$refs.playlist.show();
+            },
+            changePlaying () {
+                if (!this.playing) {
+                    this.togglePlaying();
+                }
+            },
             _padZero (num) {
                 let len = num.toString().length;
                 while (len < 2) {
@@ -286,6 +295,10 @@
         },
         watch: {
             currentSong (newsong, oldsong) {
+                // 新歌曲为空,直接return
+                if (!newsong.id) {
+                    return;
+                }
                 if (newsong.id === oldsong.id) {
                     return;
                 }
@@ -309,7 +322,8 @@
         },
         components: {
             MProgress,
-            scroll
+            scroll,
+            playlist
         }
     };
 </script>

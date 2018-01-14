@@ -19,6 +19,7 @@ import searchartistlist from 'components/searchartistlist/searchartistlist.vue';
 import searchmenulist from 'components/searchmenulist/searchmenulist.vue';
 import searchsonglist from 'components/searchsonglist/searchsonglist.vue';
 import searchalbumlist from 'components/searchalbumlist/searchalbumlist.vue';
+import accountdetail from 'components/accountdetail/accountdetail.vue';
 
 Vue.use(Router);
 
@@ -130,7 +131,11 @@ export default new Router({
       path: '/friends', component: friends
     },
     {
-      path: '/account', component: account
+      path: '/account',
+      component: account,
+      children: [
+        {path: 'accountdetail', component: accountdetail}
+      ]
     }
   ]
 });

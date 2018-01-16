@@ -23,6 +23,8 @@ import accountdetail from 'components/accountdetail/accountdetail.vue';
 import myfavorite from 'components/myfavorite/myfavorite.vue';
 import mycollect from 'components/mycollect/mycollect.vue';
 import recentplay from 'components/recentplay/recentplay.vue';
+import localmusic from 'components/localmusic/localmusic.vue';
+import myradio from 'components/myradio/myradio.vue';
 
 Vue.use(Router);
 
@@ -133,7 +135,9 @@ export default new Router({
       children: [
         {path: 'myfavorite', component: myfavorite},
         {path: 'mycollect', component: mycollect},
-        {path: 'recentplay', component: recentplay}
+        {path: 'recentplay', component: recentplay},
+        {path: 'localmusic', component: localmusic},
+        {path: 'myradio', component: myradio}
       ]
     },
     {

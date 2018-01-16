@@ -3,7 +3,7 @@
         <m-header :tabType="tabType" :title="title"></m-header>
         <div class="my-list">
             <ul>
-                <li class="list-item">
+                <li class="list-item" @click="selectLocal">
                     <div class="left">
                         <i class="icon icon-music"></i>
                     </div>
@@ -19,11 +19,11 @@
                     </div>
                     <div class="right">
                         <span class="text">最近播放</span>
-                        <span class="count">12</span>
+                        <span class="count">{{ recentPlayList.length }}</span>
                         <i class="icon icon-right"></i>
                     </div>
                 </li>
-                <li class="list-item">
+                <li class="list-item" @click="selectRadio">
                     <div class="left">
                         <i class="icon icon-diantai"></i>
                     </div>
@@ -94,7 +94,8 @@
                 }
             },
             ...mapGetters([
-                'favoriteList'
+                'favoriteList',
+                'recentPlayList'
             ])
         },
         methods: {
@@ -114,6 +115,16 @@
             selectRecent () {
                 this.$router.push({
                     path: '/mymusic/recentplay'
+                });
+            },
+            selectLocal () {
+                this.$router.push({
+                    path: '/mymusic/localmusic'
+                });
+            },
+            selectRadio () {
+                this.$router.push({
+                    path: '/mymusic/myradio'
                 });
             }
         },

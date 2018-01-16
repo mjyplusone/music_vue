@@ -122,7 +122,10 @@
                 });
             },
             playAll () {
-               this.selectPlay({
+                if (!this.favoriteList) {
+                    return;
+                }
+                this.selectPlay({
                     song: this.favoriteList,
                     index: 0
                 });

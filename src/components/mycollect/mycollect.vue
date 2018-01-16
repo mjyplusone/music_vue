@@ -2,7 +2,7 @@
 <transition name="slide">
     <div class="mycollect">
         <m-header :tabType="tabType" :title="title"></m-header>
-        <div class="control-tab" ref="tab" @click="playAll">
+        <div class="control-tab" ref="tab" @click="playAll" v-show="favoriteList.length">
             <div class="left">
                 <span class="icon"><i class="icon-playdetail"></i></span>
                 <span class="text">播放全部&nbsp;<span class="num">(共{{ favoriteList.length }}首)</span></span>

@@ -25,3 +25,5 @@ export const singerBackRoute = state => state.singerBackRoute;
 export const searchHistory = state => state.searchHistory;
 
 export const favoriteList = state => state.favoriteList;
+
+export const recentPlayList = state => state.recentPlayList;

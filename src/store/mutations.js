@@ -37,6 +37,9 @@ const mutations = {
     },
     [types.SET_FAVORITELIST] (state, favoritelist) {
         state.favoriteList = favoritelist;
+    },
+    [types.SET_RECENTPLAYLIST] (state, recentplaylist) {
+        state.recentPlayList = recentplaylist;
     }
 };
 

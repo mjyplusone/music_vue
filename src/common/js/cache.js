@@ -5,6 +5,8 @@ const SEARCH_KEY = '__search__';
 const MAX_SEARCH_LENGTH = 15;
 const FAVORITE_KEY = '__favorite__';
 const MAX_FAVORITE_LENGTH = 200;
+const RECENT_KEY = '__recent__';
+const MAX_RECENT_LENGTH = 100;
 
 // 存储的数组,新传入的值,比较函数,最大值
 function insertArray (arr, val, compare, maxLength) {
@@ -78,6 +80,29 @@ export function deleteFavorite (song) {
     return songs;
 }
 
-export function loadFavorite (song) {
+export function loadFavorite () {
     return storage.get(FAVORITE_KEY, []);
+}
+
+// 最近播放的歌曲列表相关操作
+export function saveRecent (song) {
+    let songs = storage.get(RECENT_KEY, []);
+    insertArray(songs, song, (item) => {
+        return item.id === song.id;
+    }, MAX_RECENT_LENGTH);
+    storage.set(RECENT_KEY, songs);
+    return songs;
+}
+
+export function deleteRecent (song) {
+    let songs = storage.get(RECENT_KEY, []);
+    deleteFromArray(songs, (item) => {
+        return item.id === song.id;
+    });
+    storage.set(RECENT_KEY, songs);
+    return songs;
+}
+
+export function loadRecent () {
+    return storage.get(RECENT_KEY, []);
 }

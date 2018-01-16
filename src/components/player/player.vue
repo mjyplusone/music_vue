@@ -34,7 +34,7 @@
                         <div class="tool" v-show="showCDPage">
                             <div class="icon"><i class="icon-like" :class="iconFavorite(currentSong)" @click="toggleFavorite(currentSong)"></i></div>
                             <div class="icon"><i class="icon-download"></i></div>
-                            <div class="icon"><i class="icon-msg"></i></div>
+                            <div class="icon"><i class="icon-msg" @click="selectComment(currentSong)"></i></div>
                             <div class="icon"><i class="icon-list-circle-small"></i></div>
                         </div>
                     </transition>
@@ -298,6 +298,9 @@
                 } else {
                     this.saveFavoriteList(song);
                 }
+            },
+            selectComment (song) {
+                console.log(song.id);
             },
             _padZero (num) {
                 let len = num.toString().length;

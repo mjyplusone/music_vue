@@ -1,5 +1,5 @@
 import {playMode} from 'common/js/config.js';
-import {loadSearch, loadFavorite} from 'common/js/cache.js';
+import {loadSearch, loadFavorite, loadRecent} from 'common/js/cache.js';
 
 const state = {
     singer: {},
@@ -13,7 +13,8 @@ const state = {
     query: '',  // 搜索值
     singerBackRoute: '/findmusic/singer',  // 返回路由
     searchHistory: loadSearch(),  // 搜索历史
-    favoriteList: loadFavorite()  // 我喜欢的音乐列表
+    favoriteList: loadFavorite(),  // 我喜欢的音乐列表
+    recentPlayList: loadRecent()  // 最近播放歌曲列表
 };
 
 export default state;

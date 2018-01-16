@@ -34,6 +34,9 @@ const mutations = {
     },
     [types.SET_SEARCHHISTORY] (state, searchhistory) {
         state.searchHistory = searchhistory;
+    },
+    [types.SET_FAVORITELIST] (state, favoritelist) {
+        state.favoriteList = favoritelist;
     }
 };
 

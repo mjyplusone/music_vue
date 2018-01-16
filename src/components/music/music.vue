@@ -88,9 +88,9 @@
                 <div class="bottom border-1px">发现更多有趣内容&nbsp;&nbsp;></div>
             </div>
         </scroll>
-        <keep-alive>
+        <!-- <keep-alive> -->
             <router-view :banner="topMenuBanner"></router-view>
-        </keep-alive>
+        <!-- </keep-alive> -->
     </div>
 </template>
 

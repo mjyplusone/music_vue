@@ -32,7 +32,7 @@
                     </transition>
                     <transition name="fade">
                         <div class="tool" v-show="showCDPage">
-                            <div class="icon"><i class="icon-like"></i></div>
+                            <div class="icon"><i class="icon-like" :class="iconFavorite(currentSong)" @click="toggleFavorite(currentSong)"></i></div>
                             <div class="icon"><i class="icon-download"></i></div>
                             <div class="icon"><i class="icon-msg"></i></div>
                             <div class="icon"><i class="icon-list-circle-small"></i></div>
@@ -70,7 +70,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {mapGetters, mapMutations} from 'vuex';
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
     import MProgress from 'components/m-progress/m-progress.vue';
     import {playMode} from 'common/js/config.js';
     import {shuffle} from 'common/js/util.js';
@@ -123,7 +123,8 @@
                 'playing',
                 'currentIndex',
                 'mode',
-                'sequenceList'
+                'sequenceList',
+                'favoriteList'
             ])
         },
         methods: {
@@ -277,6 +278,27 @@
                     this.togglePlaying();
                 }
             },
+            isFavorite (song) {
+                const index = this.favoriteList.findIndex((item) => {
+                    return item.id === song.id;
+                });
+                return index > -1;
+            },
+            iconFavorite (song) {
+                if (this.isFavorite(song)) {
+                    return 'on';
+                } else {
+                    return 'off';
+                }
+            },
+            toggleFavorite (song) {
+                if (this.isFavorite(song)) {
+                    // 调用action
+                    this.deleteFavoriteList(song);
+                } else {
+                    this.saveFavoriteList(song);
+                }
+            },
             _padZero (num) {
                 let len = num.toString().length;
                 while (len < 2) {
@@ -291,7 +313,11 @@
                 setCurrentIndex: 'SET_CURRENTINDEX',
                 setPlayMode: 'SET_PLAYMODE',
                 setPlayList: 'SET_PLAYLIST'
-            })
+            }),
+            ...mapActions([
+                'saveFavoriteList',
+                'deleteFavoriteList'
+            ])
         },
         watch: {
             currentSong (newsong, oldsong) {
@@ -462,6 +488,11 @@
                     line-height: 4.2vh
                     font-size: 4.2vh
                     color: #ffffff
+                    .icon-like
+                        &.on
+                            color: #d43c33
+                        &.off 
+                            color: #ffffff
             .middle-lyric
                 position: absolute
                 width: 100%

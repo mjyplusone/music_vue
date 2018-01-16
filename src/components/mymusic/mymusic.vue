@@ -1,7 +1,7 @@
 <template>
     <div class="mymusic">
         <m-header :tabType="tabType" :title="title"></m-header>
-        <div class="mylist">
+        <div class="my-list">
             <ul>
                 <li class="list-item">
                     <div class="left">
@@ -13,7 +13,7 @@
                         <i class="icon icon-right"></i>
                     </div>
                 </li>
-                <li class="list-item">
+                <li class="list-item" @click="selectRecent">
                     <div class="left">
                         <i class="icon icon-zuijinplay"></i>
                     </div>
@@ -33,19 +33,19 @@
                         <i class="icon icon-right"></i>
                     </div>
                 </li>
-                <li class="list-item">
+                <li class="list-item" @click="selectCollect">
                     <div class="left">
                         <i class="icon icon-collect"></i>
                     </div>
                     <div class="right">
                         <span class="text">我的收藏</span>
-                        <span class="count">12</span>
+                        <span class="count">{{ favoriteList.length }}</span>
                         <i class="icon icon-right"></i>
                     </div>
                 </li>
             </ul>
         </div>
-        <div class="myfavorite">
+        <div class="my-favorite">
             <div class="title" @click="foldMenuList">
                 <i :class="iconFold"></i>
                 <span class="text">我创建的歌单</span>
@@ -53,26 +53,28 @@
             </div>
             <div class="content" v-show="!isFold">
                 <ul>
-                    <li class="list-favorite">
+                    <li class="list-favorite" @click="selectFavorite">
                         <div class="avatar">
-                            <img src="" width="54" height="54" alt="">
+                            <img :src="avatarImg" width="54" height="54" alt="">
                             <div class="mask">
                                 <i class="icon-like"></i>
                             </div>
                         </div>
                         <div class="right">
                             <div class="fav-title">我喜欢的音乐</div>
-                            <div class="info">24首</div>
+                            <div class="info">{{ favoriteList.length }}首</div>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
+        <router-view></router-view>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import MHeader from 'components/m-header/m-header.vue';
+    import {mapGetters} from 'vuex';
 
     export default {
         data () {
@@ -82,14 +84,37 @@
                 isFold: false  // 歌单是否折叠
             };
         },
-        methods: {
-            foldMenuList () {
-                this.isFold = !this.isFold;
-            }
-        },
         computed: {
             iconFold () {
                 return this.isFold ? 'icon-right' : 'icon-down';
+            },
+            avatarImg () {
+                if (this.favoriteList.length) {
+                    return this.favoriteList[0].picUrl;
+                }
+            },
+            ...mapGetters([
+                'favoriteList'
+            ])
+        },
+        methods: {
+            foldMenuList () {
+                this.isFold = !this.isFold;
+            },
+            selectFavorite () {
+                this.$router.push({
+                    path: '/mymusic/myfavorite'
+                });
+            },
+            selectCollect () {
+                this.$router.push({
+                    path: '/mymusic/mycollect'
+                });
+            },
+            selectRecent () {
+                this.$router.push({
+                    path: '/mymusic/recentplay'
+                });
             }
         },
         components: {
@@ -106,7 +131,7 @@
         top: 0
         bottom: 0
         width: 100%
-        .mylist
+        .my-list
             height: 220px
             width: 100%
             .list-item
@@ -143,7 +168,7 @@
                         right: 9px
                         font-size: 15px
                         color: rgba(7, 17, 27, 0.5)
-        .myfavorite
+        .my-favorite
             width: 100%  
             .title
                 position: relative
@@ -182,7 +207,7 @@
                             left: 0
                             right: 0
                             text-align: center
-                            background: rgba(0, 0, 0, 0.7)
+                            background: rgba(0, 0, 0, 0.5)
                             .icon-like
                                 line-height: 54px
                                 font-size: 30px

@@ -20,6 +20,9 @@ import searchmenulist from 'components/searchmenulist/searchmenulist.vue';
 import searchsonglist from 'components/searchsonglist/searchsonglist.vue';
 import searchalbumlist from 'components/searchalbumlist/searchalbumlist.vue';
 import accountdetail from 'components/accountdetail/accountdetail.vue';
+import myfavorite from 'components/myfavorite/myfavorite.vue';
+import mycollect from 'components/mycollect/mycollect.vue';
+import recentplay from 'components/recentplay/recentplay.vue';
 
 Vue.use(Router);
 
@@ -125,7 +128,13 @@ export default new Router({
       ]
     },
     {
-      path: '/mymusic', component: mymusic
+      path: '/mymusic',
+      component: mymusic,
+      children: [
+        {path: 'myfavorite', component: myfavorite},
+        {path: 'mycollect', component: mycollect},
+        {path: 'recentplay', component: recentplay}
+      ]
     },
     {
       path: '/friends', component: friends

@@ -19,7 +19,7 @@
             <div class="list-group">
                 <div class="list-item">
                     <i class="icon icon-place"></i>
-                    <div class="text">NanTong, Jiangsu</div>
+                    <div class="text">Nantong, Jiangsu</div>
                 </div>
                 <div class="list-item">
                     <i class="icon icon-edit-paper"></i>

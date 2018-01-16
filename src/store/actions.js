@@ -1,7 +1,7 @@
 import * as types from './mutation-types';
 import {playMode} from 'common/js/config.js';
 import {shuffle} from 'common/js/util.js';
-import {saveSearch, deleteSearch} from 'common/js/cache.js';
+import {saveSearch, deleteSearch, saveFavorite, deleteFavorite} from 'common/js/cache.js';
 
 export const selectPlay = function ({commit, state}, {song, index}) {
     commit(types.SET_SEQUENCELIST, song);
@@ -124,4 +124,14 @@ export const clearSongList = function ({commit}) {
     commit(types.SET_CURRENTINDEX, -1);
     commit(types.SET_PLAYING, false);
     commit(types.SET_FULLSCREEN, false);
+};
+
+// 保存到我喜欢的音乐列表
+export const saveFavoriteList = function ({commit}, song) {
+    commit(types.SET_FAVORITELIST, saveFavorite(song));
+};
+
+// 从我喜欢的音乐列表中删除
+export const deleteFavoriteList = function ({commit}, song) {
+    commit(types.SET_FAVORITELIST, deleteFavorite(song));
 };

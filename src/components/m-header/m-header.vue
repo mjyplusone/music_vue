@@ -56,9 +56,10 @@
                 this.setFullScreen(true);
             },
             back () {
-                this.$router.push({
-                    path: '/findmusic/music'
-                });
+                this.$router.back();
+                // this.$router.push({
+                //     path: '/findmusic/music'
+                // });
             },
             focusInput () {
                 this.isFocus = true;

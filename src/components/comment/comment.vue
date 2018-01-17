@@ -23,7 +23,8 @@
                             <div class="right">
                                 <div class="username">{{ comment.nickname }}</div>
                                 <div class="time">{{ comment.time }}</div>
-                                <div class="commentcontent">{{ comment.content }}</div>
+                                <div class="commentcontent"><span v-show="comment.replyContent">回复<span class="replyname">@{{ comment.replyName }}</span>:</span>{{ comment.content }}</div>
+                                <div class="replycontent" v-show="comment.replyContent"><span class="replyname">@{{ comment.replyName }}</span>:{{ comment.replyContent }}</div>
                                 <div class="likedcount">{{ comment.likedCount }}</div>
                                 <div class="good"></div>
                             </div>
@@ -38,7 +39,8 @@
                             <div class="right">
                                 <div class="username">{{ comment.nickname }}</div>
                                 <div class="time">{{ comment.time }}</div>
-                                <div class="commentcontent">{{ comment.content }}</div>
+                                <div class="commentcontent"><span v-show="comment.replyContent">回复<span class="replyname">@{{ comment.replyName }}</span>:</span>{{ comment.content }}</div>
+                                <div class="replycontent" v-show="comment.replyContent"><span class="replyname">@{{ comment.replyName }}</span>:{{ comment.replyContent }}</div>
                                 <div class="likedcount">{{ comment.likedCount }}</div>
                                 <div class="good"></div>
                             </div>
@@ -293,6 +295,15 @@
                             line-height: 1.7
                             font-size: 13px
                             color: #000000
+                        .replycontent
+                            margin-top: 10px
+                            padding: 5px 8px
+                            border: 1px solid rgba(7, 17, 127, 0.1)
+                            line-height: 1.7
+                            font-size: 13px
+                            color: rgba(0, 0, 0, 0.5)
+                        .replyname
+                            color: #648db9
                         .likedcount
                             position: absolute
                             top: 3px

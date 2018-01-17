@@ -19,8 +19,8 @@ export function createComment (comment) {
         time: format(comment.time),
         content: comment.content,
         likedCount: normalCount(comment.likedCount),
-        replyContent: comment.beReplied.content,
-        replyName: comment.beReplied.nickname
+        replyContent: comment.beReplied.length ? comment.beReplied[0].content : '',
+        replyName: comment.beReplied.length ? comment.beReplied[0].user.nickname : ''
     });
 }
 

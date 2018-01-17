@@ -31,8 +31,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {mapActions} from 'vuex';
-
     const MUSIC_MENU_TYPE = 0;
     const SINGER_HOTSONG_LIST_TYPE = 1;
     const SEARCH_LIST_TYPE = 2;
@@ -83,12 +81,8 @@
         },
         methods: {
             selectSong (song, index) {
-                this.saveRecentPlayList(song);
                 this.$emit('selectsong', song, index);
-            },
-            ...mapActions([
-                'saveRecentPlayList'
-            ])
+            }
         }
     };
 </script>

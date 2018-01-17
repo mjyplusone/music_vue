@@ -40,6 +40,12 @@ const mutations = {
     },
     [types.SET_RECENTPLAYLIST] (state, recentplaylist) {
         state.recentPlayList = recentplaylist;
+    },
+    [types.SET_SHOWSONGCOMMENT] (state, flag) {
+        state.showSongComment = flag;
+    },
+    [types.SET_SHOWMENUCOMMENT] (state, flag) {
+        state.showMenuComment = flag;
     }
 };
 

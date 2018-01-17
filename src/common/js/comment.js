@@ -26,7 +26,7 @@ export function createComment (comment) {
 
 function format (time) {
     let date = new Date(time);
-    return formatDate(date, 'yyyy年m月d日');
+    return formatDate(date, 'yyyy年M月d日');
 }
 
 // 次数超过99999次,按...万次的格式显示

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {baseUrl} from './config.js';
 
-export function getSongComment (songid) {
-    const url = baseUrl + '/comment/music?id=' + songid;
+export function getSongComment (songid, offset) {
+    const url = baseUrl + '/comment/music?id=' + songid + '&offset=' + offset;
 
     return axios.get(url)
         .then((response) => {
@@ -13,8 +13,8 @@ export function getSongComment (songid) {
         });
 }
 
-export function getAlbumComment (albumid) {
-    const url = baseUrl + '/comment/album?id=' + albumid;
+export function getAlbumComment (albumid, offset) {
+    const url = baseUrl + '/comment/album?id=' + albumid + '&offset=' + offset;
 
     return axios.get(url)
         .then((response) => {
@@ -25,8 +25,8 @@ export function getAlbumComment (albumid) {
         });
 }
 
-export function getMenuComment (menuid) {
-    const url = baseUrl + '/comment/playlist?id=' + menuid;
+export function getMenuComment (menuid, offset) {
+    const url = baseUrl + '/comment/playlist?id=' + menuid + '&offset=' + offset;
 
     return axios.get(url)
         .then((response) => {

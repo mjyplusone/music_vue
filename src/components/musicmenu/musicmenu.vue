@@ -23,7 +23,7 @@
         <div class="banner" ref="banner">
             <div class="info">
                 <div class="left">
-                    <img :src="this.banner.picUrl" width="100%" height="100%" alt="" ref="bannerImg">
+                    <img :src="banner.picUrl" width="100%" height="100%" alt="" ref="bannerImg">
                 </div>
                 <div class="right" v-show="showMenuInfo">
                     <div class="title">{{ musicmenu.name }}</div>
@@ -39,7 +39,7 @@
                     <div class="text">{{ banner.subscribedCount }}</div>
                 </div>
                 <div class="banner-icon">
-                    <div class="icon icon-msg"></div>
+                    <div class="icon icon-msg" @click="selectComment()"></div>
                     <div class="text">{{ banner.commentCount }}</div>
                 </div>
                 <div class="banner-icon">
@@ -72,6 +72,7 @@
         <div class="loading-wrapper">
             <loading v-show="!menuSongs.length"></loading>
         </div>
+        <comment ref="comment" v-show="showMenuComment" :commentType="1" :id="musicmenu.id" :picUrl="banner.picUrl" :name="musicmenu.name" :singer="banner.authorName"></comment>
     </div>
 </transition>
 </template>
@@ -84,6 +85,7 @@
     import songlist from 'components/songlist/songlist.vue';
     import loading from 'base/loading/loading.vue';
     import {prefixStyle} from 'common/js/dom.js';
+    import comment from 'components/comment/comment.vue';
 
     const transform = prefixStyle('transform');
     const TITLE_HEIGHT = 44;
@@ -183,8 +185,15 @@
                     index: 0
                 });
             },
+            selectComment () {
+                this.setShowMenuComment(true);
+                this.$refs.comment.getMenuComment();
+                console.log(this.musicmenu.id);
+                console.log(this.musicmenu.name);
+            },
             ...mapMutations({
-                setFullScreen: 'SET_FULLSCREEN'
+                setFullScreen: 'SET_FULLSCREEN',
+                setShowMenuComment: 'SET_SHOWMENUCOMMENT'
             }),
             ...mapActions([
                 'selectPlay'
@@ -196,7 +205,8 @@
             },
             ...mapGetters([
                 'musicmenu',
-                'playing'
+                'playing',
+                'showMenuComment'
             ])
         },
         watch: {
@@ -227,7 +237,8 @@
         components: {
             scroll,
             songlist,
-            loading
+            loading,
+            comment
         }
     };
 </script>

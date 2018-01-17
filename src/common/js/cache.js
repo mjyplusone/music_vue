@@ -1,5 +1,6 @@
 // 操作和storage相关的逻辑
 import storage from 'good-storage';
+import Song from 'common/js/song.js';
 
 const SEARCH_KEY = '__search__';
 const MAX_SEARCH_LENGTH = 15;
@@ -68,6 +69,12 @@ export function saveFavorite (song) {
         return item.id === song.id;
     }, MAX_FAVORITE_LENGTH);
     storage.set(FAVORITE_KEY, songs);
+    // 转成Song类型的数组
+    if (songs.length) {
+        songs = songs.map((item) => {
+            return new Song(item);
+        });
+    }
     return songs;
 }
 
@@ -77,11 +84,24 @@ export function deleteFavorite (song) {
         return item.id === song.id;
     });
     storage.set(FAVORITE_KEY, songs);
+    // 转成Song类型的数组
+    if (songs.length) {
+        songs = songs.map((item) => {
+            return new Song(item);
+        });
+    }
     return songs;
 }
 
 export function loadFavorite () {
-    return storage.get(FAVORITE_KEY, []);
+    let songs = storage.get(FAVORITE_KEY, []);
+    // 转成Song类型的数组
+    if (songs.length) {
+        songs = songs.map((item) => {
+            return new Song(item);
+        });
+    }
+    return songs;
 }
 
 // 最近播放的歌曲列表相关操作
@@ -91,6 +111,12 @@ export function saveRecent (song) {
         return item.id === song.id;
     }, MAX_RECENT_LENGTH);
     storage.set(RECENT_KEY, songs);
+    // 转成Song类型的数组
+    if (songs.length) {
+        songs = songs.map((item) => {
+            return new Song(item);
+        });
+    }
     return songs;
 }
 
@@ -100,9 +126,22 @@ export function deleteRecent (song) {
         return item.id === song.id;
     });
     storage.set(RECENT_KEY, songs);
+    // 转成Song类型的数组
+    if (songs.length) {
+        songs = songs.map((item) => {
+            return new Song(item);
+        });
+    }
     return songs;
 }
 
 export function loadRecent () {
-    return storage.get(RECENT_KEY, []);
+    let songs = storage.get(RECENT_KEY, []);
+    // 转成Song类型的数组
+    if (songs.length) {
+        songs = songs.map((item) => {
+            return new Song(item);
+        });
+    }
+    return songs;
 }

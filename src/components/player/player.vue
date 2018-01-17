@@ -34,7 +34,7 @@
                         <div class="tool" v-show="showCDPage">
                             <div class="icon"><i class="icon-like" :class="iconFavorite(currentSong)" @click="toggleFavorite(currentSong)"></i></div>
                             <div class="icon"><i class="icon-download"></i></div>
-                            <div class="icon"><i class="icon-msg" @click="selectComment(currentSong)"></i></div>
+                            <div class="icon"><i class="icon-msg" @click="selectComment()"></i></div>
                             <div class="icon"><i class="icon-list-circle-small"></i></div>
                         </div>
                     </transition>
@@ -66,6 +66,7 @@
         </transition>
         <audio :src="currentSong.musicUrl" ref="audio" @canplay="ready" @error="error" @timeupdate="timeUpdate" @ended="end"></audio>
         <playlist ref="playlist" @changeplaying="changePlaying"></playlist>
+        <comment ref="comment" v-show="showSongComment" :commentType="0" :id="currentSong.id" :picUrl="currentSong.picUrl" :name="currentSong.name" :singer="currentSong.singer"></comment>
     </div>
 </template>
 
@@ -77,6 +78,7 @@
     import Lyric from 'lyric-parser';
     import scroll from 'base/scroll/scroll.vue';
     import playlist from 'components/playlist/playlist.vue';
+    import comment from 'components/comment/comment.vue';
 
     export default {
         data () {
@@ -91,7 +93,11 @@
                 // 当前歌词行
                 currentLineNum: 0,
                 // 当前显示界面
-                showCDPage: true
+                showCDPage: true,
+                // 精彩评论列表
+                songHotCommentList: [],
+                // 最新评论列表
+                songCommentList: []
             };
         },
         computed: {
@@ -124,7 +130,8 @@
                 'currentIndex',
                 'mode',
                 'sequenceList',
-                'favoriteList'
+                'favoriteList',
+                'showSongComment'
             ])
         },
         methods: {
@@ -268,7 +275,7 @@
                 this.showCDPage = !this.showCDPage;
                 // 将stickchange清空,这样切换cd和歌词,stick不会有改变的动画效果
                 this.stickchange = '';
-                console.log(this.showCDPage);
+                // console.log(this.showCDPage);
             },
             showPlayList () {
                 this.$refs.playlist.show();
@@ -292,6 +299,7 @@
                 }
             },
             toggleFavorite (song) {
+                console.log(song);
                 if (this.isFavorite(song)) {
                     // 调用action
                     this.deleteFavoriteList(song);
@@ -299,8 +307,9 @@
                     this.saveFavoriteList(song);
                 }
             },
-            selectComment (song) {
-                console.log(song.id);
+            selectComment () {
+                this.setShowSongComment(true);
+                this.$refs.comment.getSongComment();
             },
             _padZero (num) {
                 let len = num.toString().length;
@@ -315,11 +324,13 @@
                 setPlaying: 'SET_PLAYING',
                 setCurrentIndex: 'SET_CURRENTINDEX',
                 setPlayMode: 'SET_PLAYMODE',
-                setPlayList: 'SET_PLAYLIST'
+                setPlayList: 'SET_PLAYLIST',
+                setShowSongComment: 'SET_SHOWSONGCOMMENT'
             }),
             ...mapActions([
                 'saveFavoriteList',
-                'deleteFavoriteList'
+                'deleteFavoriteList',
+                'saveRecentPlayList'
             ])
         },
         watch: {
@@ -331,6 +342,8 @@
                 if (newsong.id === oldsong.id) {
                     return;
                 }
+                // 保存到最近播放
+                this.saveRecentPlayList(newsong);
                 if (this.parsedLyric) {
                     this.parsedLyric.stop();
                 }
@@ -352,7 +365,8 @@
         components: {
             MProgress,
             scroll,
-            playlist
+            playlist,
+            comment
         }
     };
 </script>

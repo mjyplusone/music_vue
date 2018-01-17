@@ -27,3 +27,7 @@ export const searchHistory = state => state.searchHistory;
 export const favoriteList = state => state.favoriteList;
 
 export const recentPlayList = state => state.recentPlayList;
+
+export const showSongComment = state => state.showSongComment;
+
+export const showMenuComment = state => state.showMenuComment;

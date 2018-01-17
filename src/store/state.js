@@ -14,7 +14,9 @@ const state = {
     singerBackRoute: '/findmusic/singer',  // 返回路由
     searchHistory: loadSearch(),  // 搜索历史
     favoriteList: loadFavorite(),  // 我喜欢的音乐列表
-    recentPlayList: loadRecent()  // 最近播放歌曲列表
+    recentPlayList: loadRecent(),  // 最近播放歌曲列表
+    showSongComment: false,  // 歌曲评论是否展示
+    showMenuComment: false  // 歌单评论是否展示
 };
 
 export default state;

@@ -1,6 +1,6 @@
 <template>
     <div class="search">
-        <scroll class="scroll-wrapper" :data="scrollData">
+        <scroll class="scroll-wrapper" :data="scrollData" :beforeScroll="beforeScroll" @beforeScroll="listScroll">
             <div>
                 <div class="hotkey">
                     <h1 class="title">热门搜索</h1>
@@ -35,7 +35,8 @@
     export default {
         data () {
             return {
-                hotKey: []
+                hotKey: [],
+                beforeScroll: true  // 监听滚动开始事件
             };
         },
         created () {
@@ -78,8 +79,13 @@
             deleteHistory (history) {
                 this.deleteSearchHistory(history);
             },
+            listScroll () {
+                // 列表开始滚动,blur input
+                this.setBlurInput(true);
+            },
             ...mapMutations({
-                setQuery: 'SET_QUERY'
+                setQuery: 'SET_QUERY',
+                setBlurInput: 'SET_BLURINPUT'
             }),
             ...mapActions([
                 'saveSearchHistory',

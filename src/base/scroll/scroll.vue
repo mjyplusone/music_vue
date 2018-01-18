@@ -30,6 +30,12 @@
             pullup: {
                 type: Boolean,
                 default: false
+            },
+            // better-scroll在滚动开始派发beforeScrollStart事件
+            // 是否监听滚动开始事件
+            beforeScroll: {
+                type: Boolean,
+                default: false
             }
         },
         mounted () {
@@ -63,6 +69,12 @@
                         if (this.scroll.y <= this.scroll.maxScrollY + 50) {
                             this.$emit('scrollToEnd');
                         }
+                    });
+                }
+                // 是否监听滚动开始事件
+                if (this.beforeScroll) {
+                    this.scroll.on('beforeScrollStart', () => {
+                        this.$emit('beforeScroll');
                     });
                 }
             },

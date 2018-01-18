@@ -2,6 +2,7 @@
     <div class="searchsonglist">
         <scroll :data="searchSongList"
                 :pullup="pullup" @scrollToEnd="searchMore"
+                :beforeScroll="beforeScroll" @beforeScroll="listScroll"
                 class="list-wrapper" ref="scroll">
             <div>
                 <div class="match" v-show="matchArtist.length || matchAlbum.length">
@@ -49,7 +50,8 @@
     export default {
         data () {
             return {
-                pullup: true
+                pullup: true,
+                beforeScroll: true  // 监听滚动开始事件
             };
         },
         props: {
@@ -101,9 +103,14 @@
                 // console.log('searchMore');
                 this.$emit('searchmore', 1);
             },
+            listScroll () {
+                // 列表开始滚动,blur input
+                this.setBlurInput(true);
+            },
             ...mapMutations({
                 setSinger: 'SET_SINGER',
-                setSingerBackRoute: 'SET_SINGERBACKROUTE'
+                setSingerBackRoute: 'SET_SINGERBACKROUTE',
+                setBlurInput: 'SET_BLURINPUT'
             }),
             ...mapActions([
                 'insertSong'

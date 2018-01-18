@@ -31,3 +31,5 @@ export const recentPlayList = state => state.recentPlayList;
 export const showSongComment = state => state.showSongComment;
 
 export const showMenuComment = state => state.showMenuComment;
+
+export const blurInput = state => state.blurInput;

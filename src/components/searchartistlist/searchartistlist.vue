@@ -1,6 +1,8 @@
 <template>
     <div class="searchartistlist">
-        <scroll :data="artists" :pullup="pullup" @scrollToEnd="searchMore" class="list-wrapper">
+        <scroll :data="artists" :pullup="pullup" @scrollToEnd="searchMore" 
+                :beforeScroll="beforeScroll" @beforeScroll="listScroll"
+                class="list-wrapper">
             <div>
                 <ul>
                     <li v-for="artist in artists" class="artist-content" @click="selectArtist(artist)">
@@ -30,7 +32,8 @@
     export default {
         data () {
             return {
-                pullup: true
+                pullup: true,
+                beforeScroll: true  // 监听滚动开始事件
             };
         },
         props: {
@@ -55,9 +58,14 @@
                 console.log('searchMore');
                 this.$emit('searchmore', 100);
             },
+            listScroll () {
+                // 列表开始滚动,blur input
+                this.setBlurInput(true);
+            },
             ...mapMutations({
                 setSinger: 'SET_SINGER',
-                setSingerBackRoute: 'SET_SINGERBACKROUTE'
+                setSingerBackRoute: 'SET_SINGERBACKROUTE',
+                setBlurInput: 'SET_BLURINPUT'
             })
         },
         components: {

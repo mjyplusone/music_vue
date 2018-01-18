@@ -5,7 +5,7 @@
         <div class="back icon-left" v-show="tabType==='back'" @click="back"></div>
 
         <div class="search" v-show="tabType==='findmusic'" ref="search" :class="{'focus': isFocus}">
-            <input type="text" @focus="focusInput" :placeholder="placeholder" v-model="querydata">
+            <input ref="query" type="text" @focus="focusInput" :placeholder="placeholder" v-model="querydata">
             <i class="icon-close" v-show="query" @click="clear"></i>
         </div>
         <div class="subtitle" v-show="tabType !=='findmusic'">{{ title }}</div>
@@ -48,7 +48,8 @@
             },
             ...mapGetters([
                 'playing',
-                'query'
+                'query',
+                'blurInput'
             ])
         },
         methods: {
@@ -73,17 +74,23 @@
             clear () {
                 this.setQuery('');
             },
+            blur () {
+                this.$refs.query.blur();
+            },
             ...mapMutations({
                 setFullScreen: 'SET_FULLSCREEN',
-                setQuery: 'SET_QUERY'
+                setQuery: 'SET_QUERY',
+                setBlurInput: 'SET_BLURINPUT'
             })
+        },
+        watch: {
+            blurInput (newdata) {
+                if (newdata === true) {
+                    this.blur();
+                    this.setBlurInput(false);
+                }
+            }
         }
-        // watch: {
-        //     querydata (newQuery) {
-        //         // this.$emit('query', newQuery);
-        //         this.setQuery(newQuery);
-        //     }
-        // }
     };
 </script>
 

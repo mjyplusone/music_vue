@@ -46,6 +46,9 @@ const mutations = {
     },
     [types.SET_SHOWMENUCOMMENT] (state, flag) {
         state.showMenuComment = flag;
+    },
+    [types.SET_BLURINPUT] (state, flag) {
+        state.blurInput = flag;
     }
 };
 

@@ -1,6 +1,8 @@
 <template>
     <div class="searchmenulist">
-        <scroll :data="menus" :pullup="pullup" @scrollToEnd="searchMore" class="list-wrapper">
+        <scroll :data="menus" :pullup="pullup" @scrollToEnd="searchMore" 
+                :beforeScroll="beforeScroll" @beforeScroll="listScroll"
+                class="list-wrapper">
             <div>
                 <ul>
                     <li v-for="menu in menus" class="menu-content" @click="selectMenu(menu)">
@@ -31,7 +33,8 @@
     export default {
         data () {
             return {
-                pullup: true
+                pullup: true,
+                beforeScroll: true  // 监听滚动开始事件
             };
         },
         props: {
@@ -55,8 +58,13 @@
                 // console.log('searchMore');
                 this.$emit('searchmore', 1000);
             },
+            listScroll () {
+                // 列表开始滚动,blur input
+                this.setBlurInput(true);
+            },
             ...mapMutations({
-                setMusicMenu: 'SET_MUSICMENU'
+                setMusicMenu: 'SET_MUSICMENU',
+                setBlurInput: 'SET_BLURINPUT'
             })
         },
         components: {

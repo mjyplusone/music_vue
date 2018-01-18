@@ -161,7 +161,7 @@
                     return;
                 }
                 if (this.playList.length === 1) {
-                    this.loop();
+                    this.loopSong();
                 } else {
                     let index = this.currentIndex + 1;
                     if (index === this.playList.length) {
@@ -179,7 +179,7 @@
                     return;
                 }
                 if (this.playList.length === 1) {
-                    this.loop();
+                    this.loopSong();
                 } else {
                     let index = this.currentIndex - 1;
                     if (index === -1) {

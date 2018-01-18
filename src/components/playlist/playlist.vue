@@ -20,7 +20,7 @@
                     <li ref="listitem" v-for="(item, index) in sequenceList" class="list-item" :class="{'current': isCurrent(item)}" @click="selectItem(item, index)">
                         <div class="content">
                             <i class="icon-volume-medium" v-show="isCurrent(item)"></i>
-                            {{ item.name }}<span class="singer"> - {{ item.singer }}</span>
+                            {{ item.name }}<span class="singername"> - {{ item.singer }}</span>
                         </div>
                         <div class="close-icon" @click.stop="deleteOne(item)">
                             <i class="icon-close"></i>
@@ -256,10 +256,10 @@
                     &.current
                         .content
                             color: #d23c33
-                            .singer
+                            .singername
                                 color: #d23c33
                     .content
-                        .singer
+                        .singername
                             font-size: 12px
                             color: rgba(0, 0, 0, 0.7)
                     .close-icon

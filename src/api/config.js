@@ -12,5 +12,5 @@ export const options = {
 
 export const ERR_OK = 0;
 
-export const baseUrl = 'http://musicapi.leanapp.cn';
-// export const baseUrl = 'http://dgfd.lihulab.net';
+// export const baseUrl = 'http://musicapi.leanapp.cn';
+export const baseUrl = 'http://dgfd.lihulab.net';

@@ -35,7 +35,7 @@
                             <div class="icon"><i class="icon-like" :class="iconFavorite(currentSong)" @click="toggleFavorite(currentSong)"></i></div>
                             <div class="icon"><i class="icon-download"></i></div>
                             <div class="icon"><i class="icon-msg" @click="selectComment()"></i></div>
-                            <div class="icon"><i class="icon-list-circle-small"></i></div>
+                            <div class="icon"><i class="icon-list-circle-small" @click="showUpToolList"></i></div>
                         </div>
                     </transition>
                     <div class="middle-lyric" v-show="!showCDPage" @click="togglePage">
@@ -66,7 +66,9 @@
         </transition>
         <audio :src="currentSong.musicUrl" ref="audio" @canplay="ready" @error="error" @timeupdate="timeUpdate" @ended="end"></audio>
         <playlist ref="playlist" @changeplaying="changePlaying"></playlist>
+        <uptoollist ref="uptoollist"></uptoollist>
         <comment ref="comment" v-show="showSongComment" :commentType="0" :id="currentSong.id" :picUrl="currentSong.picUrl" :name="currentSong.name" :singer="currentSong.singer"></comment>
+        <tip :tipType="tipType" ref="tip"></tip>
     </div>
 </template>
 
@@ -79,6 +81,8 @@
     import scroll from 'base/scroll/scroll.vue';
     import playlist from 'components/playlist/playlist.vue';
     import comment from 'components/comment/comment.vue';
+    import uptoollist from 'components/uptoollist/uptoollist.vue';
+    import tip from 'base/tip/tip.vue';
 
     export default {
         data () {
@@ -97,7 +101,9 @@
                 // 精彩评论列表
                 songHotCommentList: [],
                 // 最新评论列表
-                songCommentList: []
+                songCommentList: [],
+                // tip类型
+                tipType: 0
             };
         },
         computed: {
@@ -303,13 +309,22 @@
                 if (this.isFavorite(song)) {
                     // 调用action
                     this.deleteFavoriteList(song);
+                    // 控制tip组件的显示和显示类型
+                    this.tipType = 1;
+                    this.$refs.tip.show();
                 } else {
                     this.saveFavoriteList(song);
+                    // 控制tip组件的显示和显示类型
+                    this.tipType = 0;
+                    this.$refs.tip.show();
                 }
             },
             selectComment () {
                 this.setShowSongComment(true);
                 this.$refs.comment.getSongComment();
+            },
+            showUpToolList () {
+                this.$refs.uptoollist.show();
             },
             _padZero (num) {
                 let len = num.toString().length;
@@ -366,7 +381,9 @@
             MProgress,
             scroll,
             playlist,
-            comment
+            comment,
+            uptoollist,
+            tip
         }
     };
 </script>

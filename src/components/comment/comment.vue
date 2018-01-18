@@ -12,7 +12,7 @@
                     <div class="titleimg"><img :src="picUrl" width="81" height="81" alt=""></div>
                     <div class="right">
                         <div class="titlename">{{ name }}</div>
-                        <div class="singer">{{ singer }}</div>
+                        <div class="singername">{{ singer }}</div>
                     </div>
                 </div>
                 <h1 class="marker" v-show="hotCommentList.length">精彩评论</h1>
@@ -253,7 +253,7 @@
                         .titlename
                             margin-top: 20px
                             font-size: 14px
-                        .singer
+                        .singername
                             margin-top: 16px
                             font-size: 12px
                             color: rgba(0, 0, 0, 0.5)

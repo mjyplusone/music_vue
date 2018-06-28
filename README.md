@@ -51,6 +51,11 @@
 - 用户动态、关注、粉丝
 
 ### 截图
+<img src="https://github.com/mjyplusone/music_vue/blob/master/static/1.gif" width = "45%" />
+<img src="https://github.com/mjyplusone/music_vue/blob/master/static/2.gif" width = "45%" />
+<img src="https://github.com/mjyplusone/music_vue/blob/master/static/3.gif" width = "45%" />
+<img src="https://github.com/mjyplusone/music_vue/blob/master/static/4.gif" width = "45%" />
+<img src="https://github.com/mjyplusone/music_vue/blob/master/static/5.gif" width = "45%" />
 
 ### Build Setup
 

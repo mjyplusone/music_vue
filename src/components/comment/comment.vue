@@ -48,6 +48,7 @@
                         <div class="loading"><loading v-show="hasMore"></loading></div>
                     </ul>
                 </div>
+                <div class="bottom"></div>
             </div>
         </scroll>
     </div>
@@ -318,6 +319,9 @@
                             height: 14px
                             background: url('../../common/image/good.png')
                             background-size: 100%
+                .bottom
+                    width: 100%
+                    height: 120px
                 .loading
                     position: relative
                     width: 100%

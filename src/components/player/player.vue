@@ -31,12 +31,12 @@
                     </div>
                     </transition>
                     <transition name="fade">
-                        <div class="tool" v-show="showCDPage">
-                            <div class="icon"><i class="icon-like" :class="iconFavorite(currentSong)" @click="toggleFavorite(currentSong)"></i></div>
-                            <div class="icon"><i class="icon-download"></i></div>
-                            <div class="icon"><i class="icon-msg" @click="selectComment()"></i></div>
-                            <div class="icon"><i class="icon-list-circle-small" @click="showUpToolList"></i></div>
-                        </div>
+                    <div class="tool" v-show="showCDPage">
+                        <div class="icon"><i class="icon-like" :class="iconFavorite(currentSong)" @click="toggleFavorite(currentSong)"></i></div>
+                        <div class="icon"><i class="icon-download"></i></div>
+                        <div class="icon"><i class="icon-msg" @click="selectComment()"></i></div>
+                        <div class="icon"><i class="icon-list-circle-small" @click="showUpToolList"></i></div>
+                    </div>
                     </transition>
                     <div class="middle-lyric" v-show="!showCDPage" @click="togglePage">
                         <!-- v-if写在middle-lyric层会导致获取不到歌词时,也无法再次togglePage到cd界面 -->
@@ -282,6 +282,10 @@
                 // 将stickchange清空,这样切换cd和歌词,stick不会有改变的动画效果
                 this.stickchange = '';
                 // console.log(this.showCDPage);
+                // togglePage后lyric列表的dom才渲染正确，此时需要刷新scroll，根据新dom重新计算
+                setTimeout(() => {
+                    this.$refs.lyric.refresh();
+                }, 20);
             },
             showPlayList () {
                 this.$refs.playlist.show();

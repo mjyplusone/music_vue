@@ -203,6 +203,7 @@
                 let translateY = Math.max(this.minTranslateY, newY);
                 this.$refs.bgimg.style[transform] = `translate3d(0, ${translateY}px, 0)`;
                 this.$refs.tab.style[transform] = `translate3d(0, ${translateY}px, 0)`;
+                this.$refs.banner.style[transform] = `translate3d(0, ${translateY}px, 0)`;
                 let blurSize = (translateY / this.minTranslateY) * 3;
                 this.$refs.bgimg.style['filter'] = `blur(${blurSize}px)`;
                 let bgOpacity = (translateY / this.minTranslateY) * 0.7;
@@ -217,8 +218,6 @@
                 } else {
                     this.$refs.topbg.style['background'] = '';
                 }
-
-                this.$refs.banner.style[transform] = `translate3d(0, ${translateY}px, 0)`;
 
                 // 下拉图片放大
                 if (newY > 0) {

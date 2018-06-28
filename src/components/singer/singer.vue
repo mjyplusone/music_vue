@@ -157,7 +157,7 @@
                 return hot.concat(res);
             },
             onShortcutTouch (index, event) {
-                // 获得触碰的手指的第一个位置
+                // 获得手指触碰的第一个位置
                 let firstTouch = event.touches[0];
                 this.touch.y1 = firstTouch.pageY;
                 this.touch.index = index;

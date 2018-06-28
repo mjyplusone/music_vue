@@ -39,7 +39,7 @@
                 this.touch.touchStartX = event.touches[0].pageX;
                 this.touch.progressStart = this.$refs.progress.clientWidth;
             },
-            progressTouchMove (evnet) {
+            progressTouchMove (event) {
                 if (!this.touch.init) {
                     return;
                 }

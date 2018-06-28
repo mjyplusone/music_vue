@@ -41,8 +41,9 @@
             return {
                 tabType: 'back',
                 title: '排行榜',
-                ranklists: [],  // 五大排行榜总数据
-                normalranklists: []  // 用Rank类规格化后的排行榜总数据
+                ranklists: [],  // 排行榜总数据
+                normalranklists: [],  // 用Rank类规格化后的排行榜总数据
+                rankListNum: 5  // 排行榜数量
             };
         },
         created () {
@@ -50,15 +51,19 @@
         },
         methods: {
             _getRankLists () {
+                let rankListArr = [];
+                for (let i = 0; i < this.rankListNum; i++) {
+                    rankListArr.push(getRankList(i));
+                }
                 // promise.all执行多个异步操作,在一个回调中处理所有返回数据
                 Promise
-                    .all([getRankList(0), getRankList(1), getRankList(2), getRankList(3), getRankList(4)])
+                    .all(rankListArr)
                     .then((results) => {
                         results.forEach((item) => {
                             console.log(item);
                             if (item.code === 200) {
-                                this.ranklists.push(item.result);
-                                // this.ranklists.push(item.playlist);
+                                // this.ranklists.push(item.result);
+                                this.ranklists.push(item.playlist);
                             }
                         });
                         console.log(this.ranklists);
@@ -77,7 +82,8 @@
             },
             selectRankList (ranklist) {
                 this.$router.push({
-                    path: `/findmusic/music/rank/${ranklist.id}`
+                    path: this.$route.path + '/' + ranklist.id
+                    // path: `/findmusic/music/rank/${ranklist.id}`
                 });
                 this.setMusicMenu(ranklist);
             },

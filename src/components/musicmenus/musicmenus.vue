@@ -303,7 +303,7 @@
                     overflow: hidden     /* BFC清除浮动 */
                     margin-left: -2px
                     li
-                        float: left
+                        display: inline-block
                         width: 50%
                         padding-left: 2px
                         box-sizing: border-box

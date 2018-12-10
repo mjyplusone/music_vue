@@ -2,7 +2,10 @@
 
 ### 概述
 基于Vue.js的音乐播放器，界面模仿网易云音乐，项目使用vue-cli搭建
-- [项目预览]()(web端请在chrome调试模式下查看)
+- 项目预览
+  - [PC端](http://music.lihulab.net)(请在chrome调试模式下查看)
+  - 移动端请扫码查看<br />
+  ![avatar](/static/erweima.png)
 - API来源：大部分来自[网易云音乐 Node.js API service](https://github.com/Binaryify/NeteaseCloudMusicApi)，轮播图、热门搜索等少数接口从qq音乐抓取
 
 ### 技术栈

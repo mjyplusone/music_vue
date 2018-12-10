@@ -22,10 +22,13 @@
                     <div class="middle-cd" v-show="showCDPage" @click="togglePage">
                         <div class="stick" :class="stickRotate"></div>
                         <div class="cd-bg">
+                            <!-- 解决ios animation-play-state无效问题 -->
+                            <div class="wp">
                             <div class="cd-wrapper" :class="cdRotate">
                                 <div class="cd">
                                     <img width="100%" height="100%" :src="currentSong.picUrl" alt="">
                                 </div>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -111,7 +114,7 @@
                 return this.playing ? 'icon-pause-detail' : 'icon-playdetail';
             },
             cdRotate () {
-                return this.playing ? 'play' : 'play pause';
+                // return this.playing ? 'play' : 'pause';
             },
             stickRotate () {
                 return this.stickchange + (this.playing ? ' playing' : ' pausing');
@@ -372,9 +375,23 @@
                 }, 1000);
             },
             playing (playingstate) {
+                const audio = this.$refs.audio;
                 this.$nextTick(() => {
-                    playingstate ? this.$refs.audio.play() : this.$refs.audio.pause();
+                    playingstate ? audio.play() : audio.pause();
                 });
+                // cd旋转动画，解决iosanimation-play-state无效的问题
+                var wp = document.getElementsByClassName('wp')[0];
+                var cdwrapper = document.getElementsByClassName('cd-wrapper')[0];
+                if (this.playing) {
+                    cdwrapper.classList.add('cdplay');
+                } else {
+                    var cdTransform = getComputedStyle(cdwrapper).transform;
+                    var wpTransform = getComputedStyle(wp).transform;
+                    wp.style.transform = wpTransform === 'none'
+                        ? cdTransform
+                        : cdTransform.concat(' ', wpTransform);
+                    cdwrapper.classList.remove('cdplay');
+                }
             },
             // fullScreen变化将stickchange清空
             fullScreen () {
@@ -437,9 +454,15 @@
                 font-weight: 300
                 .songname
                     font-size: 13px
+                    white-space: nowrap
+                    overflow: hidden
+                    text-overflow: ellipsis
                 .singername
                     margin-top: 6px
                     font-size: 9px
+                    white-space: nowrap
+                    overflow: hidden
+                    text-overflow: ellipsis
             .share
                 position: absolute
                 top: 10px
@@ -491,23 +514,30 @@
                     padding: 2.4vw
                     box-sizing: border-box
                     background: rgba(255, 255, 255, 0.1)
-                    .cd-wrapper
+                    @media only screen and (min-aspect-ratio: 10/16)
+                        width: 70vw
+                        height: 70vw
+                    .wp
                         width: 100%
                         height: 100%
-                        border-radius: 50%
-                        padding: 12.5vw
-                        box-sizing: border-box
-                        background: url('../../common/image/cd_wrapper.png')
-                        background-size: 100%
-                        &.play
-                            animation: rotate 20s linear infinite
-                        &.pause
-                            animation-play-state: paused
-                        .cd
+                        .cd-wrapper
                             width: 100%
                             height: 100%
                             border-radius: 50%
-                            overflow: hidden
+                            padding: 12.5vw
+                            box-sizing: border-box
+                            background: url('../../common/image/cd_wrapper.png')
+                            background-size: 100%
+                            &.play
+                                animation: rotate 20s linear infinite
+                            &.pause
+                                animation: rotate 20s linear infinite
+                                animation-play-state: paused
+                            .cd
+                                width: 100%
+                                height: 100%
+                                border-radius: 50%
+                                overflow: hidden
             .tool
                 position: absolute
                 top: 67vh
@@ -593,7 +623,9 @@
                 font-size: 3.3vh
             .icon-2
                 font-size: 5.2vh
-    
+    .cdplay
+        animation: rotate 20s linear infinite
+
     // 旋转动画
     @keyframes rotate
         0%

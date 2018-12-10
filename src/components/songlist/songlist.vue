@@ -82,6 +82,7 @@
         methods: {
             selectSong (song, index) {
                 this.$emit('selectsong', song, index);
+                console.log(song);
             }
         }
     };

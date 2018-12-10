@@ -67,7 +67,7 @@ export function createSearchSong (song) {
         name: song.name,
         singer: allSinger(song.artists),
         album: song.album.name,
-        picUrl: song.album.picUrl,
+        picUrl: song.artists[0].img1v1Url || song.album.artist.img1v1Url,
         musicUrl: `http://music.163.com/song/media/outer/url?id=${song.id}.mp3`
     });
 }

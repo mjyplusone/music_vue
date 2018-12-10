@@ -13,10 +13,26 @@ export function createRank (rank) {
         id: rank.id,
         name: rank.name,
         picUrl: rank.coverImgUrl,
-        songs: [rank.tracks[0].name, rank.tracks[1].name, rank.tracks[2].name],
-        // artists: [Allsinger(rank.tracks[0].artists), Allsinger(rank.tracks[1].artists), Allsinger(rank.tracks[2].artists)]
-        artists: [Allsinger(rank.tracks[0].ar), Allsinger(rank.tracks[1].ar), Allsinger(rank.tracks[2].ar)]
+        songs: topList(rank.tracks, 0),
+        // [rank.tracks[0].name, rank.tracks[1].name, rank.tracks[2].name],
+        artists: topList(rank.tracks, 1)
+        // [Allsinger(rank.tracks[0].ar), Allsinger(rank.tracks[1].ar), Allsinger(rank.tracks[2].ar)]
     });
+}
+
+function topList (list, tag) {
+  let len = 3;
+  let songs = [];
+  let artists = [];
+  for (let i = 0; i < len; i++) {
+    if (list[i]) {
+      songs.push(list[i].name);
+      artists.push(Allsinger(list[i].ar));
+    } else {
+      break;
+    }
+  }
+  return tag === 0 ? songs : artists;
 }
 
 function Allsinger (artists) {

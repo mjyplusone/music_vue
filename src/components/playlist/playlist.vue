@@ -250,6 +250,7 @@
                     width: 100%
                     line-height: 45px
                     font-size: 14px
+                    overflow: hidden
                     border-1px(rgba(7, 17, 27, 0.1), after, bottom)
                     &:last-child
                         border-1px(rgba(7, 17, 27, 0), after, bottom)

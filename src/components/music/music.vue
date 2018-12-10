@@ -4,9 +4,9 @@
             <div>
                 <div v-if="recommends.length" class="slider-wrapper">
                     <slider ref="slider">
-                        <div v-for="item in recommends">
+                        <div v-for="(item, index) in recommends">
                             <a :href="item.linkUrl">
-                                <img class="needsclick" @load="loadImage" :src="item.picUrl" alt="">
+                                <img class="slider-img" @load="loadImage" @error="errorLoadImage(item)" :src="item.picUrl" alt="">
                             </a>
                         </div>
                     </slider>
@@ -52,7 +52,7 @@
                     </div>
                     <div class="content">
                         <ul>
-                            <!-- <li v-for="(item, index) in recommendList" v-if="index < 6" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}"
+                            <li v-for="(item, index) in recommendList" v-if="index < 6" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}"
                                 @click="selectMenu(item)">
                                 <div class="item-img">
                                     <img :width="MusicItemWidth" :height="MusicItemWidth" v-lazy="item.picUrl" alt="">
@@ -60,15 +60,15 @@
                                 <div class="item-text">
                                     <span>{{ item.name }}</span>
                                 </div>
-                            </li> -->
-                            <li v-for="(item, index) in recommendList" v-if="index < 6" class="music-item" @click="selectMenu(item)">
+                            </li>
+                            <!-- <li v-for="(item, index) in recommendList" v-if="index < 6" class="music-item" @click="selectMenu(item)">
                                 <div class="item-img">
                                     <img width="100%" height="100%" v-lazy="item.picUrl" alt="">
                                 </div>
                                 <div class="item-text">
                                     <span>{{ item.name }}</span>
                                 </div>
-                            </li>
+                            </li> -->
                         </ul>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
                     </div>
                     <div class="content">
                         <ul>
-                            <!-- <li v-for="(item, index) in recommendList" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}"
+                            <li v-for="(item, index) in recommendList" class="music-item" :style="{width: MusicItemWidth, marginRight: MusicItemMargin(index)}"
                                 @click="selectMenu(item)">
                                 <div class="item-img">
                                     <img :width="MusicItemWidth" :height="MusicItemWidth" v-lazy="item.picUrl" alt="">
@@ -88,15 +88,15 @@
                                 <div class="item-text">
                                     <span>{{ item.name }}</span>
                                 </div>
-                            </li> -->
-                            <li v-for="(item, index) in recommendList" class="music-item" @click="selectMenu(item)">
+                            </li>
+                            <!-- <li v-for="(item, index) in recommendList" class="music-item" @click="selectMenu(item)">
                                 <div class="item-img">
                                     <img width="100%" height="100%" v-lazy="item.picUrl" alt="">
                                 </div>
                                 <div class="item-text">
                                     <span>{{ item.name }}</span>
                                 </div>
-                            </li>
+                            </li> -->
                         </ul>
                     </div>
                 </div>
@@ -123,8 +123,8 @@
             return {
                 recommends: [],
                 recommendList: [],
-                // // 每个music-item的宽度
-                // MusicItemWidth: '',
+                // 每个music-item的宽度
+                MusicItemWidth: '',
                 topMenuBanner: {}  // 精品歌单,传入歌单router的封面信息
             };
         },
@@ -137,12 +137,12 @@
             this._getTopMusicMenuList();
         },
         mounted () {
-            // // 计算每个music-item的宽度
-            // this._getMusicItemWidth();
-            // // resize的时候重新计算
-            // window.addEventListener('resize', () => {
-            //     this._getMusicItemWidth();
-            // });
+            // 计算每个music-item的宽度
+            this._getMusicItemWidth();
+            // resize的时候重新计算
+            window.addEventListener('resize', () => {
+                this._getMusicItemWidth();
+            });
         },
         methods: {
             _getRecommend () {
@@ -173,20 +173,20 @@
                     }
                 });
             },
-            // _getMusicItemWidth () {
-            //     let MusicWidth = this.$refs.music.clientWidth;
-            //     let marginWidth = 2;
-            //     this.MusicItemWidth = (MusicWidth - marginWidth * 2) / 3 + 'px';
-            //     console.log('MusicItemWidth' + this.MusicItemWidth);
-            // },
-            // // music-item间的间距
-            // MusicItemMargin (index) {
-            //     if ((index + 1) % 3 === 0) {
-            //         return '0px';
-            //     } else {
-            //         return '2px';
-            //     }
-            // },
+            _getMusicItemWidth () {
+                let MusicWidth = this.$refs.music.clientWidth;
+                let marginWidth = 2;
+                this.MusicItemWidth = (MusicWidth - marginWidth * 2) / 3 + 'px';
+                console.log('MusicItemWidth' + this.MusicItemWidth);
+            },
+            // music-item间的间距
+            MusicItemMargin (index) {
+                if ((index + 1) % 3 === 0) {
+                    return '0px';
+                } else {
+                    return '2px';
+                }
+            },
             loadImage () {
                 if (!this.checkLoaded) {
                     this.checkLoaded = true;
@@ -195,6 +195,9 @@
                     this.$refs.slider._setSliderWidth(true);
                     this.$refs.scroll.refresh();
                 }
+            },
+            errorLoadImage (item) {
+                item.picUrl = require('../../../static/slider.jpg');
             },
             selectMenu (menu) {
                 this.$router.push({
@@ -276,47 +279,47 @@
                         color: #707070
                 .content
                     font-size: 0
-                    ul
-                        overflow: hidden     /* BFC清除浮动 */
-                        margin-left: -2px
-                        li
-                            display: inline-block
-                            width: 33.33%
-                            padding-left: 2px
-                            box-sizing: border-box
-                            background-clip: content-box
-                            .item-text
-                                height: 27px
-                                margin: 8px 0 22px 0
-                                padding: 0 7px
-                                font-size: 12px
-                                line-height: 1.2
-                                // 多行文本溢出省略号
-                                overflow: hidden
-                                display: -webkit-box
-                                -webkit-line-clamp: 2
-                                -webkit-box-orient: vertical
-                                text-overflow: ellipsis
-                                // 长英文自动转行
-                                word-wrap: break-word
-                    // .music-item
-                    //     display: inline-block
-                    //     vertical-align: top
-                    //     .item-text
-                    //         height: 27px
-                    //         margin: 8px 0 22px 0
-                    //         padding: 0 7px
-                    //         font-size: 12px
-                    //         line-height: 1.2
-                    //         // 多行文本溢出省略号
-                    //         overflow: hidden
-                    //         display: -webkit-box
-                    //         -webkit-line-clamp: 2
-                    //         -webkit-box-orient: vertical
-                    //         text-overflow: ellipsis
-                    //         // 长英文自动转行
-                    //         word-wrap: break-word
-                    //         // background: red
+                    // ul
+                    //     overflow: hidden     /* BFC清除浮动 */
+                    //     margin-left: -2px
+                    //     li
+                    //         display: inline-block
+                    //         width: 33.33%
+                    //         padding-left: 2px
+                    //         box-sizing: border-box
+                    //         background-clip: content-box
+                    //         .item-text
+                    //             height: 27px
+                    //             margin: 8px 0 22px 0
+                    //             padding: 0 7px
+                    //             font-size: 12px
+                    //             line-height: 1.2
+                    //             // 多行文本溢出省略号
+                    //             overflow: hidden
+                    //             display: -webkit-box
+                    //             -webkit-line-clamp: 2
+                    //             -webkit-box-orient: vertical
+                    //             text-overflow: ellipsis
+                    //             // 长英文自动转行
+                    //             word-wrap: break-word
+                    .music-item
+                        display: inline-block
+                        vertical-align: top
+                        .item-text
+                            height: 27px
+                            margin: 8px 0 22px 0
+                            padding: 0 7px
+                            font-size: 12px
+                            line-height: 1.2
+                            // 多行文本溢出省略号
+                            overflow: hidden
+                            display: -webkit-box
+                            -webkit-line-clamp: 2
+                            -webkit-box-orient: vertical
+                            text-overflow: ellipsis
+                            // 长英文自动转行
+                            word-wrap: break-word
+                            // background: red
             .bottom
                 width: 100%
                 height: 120px

@@ -2,10 +2,10 @@
 <transition name="slide">
     <div class="dailyrecommend">
         <m-header :tabType="tabType" :title="title"></m-header>
-        <div class="banner">
+        <div class="banner" v-if="bannerUrl">
             <img :src="bannerUrl" width="100%" alt="" ref="banner" @load="loadImage">
         </div>
-         <div class="control-tab" ref="tab" @click="playAll">
+        <div class="control-tab" ref="tab" @click="playAll">
             <div class="left">
                 <span class="icon"><i class="icon-playdetail"></i></span>
                 <span class="text">播放全部&nbsp;<span class="num">(共{{recommendSongs.length}}首)</span></span>
@@ -15,7 +15,7 @@
                 <span class="text">多选</span>
             </div>
         </div>
-        <scroll @scrollPos="scrollPos" :data="recommendSongs" :probeType="probeType" :listenScroll="listenScroll" 
+        <scroll @scrollPos="scrollPos" :data="recommendSongs" :probeType="probeType" :listenScroll="listenScroll"
                 class="songlist-wrapper" ref="songlist">
             <div>
                 <songlist :songs="recommendSongs" :toolbarType="0" @selectsong="selectSong"></songlist>
@@ -41,33 +41,33 @@
 
     export default {
         data () {
-            return {
-                tabType: 'back',
-                title: '每日推荐',
-                bannerUrl: '',
-                recommendSongs: [],
-                scrollY: 0
-            };
+          return {
+              tabType: 'back',
+              title: '每日推荐',
+              bannerUrl: '',
+              recommendSongs: [],
+              scrollY: 0
+          };
         },
         created () {
-            this._getRecommendBanner();
-            this._getRecommendSongs();
-            this.probeType = 3;
-            this.listenScroll = true;
+          this._getRecommendBanner();
+          this._getRecommendSongs();
+          this.probeType = 3;
+          this.listenScroll = true;
         },
         mounted () {
-            this.bannerHeight = this.$refs.banner.clientHeight;
-            this.$refs.songlist.$el.style.top = this.bannerHeight + TITLE_HEIGHT + LIST_TAB_HEIGHT + 'px';
+          this.bannerHeight = this.$refs.banner ? this.$refs.banner.clientHeight : 0;
+          this.$refs.songlist.$el.style.top = this.bannerHeight + TITLE_HEIGHT + LIST_TAB_HEIGHT + 'px';
 
-            window.addEventListener('resize', () => {
-                this.bannerHeight = this.$refs.banner.clientHeight;
-                this.$refs.songlist.$el.style.top = this.bannerHeight + TITLE_HEIGHT + LIST_TAB_HEIGHT + 'px';
-            });
+          window.addEventListener('resize', () => {
+              this.bannerHeight = this.$refs.banner ? this.$refs.banner.clientHeight : 0;
+              this.$refs.songlist.$el.style.top = this.bannerHeight + TITLE_HEIGHT + LIST_TAB_HEIGHT + 'px';
+          });
         },
         methods: {
             _getRecommendBanner () {
                 getRecommendBanner().then((res) => {
-                    if (res.code === 200) {
+                    if (res.code === 200 && res.banners.length) {
                         this.bannerUrl = res.banners[0].pic;
                     }
                 });
@@ -150,7 +150,7 @@
             position: relative
             height: 40px
             line-height: 40px
-            margin-top: -4px   // 不知道为什么img和tab之间有几px空白。。。原因待找
+            // margin-top: -4px   // 不知道为什么img和tab之间有几px空白。。。原因待找
             background: #ffffff
             z-index: 10
             .left
@@ -161,7 +161,7 @@
                     display: inline-block
                     vertical-align: top
                     font-size: 18px
-                    margin-top: 2px 
+                    margin-top: 2px
                 .text
                     display: inline-block
                     vertical-align: top

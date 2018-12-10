@@ -2,7 +2,7 @@
 <transition name="slide">
     <div class="musicmenu">
         <div class="bgtop-wrapper">
-            <div class="topbg" :style="bgStyle" ref="topbg"> 
+            <div class="topbg" :style="bgStyle" ref="topbg">
                 <div class="topmask" ref="topmask"></div>
             </div>
         </div>
@@ -62,7 +62,7 @@
                 <span class="text">多选</span>
             </div>
         </div>
-        <scroll @scrollPos="scrollPos" :data="menuSongs" :probeType="probeType" :listenScroll="listenScroll" 
+        <scroll @scrollPos="scrollPos" :data="menuSongs" :probeType="probeType" :listenScroll="listenScroll"
                 class="songlist-wrapper" ref="songlist">
             <div>
                 <songlist :songs="menuSongs" :toolbarType="0" @selectsong="selectSong"></songlist>
@@ -404,7 +404,7 @@
                     display: inline-block
                     vertical-align: top
                     font-size: 18px
-                    margin-top: 2px 
+                    margin-top: 2px
                 .text
                     display: inline-block
                     vertical-align: top
@@ -440,7 +440,7 @@
             position: absolute
             width: 100%
             top: 70%
-            transform: translateY(-50%)    
+            transform: translateY(-50%)
 
     @keyframes horse
         0%
